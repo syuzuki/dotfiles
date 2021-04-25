@@ -1,0 +1,20 @@
+# vim: ft=zsh
+
+local result="$(history -inr 1 |
+    LBUF="${LBUFFER}" perl -nlE 'say if /^[^ ]+ +[^ ]+ +@{[quotemeta($ENV{LBUF})]}/' |
+    fzf --prompt='History > ' --no-sort --delimiter=' +' --nth='3..' --expect=ctrl-f,right --exit-0 --select-1)"
+zle reset-prompt
+
+if [[ ! -z "${result}" ]]; then
+    local result_lines=("${(f)result}")
+    local key="${result_lines[1]}"
+    local buffer="${result_lines[2]}"
+
+    BUFFER="$(perl -pE 's/^[^ ]+ +[^ ]+ +//' <<<${buffer})"
+    CURSOR="${#BUFFER}"
+    type _zsh_highlight >/dev/null && _zsh_highlight # zdharma/fast-syntax-highlighting
+
+    if [[ -z "${key}" ]]; then
+        zle accept-line
+    fi
+fi

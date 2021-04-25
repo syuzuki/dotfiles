@@ -1,0 +1,13 @@
+#compdef mozc_tool
+
+_mozc_tool_modes() {
+    _values 'mode' \
+        character_palette \
+        config_dialog \
+        dictionary_tool \
+        hand_writing \
+        word_register_dialog \
+}
+
+_arguments \
+    '--mode=::mode:_mozc_tool_modes'

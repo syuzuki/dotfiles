@@ -1,0 +1,3 @@
+#compdef lcov
+
+_files -g "*.lb3"

@@ -1,0 +1,3 @@
+#compdef bsch3v
+
+_files -g "*.ce3"

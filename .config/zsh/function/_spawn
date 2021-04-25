@@ -1,0 +1,5 @@
+#compdef spawn
+
+_arguments \
+    '(-)1:command: _command_names -e' \
+    '*::arguments:{ _comp_priv_prefix=(${cmd}); _normal }'

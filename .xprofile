@@ -1,0 +1,37 @@
+# vim: set ft=sh:
+
+source ~/.profile
+
+export SHLVL=1
+
+export BROWSER=firefox
+export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=lcd'
+export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx
+
+[[ -e ~/.xprofile.local ]] && source ~/.xprofile.local
+
+if [[ ${DESKTOP_SESSION} == 'sway' ]]; then
+    # Sway specific configuration
+
+    # export XKB_DEFAULT_LAYOUT=jp XKB_DEFAULT_OPTIONS=ctrl:nocaps,custom:all
+    export MOZ_ENABLE_WAYLAND=1
+else
+    # X specific configuration
+
+    xset -b # disable bell
+    xset s off -dpms # disable DPMS(Display Power Management Signaling) and prevent screen from blanking
+    [[ -x ~/.config/screenlayout/default ]] && ~/.config/screenlayout/default
+    [[ -n "${TOUCHPAD}" ]] && (sleep 1; touchpad-config; touchpad-disable) &
+
+    # service
+    fcitx-autostart
+
+    # system tray
+    syncthing-gtk --minimized &
+    nm-applet &
+    pasystray &
+    type cbatticon &>/dev/null && cbatticon &
+    type blueberry-tray &>/dev/null && blueberry-tray &
+fi

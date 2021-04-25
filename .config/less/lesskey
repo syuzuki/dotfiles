@@ -1,0 +1,9 @@
+#command
+h left-scroll
+l right-scroll
+
+#line-edit
+\e abort
+
+#env
+LESS = -iMR

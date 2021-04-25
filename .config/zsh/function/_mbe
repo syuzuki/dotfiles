@@ -1,0 +1,3 @@
+#compdef mbe
+
+_files -g "*.mb3"

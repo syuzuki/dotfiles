@@ -1,0 +1,13 @@
+# Vim swap
+*.swp
+# Vim config
+/.vim/
+
+# GDB history
+/.gdb_history
+
+# clangd cache
+/.cache/
+
+# LibreOffice lock
+.~lock.*#

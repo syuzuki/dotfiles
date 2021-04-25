@@ -1,0 +1,210 @@
+[[plugins]]
+repo = 'Shougo/dein.vim'
+
+# [[plugins]]
+# repo = 'nanotech/jellybeans.vim'
+# hook_add = '''
+#     let g:jellybeans_use_term_italics = 1
+# '''
+
+[[plugins]]
+repo = 'jonathanfilip/vim-lucius'
+
+[[plugins]]
+repo = 'junegunn/fzf.vim'
+hook_add = '''
+    let g:fzf_layout = { 'window': 'call g:CreateFloatingFzf()' }
+    function! g:CreateFloatingFzf() abort
+        let buf = nvim_create_buf(v:false, v:true)
+        let config = {
+            \ 'relative': 'editor',
+            \ 'width': float2nr(&columns * 0.6),
+            \ 'height': float2nr(&lines * 0.6),
+            \ 'col': float2nr(&columns * 0.2),
+            \ 'row': float2nr(&lines * 0.2),
+            \ }
+        call nvim_open_win(buf, v:true, config)
+        set winblend=20
+    endfunction
+
+    if has('nvim')
+        nnoremap <silent> <M-b> :Buffers<cr>
+        nnoremap <silent> <M-f> :Files<cr>
+        nnoremap <silent> <M-F> :Locate *<cr>
+        nnoremap <silent> <M-g> :Lines<cr>
+        nnoremap <silent> <M-G> :Rg<cr>
+    else
+        nnoremap <silent> <Esc>b :Buffers<cr>
+        nnoremap <silent> <Esc>f :Files<cr>
+        nnoremap <silent> <Esc>F :Locate *<cr>
+        nnoremap <silent> <Esc>g :Lines<cr>
+        nnoremap <silent> <Esc>G :Rg<cr>
+    endif
+'''
+
+[[plugins]]
+repo = 'sheerun/vim-polyglot'
+hook_add = '''
+    let g:polyglot_disabled = ['sensible']
+
+    let g:vim_markdown_frontmatter = 1
+'''
+
+# [[plugins]]
+# repo = 'cespare/vim-toml'
+# on_ft = 'toml'
+
+# [[plugins]]
+# repo = 'rust-lang/rust.vim'
+# on_ft = 'rust'
+# hook_add = '''
+#     " let g:rustfmt_autosave = 1
+# '''
+
+# [[plugins]]
+# repo = 'godlygeek/tabular'
+# lazy = 1
+
+# # folding is disabled in sheerun/vim-polyglot
+# [[plugins]]
+# repo = 'plasticboy/vim-markdown'
+# depends = ['godlygeek/tabular']
+# on_ft='markdown'
+
+[[plugins]]
+repo = 'vim-scripts/sudo.vim'
+on_path = '^sudo:'
+
+[[plugins]]
+repo = 'scrooloose/nerdcommenter'
+hook_add = '''
+    let g:NERDCommentWholeLinesInVMode = 1
+    let g:NERDSpaceDelims = 1
+    let g:NERDDefaultAlign = 'left'
+    let g:NERDCustomDelimiters = {
+        \ 'c': { 'left': '//', 'leftAlt': '/*', 'rightAlt': '*/' },
+        \ 'arduino': { 'left': '//', 'leftAlt': '/*', 'rightAlt': '*/' },
+        \ }
+
+    nmap # <Plug>NERDCommenterToggle
+    vmap # <Plug>NERDCommenterToggle
+'''
+
+[[plugins]]
+repo = 'cohama/lexima.vim'
+hook_add = '''
+    call lexima#set_default_rules()
+
+    call lexima#add_rule({'char': '(', 'at': '\%#\w'})
+    call lexima#add_rule({'char': '{', 'at': '\%#\w'})
+    call lexima#add_rule({'char': '[', 'at': '\%#\w'})
+    call lexima#add_rule({'char': '"', 'at': '\%#\w'})
+    call lexima#add_rule({'char': "'", 'at': '\%#\w'})
+    call lexima#add_rule({'char': '`', 'at': '\%#\w'})
+
+    call lexima#add_rule({'char': '<CR>', 'at': '"""\%#"""', 'input_after': '<CR>'})
+    call lexima#add_rule({'char': '<CR>', 'at': '"""\%#$', 'input_after': '<CR>)', 'except': '\C\v^(\s*)\S.*%#\n%(%(\s*|\1\s.+)\n)*\1""""'})
+    call lexima#add_rule({'char': '<CR>', 'at': "''" . "'\\%#'" . "''", 'input_after': '<CR>'})
+    call lexima#add_rule({'char': '<CR>', 'at': "''" . "'\\%#$", 'input_after': '<CR>}', 'except': '\C\v^(\s*)\S.*%#\n%(%(\s*|\1\s.+)\n)*\1' + "''" . "'"})
+    call lexima#add_rule({'char': '<CR>', 'at': '```\%#```', 'input_after': '<CR>'})
+    call lexima#add_rule({'char': '<CR>', 'at': '```\%#$', 'input_after': '<CR>]', 'except': '\C\v^(\s*)\S.*%#\n%(%(\s*|\1\s.+)\n)*\1```'})
+
+    " " override map defined in `lexima.vim`
+    " " deoplete loading is not lazy
+    " inoremap <expr> <Plug>LocalDeopleteClose deoplete#close_popup()
+    " inoremap <expr> <Plug>LocalLeximaExpand lexima#expand('<lt>CR>', 'i')
+    " imap <CR> <Plug>LocalDeopleteClose<Plug>LocalLeximaExpand
+    inoremap <CR> <C-g>u<C-r>=lexima#expand('<lt>CR>', 'i')<CR>
+'''
+
+[[plugins]]
+repo = 'tpope/vim-surround'
+hook_add = '''
+    let g:surround_{char2nr('c')} = "\\\1command: \1{\r}"
+    let g:surround_{char2nr('C')} = "\\\1command: \1{\n\r\n}"
+'''
+
+[[plugins]]
+repo = 'tpope/vim-speeddating'
+
+[[plugins]]
+repo = 'tpope/vim-repeat'
+
+[[plugins]]
+repo = 'dhruvasagar/vim-table-mode'
+hook_add = '''
+    " let g:table_mode_corner_corner = '+'
+    " let g:table_mode_header_fillchar = '='
+'''
+
+# [[plugins]]
+# repo = 'ncm2/float-preview.nvim'
+# hook_add = '''
+#     " remove `preview` from `'completeopt'` to prevent to show preview doubly
+#     set completeopt=menuone,noinsert
+
+#     let g:float_preview#docked = 0
+
+#     augroup float_preview_config
+#         autocmd!
+#         autocmd User FloatPreviewWinOpen set winblend=20
+#     augroup END
+# '''
+
+[[plugins]]
+repo = 'neoclide/coc.nvim'
+rev = 'release'
+hook_add = '''
+    " # Extentions
+    "
+    " * coc-json
+    " * coc-rust-analyzer
+    " * coc-clangd
+
+    let g:coc_global_extensions = [
+        \ 'coc-snippets',
+        \ ]
+
+    set signcolumn=yes
+    set statusline=%f\ %h%w%m%r\ %{coc#status()}%{get(b:,'coc_current_function','')}%=%l/%L,%c%V
+
+    let g:coc_snippet_next = '<Tab>'
+    "let g:coc_snippet_prev = '<S-Tab>'
+
+    augroup coc_config
+        autocmd!
+        autocmd User CocOpenFloat set winblend=20
+    augroup END
+
+    map <silent> [a <Plug>(coc-diagnostic-prev)
+    map <silent> ]a <Plug>(coc-diagnostic-next)
+
+    nnoremap <silent> K :<C-u>call CocAction('doHover')<CR>
+
+    nmap <silent> gd <Plug>(coc-definition)
+    nmap <silent> gy <Plug>(coc-type-definition)
+    nmap <silent> gi <Plug>(coc-implementation)
+    nmap <silent> gr <Plug>(coc-reference)
+
+    function! s:following_nospace() abort
+        let col = col('.') - 1
+        return col > 0 && getline('.')[col - 1] =~# '\S'
+    endfunction
+
+    inoremap <expr> <Tab>
+        \ pumvisible() ? coc#_select_confirm() :
+        \ coc#expandableOrJumpable() ?
+        \     "<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump', ''])<CR>" :
+        \ <SID>following_nospace() ?  coc#refresh() :
+        \ "\<Tab>"
+'''
+
+[[plugins]]
+repo = 'antoinemadec/coc-fzf'
+hook_add = '''
+    if has('nvim')
+        nnoremap <silent> <M-a> :<C-u>CocFzfList diagnostics<CR>
+    else
+        nnoremap <silent> <Esc>a :<C-u>CocFzfList diagnostics<CR>
+    endif
+'''

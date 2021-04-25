@@ -1,0 +1,61 @@
+font:
+    size: 9.0
+
+colors:
+    # # Jellybeans
+    # # https://gist.github.com/meskarune/52703855720848586ec869adaeb1ed46
+    # primary:
+    #     background: '0x151515'
+    #     foreground: '0xadadad'
+    # selection:
+    #     background: '0x2f2f2f'
+    # normal:
+    #     black:   '0x151515'
+    #     red:     '0xcf6a4c'
+    #     green:   '0x99ad6a'
+    #     yellow:  '0xd8ad4c'
+    #     blue:    '0x597bc5'
+    #     magenta: '0xa037b0'
+    #     cyan:    '0x71b9f8'
+    #     white:   '0xadadad'
+    # bright:
+    #     black:   '0x636363'
+    #     red:     '0xf79274'
+    #     green:   '0xc1d592'
+    #     yellow:  '0xffd574'
+    #     blue:    '0x81a3ed'
+    #     magenta: '0xc85fd8'
+    #     cyan:    '0x99e1ff'
+    #     white:   '0xd5d5d5'
+
+    # LuciusBlack
+    # https://github.com/jonathanfilip/lucius
+    primary:
+        background: '#121212'
+        foreground: '#d7d7d7'
+    cursor:
+        text: '#121212'
+        cursor: '#87afd7'
+    normal:
+        black:   '#121212'
+        red:     '#d75f5f'
+        green:   '#87af5f'
+        yellow:  '#afaf87'
+        blue:    '#5fafd7'
+        magenta: '#af87af'
+        cyan:    '#5faf87'
+        white:   '#bcbcbc'
+    bright:
+        black:   '#646464'
+        red:     '#ff5f5f'
+        green:   '#afd787'
+        yellow:  '#d7d7af'
+        blue:    '#87d7ff'
+        magenta: '#d7afd7'
+        cyan:    '#87d7af'
+        white:   '#d7d7d7'
+
+key_bindings:
+    # Increase font size on some keyboard layouts
+    - { key: Equals, mods: Control|Shift, action: IncreaseFontSize }
+    - { key: Plus, mods: Control|Shift, action: IncreaseFontSize }
