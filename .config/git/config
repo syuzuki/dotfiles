@@ -1,37 +1,38 @@
 [core]
-pager = less -F
+    pager = less -F
 
 [alias]
-brancha = branch --all
-clone = clone --depth=1
-graph = log --graph --date=short --pretty=tformat:\"%x09%ad %C(blue bold)%an%x09%Creset %C(yellow)%h%C(green bold)%d%Creset %s\"
-grapha = log --all --graph --date=short --pretty=tformat:\"%x09%ad %C(blue bold)%an%x09%Creset %C(yellow)%h%C(green bold)%d%Creset %s\"
+    brancha = branch --all
+    clone = clone --depth=1
+    graph = log --graph --date=short --pretty=tformat:\"%x09%ad %C(blue bold)%an%x09%Creset %C(yellow)%h%C(green bold)%d%Creset %s\"
+    grapha = log --all --graph --date=short --pretty=tformat:\"%x09%ad %C(blue bold)%an%x09%Creset %C(yellow)%h%C(green bold)%d%Creset %s\"
 
 [color]
-ui = auto
+    ui = auto
 
 [diff]
-algorithm = histogram
+    algorithm = histogram
 
 [fetch]
-prune = true
-pruneTags = true
+    prune = true
+    pruneTags = true
 
 [init]
-defaultBranch = master
+    defaultBranch = master
 
 [merge]
-ff = false
+    ff = false
 
 [pull]
-ff = only
+    ff = only
 
 [push]
-followTags = true
+    followTags = true
 
 [user]
     name = syuzuki
     email = 77492100+syuzuki@users.noreply.github.com
 
 [include]
-path = config.local
+    path = config.credential
+    path = config.local
