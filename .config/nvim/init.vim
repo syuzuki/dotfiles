@@ -21,6 +21,11 @@ if dein#load_state(s:dein_dir)
     call dein#save_state()
     call dein#call_hook('source')
 endif
+" call dein#call_hook('source')
+augroup config_dein
+    autocmd!
+    autocmd VimEnter * call dein#call_hook('post_source')
+augroup end
 
 " Install plugins
 if dein#check_install()
@@ -32,11 +37,7 @@ augroup config
 augroup end
 
 syntax on
-autocmd config ColorScheme * highlight link IdeographicSpace Visual
-autocmd config BufNewFile,BufRead * match IdeographicSpace /\%u3000/
 " colorscheme jellybeans
-colorscheme lucius
-LuciusBlack
 
 set modeline
 set fileencodings=utf-8,cp932,euc-jp

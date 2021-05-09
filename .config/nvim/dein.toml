@@ -9,6 +9,15 @@ repo = 'Shougo/dein.vim'
 
 [[plugins]]
 repo = 'jonathanfilip/vim-lucius'
+hook_post_source = '''
+    augroup config_lucius
+        autocmd!
+        autocmd ColorScheme * highlight link IdeographicSpace Visual
+        autocmd BufNewFile,BufRead * match IdeographicSpace /\%u3000/
+    augroup end
+    colorscheme lucius
+    LuciusBlack
+'''
 
 [[plugins]]
 repo = 'junegunn/fzf.vim'
@@ -93,6 +102,14 @@ hook_add = '''
 [[plugins]]
 repo = 'cohama/lexima.vim'
 hook_add = '''
+    " " override map defined in `lexima.vim`
+    " " deoplete loading is not lazy
+    " inoremap <expr> <Plug>LocalDeopleteClose deoplete#close_popup()
+    " inoremap <expr> <Plug>LocalLeximaExpand lexima#expand('<lt>CR>', 'i')
+    " imap <CR> <Plug>LocalDeopleteClose<Plug>LocalLeximaExpand
+    inoremap <CR> <C-g>u<C-r>=lexima#expand('<lt>CR>', 'i')<CR>
+'''
+hook_post_source = '''
     call lexima#set_default_rules()
 
     call lexima#add_rule({'char': '(', 'at': '\%#\w'})
@@ -108,13 +125,6 @@ hook_add = '''
     call lexima#add_rule({'char': '<CR>', 'at': "''" . "'\\%#$", 'input_after': '<CR>}', 'except': '\C\v^(\s*)\S.*%#\n%(%(\s*|\1\s.+)\n)*\1' + "''" . "'"})
     call lexima#add_rule({'char': '<CR>', 'at': '```\%#```', 'input_after': '<CR>'})
     call lexima#add_rule({'char': '<CR>', 'at': '```\%#$', 'input_after': '<CR>]', 'except': '\C\v^(\s*)\S.*%#\n%(%(\s*|\1\s.+)\n)*\1```'})
-
-    " " override map defined in `lexima.vim`
-    " " deoplete loading is not lazy
-    " inoremap <expr> <Plug>LocalDeopleteClose deoplete#close_popup()
-    " inoremap <expr> <Plug>LocalLeximaExpand lexima#expand('<lt>CR>', 'i')
-    " imap <CR> <Plug>LocalDeopleteClose<Plug>LocalLeximaExpand
-    inoremap <CR> <C-g>u<C-r>=lexima#expand('<lt>CR>', 'i')<CR>
 '''
 
 [[plugins]]
@@ -166,7 +176,6 @@ hook_add = '''
         \ ]
 
     set signcolumn=yes
-    set statusline=%f\ %h%w%m%r\ %{coc#status()}%{get(b:,'coc_current_function','')}%=%l/%L,%c%V
 
     let g:coc_snippet_next = '<Tab>'
     "let g:coc_snippet_prev = '<S-Tab>'
@@ -197,6 +206,9 @@ hook_add = '''
         \     "<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump', ''])<CR>" :
         \ <SID>following_nospace() ?  coc#refresh() :
         \ "\<Tab>"
+'''
+hook_post_source = '''
+    set statusline=%f\ %h%w%m%r\ %{coc#status()}%{get(b:,'coc_current_function','')}%=%l/%L,%c%V
 '''
 
 [[plugins]]
