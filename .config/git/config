@@ -10,6 +10,9 @@
 [color]
     ui = auto
 
+[credential]
+    helper = libsecret
+
 [diff]
     algorithm = histogram
 
@@ -34,5 +37,4 @@
     email = 77492100+syuzuki@users.noreply.github.com
 
 [include]
-    path = config.credential
     path = config.local
