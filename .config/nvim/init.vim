@@ -32,20 +32,16 @@ if dein#check_install()
     call dein#install()
 endif
 
-augroup config_lucius
+augroup config
     autocmd!
+    autocmd BufWinEnter *.txt if &buftype == 'help' | wincmd L | endif
     autocmd ColorScheme * highlight link IdeographicSpace Visual
     autocmd BufNew,BufRead * match IdeographicSpace /\%u3000/
 augroup end
-colorscheme lucius
-LuciusBlack
-
-augroup config
-    autocmd!
-augroup end
 
 syntax on
-" colorscheme jellybeans
+colorscheme lucius
+LuciusBlack
 
 set modeline
 set fileencodings=utf-8,cp932,euc-jp
@@ -63,8 +59,6 @@ set completeopt=menuone,noinsert
 set list listchars=tab:»-,trail:␣,nbsp:%
 
 let mapleader = ' '
-
-autocmd config BufWinEnter *.txt if &buftype == 'help' | wincmd L | endif
 
 noremap <C-e> 3<C-e>
 noremap <C-y> 3<C-y>

@@ -1,12 +1,6 @@
 [[plugins]]
 repo = 'Shougo/dein.vim'
 
-# [[plugins]]
-# repo = 'nanotech/jellybeans.vim'
-# hook_add = '''
-#     let g:jellybeans_use_term_italics = 1
-# '''
-
 [[plugins]]
 repo = 'jonathanfilip/vim-lucius'
 
@@ -49,27 +43,6 @@ hook_add = '''
 
     let g:vim_markdown_frontmatter = 1
 '''
-
-# [[plugins]]
-# repo = 'cespare/vim-toml'
-# on_ft = 'toml'
-
-# [[plugins]]
-# repo = 'rust-lang/rust.vim'
-# on_ft = 'rust'
-# hook_add = '''
-#     " let g:rustfmt_autosave = 1
-# '''
-
-# [[plugins]]
-# repo = 'godlygeek/tabular'
-# lazy = 1
-
-# # folding is disabled in sheerun/vim-polyglot
-# [[plugins]]
-# repo = 'plasticboy/vim-markdown'
-# depends = ['godlygeek/tabular']
-# on_ft='markdown'
 
 [[plugins]]
 repo = 'vim-scripts/sudo.vim'
@@ -138,20 +111,6 @@ hook_add = '''
     " let g:table_mode_header_fillchar = '='
 '''
 
-# [[plugins]]
-# repo = 'ncm2/float-preview.nvim'
-# hook_add = '''
-#     " remove `preview` from `'completeopt'` to prevent to show preview doubly
-#     set completeopt=menuone,noinsert
-
-#     let g:float_preview#docked = 0
-
-#     augroup float_preview_config
-#         autocmd!
-#         autocmd User FloatPreviewWinOpen set winblend=20
-#     augroup END
-# '''
-
 [[plugins]]
 repo = 'neoclide/coc.nvim'
 rev = 'release'
@@ -171,7 +130,7 @@ hook_add = '''
     let g:coc_snippet_next = '<Tab>'
     "let g:coc_snippet_prev = '<S-Tab>'
 
-    augroup coc_config
+    augroup config_coc
         autocmd!
         autocmd User CocOpenFloat set winblend=20
     augroup END
