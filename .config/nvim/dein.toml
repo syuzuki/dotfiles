@@ -9,15 +9,6 @@ repo = 'Shougo/dein.vim'
 
 [[plugins]]
 repo = 'jonathanfilip/vim-lucius'
-hook_post_source = '''
-    augroup config_lucius
-        autocmd!
-        autocmd ColorScheme * highlight link IdeographicSpace Visual
-        autocmd BufNewFile,BufRead * match IdeographicSpace /\%u3000/
-    augroup end
-    colorscheme lucius
-    LuciusBlack
-'''
 
 [[plugins]]
 repo = 'junegunn/fzf.vim'

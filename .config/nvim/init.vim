@@ -32,6 +32,14 @@ if dein#check_install()
     call dein#install()
 endif
 
+augroup config_lucius
+    autocmd!
+    autocmd ColorScheme * highlight link IdeographicSpace Visual
+    autocmd BufNew,BufRead * match IdeographicSpace /\%u3000/
+augroup end
+colorscheme lucius
+LuciusBlack
+
 augroup config
     autocmd!
 augroup end
