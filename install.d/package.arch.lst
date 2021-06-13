@@ -1,4 +1,5 @@
 git
+pacman-contrib
 zsh
 vim
 neovim
