@@ -1,6 +1,5 @@
 export PATH=/usr/local/bin:"${PATH}":~/bin:~/src/bin:~/.cargo/bin:~/.local/bin
 export LESSKEY="${XDG_CONFIG_HOME:-${HOME}/.config}"/less/less FZF_DEFAULT_OPTS='--height=10'
-export ZDOTDIR="${XDG_CONFIG_HOME:-${HOME}/.config}"/zsh
 export HOSTALIASES=~/.hostaliases
 export PAGER=less
 if type nvim >/dev/null; then
