@@ -1,4 +1,5 @@
 git
+libarchive
 pacman-contrib
 zsh
 vim
