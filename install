@@ -1,0 +1,299 @@
+#!/bin/sh
+
+set -eu
+
+dotfiles=~/.dotfiles
+
+dry_run=
+sets=base
+repo='http://github.com/syuzuki/dotfiles'
+repo_private='http://github.com/syuzuki/dotfiles-private'
+
+help_exit() {
+    cat <<EOF
+usage: $0 [OPTIONS] [CONFIG_SETS]
+
+OPTIONS:
+    -h, --help      Print this help and exit
+    -n, --dry-run   Do not modify filesystem
+        --vagrant   Vagrant configuration
+
+CONFIG_SETS:
+    base    CLI application configuration, Installed by default
+    gui     GUI application configuration
+    desktop desktop environment configuration
+    private Private configuration, Required authorization
+EOF
+    exit
+}
+
+error_arg() {
+    printf '\e[31mError: '
+    printf "$@"
+    printf '\e[m\n'
+    printf '\n'
+    printf '`'"$0"' -h` to see help\n'
+    exit 1
+}
+
+die() {
+    printf '\e[31mError: '
+    printf "$@"
+    printf '\e[m\n'
+    exit 1
+}
+
+warn() {
+    printf '\e[33mWarning: '
+    printf "$@"
+    printf '\e[m\n'
+}
+
+region() {
+    printf '\e[32m'
+    printf "$@"
+    printf '\e[m\n'
+}
+
+log() {
+    printf "$@"
+    printf '\n'
+}
+
+detect_env() {
+    os="$(uname -o)"
+    case "${os}" in
+        GNU/Linux)
+            id="$(sh -ceu '. /etc/os-release; printf '\''%s'\'' "${ID}"')"
+            case "${id}" in
+                arch)
+                    export env=arch
+                    ;;
+                ubuntu)
+                    export env=ubuntu
+                    ;;
+                *)
+                    die 'Unsupported Linux distribution: id %s' "${id}"
+                    ;;
+            esac
+            ;;
+        *)
+            die 'Unsupported OS: %s' "${os}"
+            ;;
+    esac
+}
+
+parse_opts() {
+    while [ "$#" -gt 0 ]; do
+        optarg_available=
+        optarg_used=
+        case "$1" in
+            -[!-]|--?*)
+                opt="$1"
+                shift
+                if [ "$#" -gt 0 ]; then
+                    optarg="$1"
+                    optarg_available=true
+                fi
+                ;;
+            --)
+                shift
+                continue
+                ;;
+            -*)
+                optarg="${1#-?}"
+                opt="${1%"${optarg}"}"
+                optarg_available=true
+                shift
+                set -- "-${opt}" "$@"
+                ;;
+            *)
+                opt="$1"
+                shift
+                ;;
+        esac
+
+        case "${opt}" in
+            -h|--help)
+                help_exit
+                ;;
+            -n|--dry-run)
+                dry_run=true
+                ;;
+            --vagrant)
+                repo=file:///vagrant
+                repo_private=file:///vagrant/private
+                ;;
+            base|gui|desktop|private)
+                sets="${sets} ${opt}"
+                ;;
+            *)
+                error_arg "Unexpected argument: %s" "${opt}"
+                ;;
+        esac
+
+        if [ -n "${optarg_used}" ]; then
+            shift
+        fi
+    done
+
+    simplify_sets
+}
+
+set_dir() {
+    case "$1" in
+        base)
+            printf ''
+            ;;
+        *)
+            printf '%s/' "$1"
+            ;;
+    esac
+}
+
+simplify_sets() {
+    set -- '' '' '' ''
+    for set in ${sets}; do
+        case "${set}" in
+            base) set -- base "$2" "$3" "$4";;
+            gui) set -- "$1" gui "$3" "$4";;
+            desktop) set -- "$1" "$2" desktop "$4";;
+            private) set -- "$1" "$2" "$3" private;;
+            *) die 'Invalid configuration set: %s' "${set}";;
+        esac
+    done
+    sets="$*"
+}
+
+load_sets() {
+    if [ -e "${dotfiles}/status/installed_sets.lst" ]; then
+        sets="$(cat "${dotfiles}/status/installed_sets.lst")"
+        simplify_sets
+    fi
+}
+
+save_sets() {
+    [ -e "${dotfiles}/status" ] || mkdir "${dotfiles}/status"
+    printf '%s\n' ${sets} >"${dotfiles}/status/installed_sets.lst"
+}
+
+retrieve() {
+    region 'Retrieving repositories'
+
+    if [ -z "${dry_run}" ]; then
+        if [ -d "${dotfiles}" ]; then
+            (cd "${dotfiles}"; git pull)
+        else
+            git clone --filter=blob:none "${repo}" "${dotfiles}"
+        fi
+    fi
+
+    for set in ${sets}; do
+        case "${set}" in
+            private)
+                if [ -z "${dry_run}" ]; then
+                    if [ -d "${dotfiles}/private" ]; then
+                        (cd "${dotfiles}/private"; git pull)
+                    else
+                        mkdir -m 700 "${dotfiles}/private"
+                        git clone --filter=blob:none "${repo_private}" "${dotfiles}/private"
+                    fi
+                fi
+                break
+                ;;
+        esac
+    done
+}
+
+package() {
+    region 'Installing packages'
+
+    case "${env}" in
+        arch)
+            package_manager=pacman
+            ;;
+        ubuntu)
+            package_manager=apt
+            ;;
+        *)
+            die 'Unreachable statement: $env should have valid value'
+            ;;
+    esac
+
+    package_lists=''
+    for set in ${sets}; do
+        if [ ! -e "$(set_dir "${set}")install.d/package.${env}.lst" ]; then
+            die 'Unsupported configuration set on env=%s: %s' "${env}" "${set}"
+        fi
+        package_lists="${package_lists:+"${package_lists} "}$(set_dir "${set}")install.d/package.${env}.lst"
+    done
+
+    if [ -z "${dry_run}" ]; then
+        case "${package_manager}" in
+            pacman)
+                cat $package_lists | sudo pacman -S --needed --noconfirm -
+                ;;
+            apt)
+                cat $package_lists | xargs sudo apt-get --yes install
+                ;;
+            *)
+                die 'Unreachable statement: $package_manager should have valid value'
+                ;;
+        esac
+    fi
+}
+
+deploy_dir() {
+    for f in "$1$2"* "$1$2".*; do
+        f="${f#"$1$2"}"
+        case "${f}" in
+            .|..) continue;;
+        esac
+        [ -e "$1$2${f}" ] || continue
+
+        if [ -z "$2" ]; then
+            case "${f}" in
+                [!.]*|.git|.gitignore) continue;;
+            esac
+        fi
+
+        if [ -d "$1$2${f}" ]; then
+            case "$2${f}" in
+                .ssh) mode=700;;
+                *) mode=;;
+            esac
+
+            if [ ! -e ~/"$2${f}" ]; then
+                log 'mkdir %s%s' "$2${f}" "${mode:+ as "${mode}"}"
+                mkdir${mode:+ -m "${mode}"} ~/"$2${f}"
+            fi
+
+            deploy_dir "$1" "$2${f}/"
+        else
+            log 'link %s -> %s' "$2${f}" ".dotfiles/$1$2${f}"
+            if [ -e ~/"$2${f}" ] && [ ! -L ~/"$2${f}" ]; then
+                timestamp="$(date '+%Y%m%d%H%M%S')"
+                warn 'Backup existing file as %s' "$2${f}" "$2${f}.${timestamp}"
+            fi
+            ln -sf "${dotfiles}/$1$2${f}" ~/"$2${f}"
+        fi
+    done
+}
+
+deploy() {
+    region 'Deploying files'
+
+    for set in ${sets}; do
+        deploy_dir "$(set_dir "${set}")" ''
+    done
+}
+
+load_sets
+detect_env
+parse_opts "$@"
+
+retrieve
+cd "${dotfiles}"
+save_sets
+package
+deploy
