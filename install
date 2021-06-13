@@ -222,10 +222,10 @@ package() {
 
     package_lists=''
     for set in ${sets}; do
-        if [ ! -e "$(set_dir "${set}")install.d/package.${env}.lst" ]; then
+        if [ ! -e "$(set_dir "${set}")etc/package.${env}.lst" ]; then
             die 'Unsupported configuration set on env=%s: %s' "${env}" "${set}"
         fi
-        package_lists="${package_lists:+"${package_lists} "}$(set_dir "${set}")install.d/package.${env}.lst"
+        package_lists="${package_lists:+"${package_lists} "}$(set_dir "${set}")etc/package.${env}.lst"
     done
 
     if [ -z "${dry_run}" ]; then
