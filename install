@@ -273,7 +273,8 @@ deploy_dir() {
             log 'link %s -> %s' "$2${f}" ".dotfiles/$1$2${f}"
             if [ -e ~/"$2${f}" ] && [ ! -L ~/"$2${f}" ]; then
                 timestamp="$(date '+%Y%m%d%H%M%S')"
-                warn 'Backup existing file as %s' "$2${f}" "$2${f}.${timestamp}"
+                warn 'Backup existing file %s as %s' "$2${f}" "$2${f}.${timestamp}"
+                mv ~/"$2${f}" ~/"$2${f}.${timestamp}"
             fi
             ln -sf "${dotfiles}/$1$2${f}" ~/"$2${f}"
         fi
