@@ -173,31 +173,29 @@ load_sets() {
 }
 
 save_sets() {
-    [ -e "${dotfiles}/status" ] || mkdir "${dotfiles}/status"
-    printf '%s\n' ${sets} >"${dotfiles}/status/installed_sets.lst"
+    if [ -z "${dry_run}" ]; then
+        [ -e "${dotfiles}/status" ] || mkdir "${dotfiles}/status"
+        printf '%s\n' ${sets} >"${dotfiles}/status/installed_sets.lst"
+    fi
 }
 
 retrieve() {
     region 'Retrieving repositories'
 
-    if [ -z "${dry_run}" ]; then
-        if [ -d "${dotfiles}" ]; then
-            (cd "${dotfiles}"; git pull)
-        else
-            git clone --filter=blob:none "${repo}" "${dotfiles}"
-        fi
+    if [ -d "${dotfiles}" ]; then
+        (cd "${dotfiles}"; git pull)
+    else
+        git clone --filter=blob:none "${repo}" "${dotfiles}"
     fi
 
     for set in ${sets}; do
         case "${set}" in
             private)
-                if [ -z "${dry_run}" ]; then
-                    if [ -d "${dotfiles}/private" ]; then
-                        (cd "${dotfiles}/private"; git pull)
-                    else
-                        mkdir -m 700 "${dotfiles}/private"
-                        git clone --filter=blob:none "${repo_private}" "${dotfiles}/private"
-                    fi
+                if [ -d "${dotfiles}/private" ]; then
+                    (cd "${dotfiles}/private"; git pull)
+                else
+                    mkdir -m 700 "${dotfiles}/private"
+                    git clone --filter=blob:none "${repo_private}" "${dotfiles}/private"
                 fi
                 break
                 ;;
@@ -265,7 +263,9 @@ deploy_dir() {
 
             if [ ! -e ~/"$2${f}" ]; then
                 log 'mkdir %s%s' "$2${f}" "${mode:+ as "${mode}"}"
-                mkdir${mode:+ -m "${mode}"} ~/"$2${f}"
+                if [ -z "${dry_run}" ]; then
+                    mkdir${mode:+ -m "${mode}"} ~/"$2${f}"
+                fi
             fi
 
             deploy_dir "$1" "$2${f}/"
@@ -274,9 +274,13 @@ deploy_dir() {
             if [ -e ~/"$2${f}" ] && [ ! -L ~/"$2${f}" ]; then
                 timestamp="$(date '+%Y%m%d%H%M%S')"
                 warn 'Backup existing file %s as %s' "$2${f}" "$2${f}.${timestamp}"
-                mv ~/"$2${f}" ~/"$2${f}.${timestamp}"
+                if [ -z "${dry_run}" ]; then
+                    mv ~/"$2${f}" ~/"$2${f}.${timestamp}"
+                fi
             fi
-            ln -sf "${dotfiles}/$1$2${f}" ~/"$2${f}"
+            if [ -z "${dry_run}" ]; then
+                ln -sf "${dotfiles}/$1$2${f}" ~/"$2${f}"
+            fi
         fi
     done
 }
