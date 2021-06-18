@@ -3,11 +3,12 @@
 set -eu
 
 dotfiles=~/.dotfiles
+repo='http://github.com/syuzuki/dotfiles'
+repo_private='http://github.com/syuzuki/dotfiles-private'
 
 dry_run=
 sets=base
-repo='http://github.com/syuzuki/dotfiles'
-repo_private='http://github.com/syuzuki/dotfiles-private'
+vagrant=
 
 help_exit() {
     cat <<EOF
@@ -121,8 +122,7 @@ parse_opts() {
                 dry_run=true
                 ;;
             --vagrant)
-                repo=file:///vagrant
-                repo_private=file:///vagrant/private
+                vagrant=true
                 ;;
             base|gui|desktop|private)
                 sets="${sets} ${opt}"
@@ -182,25 +182,35 @@ save_sets() {
 retrieve() {
     region 'Retrieving repositories'
 
-    if [ -d "${dotfiles}" ]; then
-        (cd "${dotfiles}"; git pull)
-    else
-        git clone --filter=blob:none "${repo}" "${dotfiles}"
-    fi
+    if [ -z "${vagrant}" ]; then
+        if [ -d "${dotfiles}" ]; then
+            (cd "${dotfiles}"; git pull)
+        else
+            git clone --filter=blob:none "${repo}" "${dotfiles}"
+        fi
 
-    for set in ${sets}; do
-        case "${set}" in
-            private)
-                if [ -d "${dotfiles}/private" ]; then
-                    (cd "${dotfiles}/private"; git pull)
-                else
-                    mkdir -m 700 "${dotfiles}/private"
-                    git clone --filter=blob:none "${repo_private}" "${dotfiles}/private"
-                fi
-                break
-                ;;
-        esac
-    done
+        for set in ${sets}; do
+            case "${set}" in
+                private) ;;
+                *) continue;;
+            esac
+
+            if [ -d "${dotfiles}/private" ]; then
+                (cd "${dotfiles}/private"; git pull)
+            else
+                mkdir -m 700 "${dotfiles}/private"
+                git clone --filter=blob:none "${repo_private}" "${dotfiles}/private"
+            fi
+            break
+        done
+    else
+        rsync -a --delete --exclude-from - /vagrant/ "${dotfiles}/" <<EOF
+/.git
+/private/.git
+/status
+/vagrant
+EOF
+    fi
 }
 
 package() {
