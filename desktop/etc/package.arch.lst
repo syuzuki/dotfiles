@@ -1,6 +1,6 @@
-xorg-server
-lightdm
-lightdm-gtk-greeter
 awesome
 baobab
+lightdm
+lightdm-gtk-greeter
 seahorse
+xorg-server
