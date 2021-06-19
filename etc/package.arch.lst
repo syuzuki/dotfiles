@@ -6,6 +6,7 @@ neovim
 nodejs
 pacman-contrib
 python-neovim
+ripgrep
 tmux
 vim
 yarn
