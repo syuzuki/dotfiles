@@ -1,0 +1,7 @@
+#!/bin/bash
+
+. "${0%/*}/.touchpad-check"
+
+xinput set-prop "${TOUCHPAD}" 'libinput Tapping Enabled' 1
+xinput set-prop "${TOUCHPAD}" 'libinput Tapping Drag Lock Enabled' 1
+xinput set-prop "${TOUCHPAD}" 'libinput Middle Emulation Enabled' 1

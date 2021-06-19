@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if touchpad-enabled; then
+    touchpad-disable
+else
+    touchpad-enable
+fi

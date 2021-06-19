@@ -1,0 +1,3 @@
+#!/bin/zsh
+
+exec i3lock -n -c 000000 -k --time-str '%H:%M' --date-str '%F %a' --time-color d7d7d7 --date-color d7d7d7 "$@"

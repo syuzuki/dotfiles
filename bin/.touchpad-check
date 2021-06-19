@@ -1,0 +1,6 @@
+# vim: set ft=sh:
+
+if [[ "${TOUCHPAD}" == '' ]]; then
+    echo 'environment variable TOUCHPAD is not defined' >&2
+    exit 2
+fi

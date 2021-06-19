@@ -261,6 +261,7 @@ deploy_dir() {
 
         if [ -z "$2" ]; then
             case "${f}" in
+                bin) ;;
                 [!.]*|.git|.gitignore) continue;;
             esac
         fi

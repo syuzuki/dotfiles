@@ -1,0 +1,4 @@
+#!/bin/zsh
+
+# for pacdiff, see update
+nvim -d "$1" "sudo:$2"

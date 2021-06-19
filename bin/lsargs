@@ -1,0 +1,10 @@
+#!/bin/bash
+
+((i = 0))
+while (($# > 0)); do
+    echo "$i: $1"
+    shift
+    ((i++))
+done
+
+exit 0

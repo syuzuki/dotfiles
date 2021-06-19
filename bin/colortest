@@ -1,0 +1,60 @@
+#!/bin/env python3
+# -*- coding: utf-8 -*-
+
+print('8/16 colors')
+for i in [40, 100]:
+    for j in range(8):
+        print('\x1b[{}m  '.format(i + j), end='')
+    print('\x1b[m')
+
+print()
+
+print('256 colors')
+for i in range(2):
+    for j in range(8):
+        print('\x1b[48;5;{}m  '.format(i * 8 + j), end='')
+    print('\x1b[m')
+print()
+for i in range(6):
+    for j in range(6):
+        for k in range(6):
+            print('\x1b[48;5;{}m  '.format(i * 6 + j * 36 + k + 16), end='')
+        print('\x1b[m  ', end='')
+    print('\x1b[m')
+print()
+for i in range(24):
+    print('\x1b[48;5;{}m  '.format(i + 232), end='')
+print('\x1b[m')
+
+print()
+
+print('true color')
+width = 96
+height = 16
+for lightness in range(height):
+    for hue in range(width):
+        h = (hue + 0.5) / width * 360.0
+        s = 1.0
+        l = 1.0 - (lightness + 0.5) / height
+
+        c = (1 - abs(l * 2 - 1)) * s
+        h_ = h / 60.0
+        x = c * (1 - abs(h_ % 2.0 - 1))
+
+        (r1, g1, b1) = [
+            (c, x, 0),
+            (x, c, 0),
+            (0, c, x),
+            (0, x, c),
+            (x, 0, c),
+            (c, 0, x),
+        ][int(h_)]
+
+        m = l - c / 2.0
+
+        r = int((r1 + m) * 255)
+        g = int((g1 + m) * 255)
+        b = int((b1 + m) * 255)
+
+        print('\x1b[48;2;{};{};{}m '.format(r, g, b), end='')
+    print('\x1b[m')

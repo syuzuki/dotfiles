@@ -1,0 +1,46 @@
+#!/bin/zsh
+
+setopt errexit
+
+run() { "$@" }
+
+log-command() {
+    head="${1%% *}"
+    tail="${1#* }"
+
+    if [[ "${head}" == 'run' ]]; then
+        echo "\e[32m>>> ${tail}\e[m"
+    fi
+}
+trap 'log-command "${ZSH_DEBUG_CMD}"' DEBUG
+
+if type yay >&/dev/null; then
+    run yay
+    run yay -Fy
+
+    if type nvim >&/dev/null; then
+        run sudo DIFFPROG="sudo -u $USER vdiff-sudo" pacdiff
+    else
+        run sudo pacdiff
+    fi
+elif type apt >&/dev/null; then
+    run sudo apt update
+    run sudo apt upgrade
+fi
+
+run zsh -i -c 'zplug update'
+
+if type nvim >&/dev/null; then
+    run nvim --headless \
+        -c 'call dein#update()' \
+        -c 'call map(dein#check_clean(), "delete(v:val, '\''rf'\'')")' \
+        -c 'q'
+    echo
+fi
+
+if type rustup >&/dev/null; then
+    run rustup update
+fi
+if type cargo-install-update >&/dev/null; then
+    run cargo install-update -ag
+fi

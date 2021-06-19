@@ -1,0 +1,11 @@
+#!/bin/bash
+
+. ${0%/*}/.touchpad-check
+
+enabled=$(xinput list-props "${TOUCHPAD}" | grep $'^\tDevice Enabled (' | cut -d: -f2 | tr -d '\t')
+
+if ((enabled != 0)); then
+    exit 0
+else
+    exit 1
+fi
