@@ -10,6 +10,6 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "../..", "/vagrant", mount_options: ["ro"]
 
   config.vm.provision "shell", inline: <<-SHELL
-    pacman -Syyu --noconfirm rsync
+    pacman -Syyu --noconfirm git rsync
   SHELL
 end
