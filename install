@@ -67,7 +67,7 @@ detect_env() {
         GNU/Linux)
             id="$(sh -ceu '. /etc/os-release; printf '\''%s'\'' "${ID}"')"
             case "${id}" in
-                arch)
+                arch|archarm)
                     export env=arch
                     ;;
                 ubuntu)
