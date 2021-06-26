@@ -1,0 +1,12 @@
+#compdef nvim
+
+# Complete `nvim` with `sudo.vim` plugin
+
+local word=${words[${CURRENT}]}
+if [[ ${word} =~ '^sudo:' ]]; then
+    compset -P 'sudo:'
+    _files
+else
+    # Call default completion function
+    _vim
+fi

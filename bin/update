@@ -28,7 +28,7 @@ elif type apt >&/dev/null; then
     run sudo apt upgrade
 fi
 
-run zsh -i -c 'zplug update'
+run zsh -i -c 'zinit self-update && zinit update --all && zinit cclear'
 
 if type nvim >&/dev/null; then
     run nvim --headless \
