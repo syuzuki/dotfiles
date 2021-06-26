@@ -89,7 +89,7 @@ alias l='ls -AhFv --color=always' ll='l -l' c='cd' c.='c ..' c-='c -'
 alias v="${VISUAL:-nvim}" vr='v -R' le="${PAGER:-less}"
 alias g='git'
 alias j='fzf-jobs' f='fzf-fg' b='fzf-bg'
-alias mv='mv -i' cp='cp -ir' md='mkdir -p'
+alias mv='mv -i' cp='cp -ai' md='mkdir -p'
 alias rd='rmdir'
 alias df='df -h' free='free -h' du='du -hs'
 alias d='git diff --no-index --' vd='v -dR'
@@ -121,6 +121,9 @@ KEYTIMEOUT=1
 
 alias run-help &>/dev/null && unalias run-help
 autoload -Uz run-help
+autoload -Uz run-help-git
+autoload -Uz run-help-ip
+autoload -Uz run-help-openssl
 autoload -Uz run-help-sudo
 
 autoload -Uz fzf-select-history
