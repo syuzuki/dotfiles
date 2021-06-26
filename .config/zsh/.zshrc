@@ -66,14 +66,14 @@ CORRECT_IGNORE_FILE='.*'
         color=9
     fi
 
-    PROMPT="%F{${color}}%B${host+"%M:"}%y${user+" %n"} ${(l:SHLVL::❯:)}%b%f "
+    PROMPT="%F{${color}}%B${host:+"%M:"}%y${user:+" %n"} ${(l:SHLVL::❯:)}%b%f "
     RPROMPT="%F{${color}}%B[%(1j.⏳%j .)%b%f\$(type gitprompt >&/dev/null && gitprompt)%F{${color}}%B%~]%b%f"
     PROMPT2="%F{${color}}%B%_ ❯%b%f "
     PROMPT3="%F{${color}}%B?#%b%f "
     PROMPT4="%F{${color}}%B+%N:%i ❯%b%f "
     SPROMPT="%F{10}%B'%R' -> '%r' [Nyae]?%b%f "
 
-    terminal_title="${host+"%M:"}%y${user+" %n"}"
+    terminal_title="${host:+"%M:"}%y${user:+" %n"}"
 }
 
 autoload -Uz add-zsh-hook
