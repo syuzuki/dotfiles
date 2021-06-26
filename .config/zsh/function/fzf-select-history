@@ -12,7 +12,7 @@ if [[ ! -z "${result}" ]]; then
 
     BUFFER="$(perl -pE 's/^[^ ]+ +[^ ]+ +//' <<<${buffer})"
     CURSOR="${#BUFFER}"
-    type _zsh_highlight >/dev/null && _zsh_highlight # zdharma/fast-syntax-highlighting
+    type _zsh_highlight &>/dev/null && _zsh_highlight # zdharma/fast-syntax-highlighting
 
     if [[ -z "${key}" ]]; then
         zle accept-line

@@ -43,7 +43,7 @@ zinit wait lucid has'pip' id-as'pip-completion' atpull'%atclone' run-atpull \
 zinit fpath "${ZDOTDIR}/completion"
 zinit fpath "${ZDOTDIR}/function"
 
-HISTFILE=${XDG_DATA_HOME:-~/.local/share}/zsh/history
+HISTFILE="${XDG_DATA_HOME:-"${HOME}/.local/share"}/zsh/history"
 HISTSIZE=10000
 SAVEHIST=1000000
 
@@ -86,14 +86,13 @@ autoload -Uz fzf-jobs.zsh; fzf-jobs.zsh
 autoload -Uz zargs
 
 alias l='ls -AhFv --color=always' ll='l -l' c='cd' c.='c ..' c-='c -'
-alias v="${VISUAL}" vr='v -R' le="${PAGER}"
+alias v="${VISUAL:-nvim}" vr='v -R' le="${PAGER:-less}"
 alias g='git'
 alias j='fzf-jobs' f='fzf-fg' b='fzf-bg'
 alias mv='mv -i' cp='cp -ir' md='mkdir -p'
 alias rd='rmdir'
 alias df='df -h' free='free -h' du='du -hs'
 alias d='git diff --no-index --' vd='v -dR'
-alias man='man'
 alias t='bsdtar' tt='t -tf' tx='t -xf' tc='t -a -cf' tu='t -uf'
 alias rg='rg -pS --hidden'
 alias ma='make' ca='cargo'
@@ -113,38 +112,12 @@ ssht() {
     ssh "$@" -t tmux new-session -A
 }
 
-[[ ${TERM} == alacritty ]] && eval $(TERM=xterm-256color dircolors -b) || eval $(dircolors -b)
-# for kitty, modify bold font to 16-color colde
+eval "$(TERM="${TERM:/alacritty/xterm-256color}" dircolors -b)"
+# Modify bold font to 16-color colde
 export LS_COLORS="$(echo "${LS_COLORS}" | perl -pE 's/00;//g, s/01;3(\d)/9\1/g, s/3(\d);01/9\1/g')"
 
 bindkey -v
 KEYTIMEOUT=1
-
-# zmodload zsh/terminfo
-# typeset -A keys
-# keys[up]=${terminfo[kcuu1]}
-# keys[down]=${terminfo[kcud1]}
-# keys[right]=${terminfo[kcuf1]}
-# keys[left]=${terminfo[kcub1]}
-# keys[home]=${terminfo[khome]}
-# keys[end]=${terminfo[kend]}
-# keys[pageup]=${terminfo[kpp]}
-# keys[pagedown]=${terminfo[knp]}
-# keys[delete]=${terminfo[kdch1]}
-# keys[insert]=${terminfo[kich1]}
-# if [[ ${TERM} =~ '^xterm|^alacritty$' ]]; then # fix wrong terminfo
-#     keys[up]=$'\e[A'
-#     keys[down]=$'\e[B'
-#     keys[right]=$'\e[C'
-#     keys[left]=$'\e[D'
-#     keys[home]=$'\e[H'
-#     keys[end]=$'\e[F'
-# elif [[ ${TERM} =~ '^tmux' ]]; then # fix wrong terminfo
-#     keys[up]=$'\e[A'
-#     keys[down]=$'\e[B'
-#     keys[right]=$'\e[C'
-#     keys[left]=$'\e[D'
-# fi
 
 alias run-help &>/dev/null && unalias run-help
 autoload -Uz run-help
@@ -162,11 +135,6 @@ bindkey '^B' vi-backward-char
 bindkey '^A' beginning-of-line
 bindkey '^E' end-of-line
 bindkey '^D' delete-char
-# bindkey "${keys[up]}" history-beginning-search-backward
-# bindkey "${keys[down]}" history-beginning-search-forward
-# bindkey "${keys[home]}" beginning-of-line
-# bindkey "${keys[end]}" end-of-line
-# bindkey "${keys[delete]}" delete-char
 bindkey '^[[A' history-beginning-search-backward
 bindkey '^[[B' history-beginning-search-forward
 bindkey '^[[H' beginning-of-line
@@ -187,11 +155,6 @@ bindkey '^[h' run-help
 
 bindkey -M vicmd 'k' history-beginning-search-backward
 bindkey -M vicmd 'j' history-beginning-search-forward
-# bindkey -Mvicmd "${keys[up]}" history-beginning-search-backward
-# bindkey -Mvicmd "${keys[down]}" history-beginning-search-forward
-# bindkey -Mvicmd "${keys[home]}" beginning-of-line
-# bindkey -Mvicmd "${keys[end]}" end-of-line
-# bindkey -Mvicmd "${keys[delete]}" delete-char
 bindkey -M vicmd '^[[A' history-beginning-search-backward
 bindkey -M vicmd '^[[B' history-beginning-search-forward
 bindkey -M vicmd '^[[H' vi-first-non-blank
@@ -214,25 +177,28 @@ autoload -Uz select-quoted
 zle -N select-bracketed
 zle -N select-quoted
 
-for m in visual viopp; do
-    for c in {a,i}${(s::)^:-'()[]{}<>'}; do
-        bindkey -M $m $c select-bracketed
+() {
+    local m c
+    for m in visual viopp; do
+        for c in {a,i}${(s::)^:-'()[]{}<>'}; do
+            bindkey -M "$m" "$c" select-bracketed
+        done
+        for c in {a,i}{\',\",\`}; do
+            bindkey -M "$m" "$c" select-quoted
+        done
     done
-    for c in {a,i}{\',\",\`}; do
-        bindkey -M $m $c select-quoted
-    done
-done
+}
 
 zmodload zsh/complist
 
 bindkey -M menuselect '^P' up-history
 bindkey -M menuselect '^N' down-history
 
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' list-colors "${(@s.:.)LS_COLORS}"
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 zstyle ':completion:*' menu select=1
 zstyle ':completion:*' use-cache true
-zstyle ':completion:*' use-path ${XDG_CACHE_HOME:-~/.cache}/zsh/compcache
+zstyle ':completion:*' use-path "${XDG_CACHE_HOME:-"${HOME}/.cache"}/zsh/compcache"
 
 # Options
 # Changing Directories
@@ -246,7 +212,7 @@ setopt list_packed
 # Expansion and Globbing
 setopt extended_glob
 setopt glob_dots
-# setopt glob_subst # for enhancd
+setopt glob_subst
 setopt magic_equal_subst
 unsetopt nomatch
 setopt numeric_glob_sort
@@ -263,7 +229,6 @@ setopt share_history
 
 # Input/Output
 setopt correct
-# setopt correct_all
 unsetopt flow_control
 setopt ignore_eof
 setopt interactive_comments
@@ -284,9 +249,6 @@ setopt prompt_subst
 
 # Zle
 
-stty -ixon
-
-# `test` fails without file
 [[ ${ZDOTDIR}/.zshrc.zwc -nt ${ZDOTDIR}/.zshrc ]] || zcompile ${ZDOTDIR}/.zshrc
 
-[[ ${LESSKEY} -nt ${XDG_CONFIG_HOME:-~/.config}/less/lesskey ]] || lesskey ${XDG_CONFIG_HOME:-~/.config}/less/lesskey
+[[ "${LESSKEY}" -nt "${XDG_CONFIG_HOME:-"${HOME}/.config"}/less/lesskey" ]] || lesskey "${XDG_CONFIG_HOME:-"${HOME}/.config"}/less/lesskey"
