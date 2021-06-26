@@ -20,6 +20,7 @@ ZSH_AUTOSUGGEST_ACCEPT_WIDGETS=()
 source "${ZINIT[BIN_DIR]}/zinit.zsh"
 
 zinit wait lucid for \
+        'zsh-vi-more/vi-motions' \
     blockf \
         'zsh-users/zsh-completions' \
         'b4b4r07/enhancd' \
@@ -174,23 +175,6 @@ bindkey -a '^R' fzf-select-history
 bindkey -a '^U' vi-change-whole-line
 bindkey -a '^[q' vi-push-line
 bindkey -a '^[h' run-help
-
-autoload -Uz select-bracketed
-autoload -Uz select-quoted
-zle -N select-bracketed
-zle -N select-quoted
-
-() {
-    local m c
-    for m in visual viopp; do
-        for c in {a,i}${(s::)^:-'()[]{}<>'}; do
-            bindkey -M "$m" "$c" select-bracketed
-        done
-        for c in {a,i}{\',\",\`}; do
-            bindkey -M "$m" "$c" select-quoted
-        done
-    done
-}
 
 zmodload zsh/complist
 
