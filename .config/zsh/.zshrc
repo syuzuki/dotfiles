@@ -9,6 +9,11 @@ if [[ ! -d "${ZINIT[HOME_DIR]}" ]]; then
 fi
 
 ENHANCD_DIR="${XDG_DATA_HOME:-"${HOME}/.local/share"}/zsh/enhancd"
+ZSH_THEME_GIT_PROMPT_PREFIX=''
+ZSH_THEME_GIT_PROMPT_SUFFIX=' '
+ZSH_THEME_GIT_PROMPT_BRANCH='%F{magenta} '
+ZSH_GIT_PROMPT_SHOW_UPSTREAM=symbol
+ZSH_GIT_PROMPT_SHOW_STASH=1
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8,underline'
 ZSH_AUTOSUGGEST_ACCEPT_WIDGETS=()
 
@@ -18,7 +23,9 @@ zinit wait lucid for \
     blockf \
         'zsh-users/zsh-completions' \
         'b4b4r07/enhancd' \
-        'mollifier/zload'
+        'mollifier/zload' \
+    atload'!_zsh_git_prompt_precmd_hook' nocd \
+        'woefe/git-prompt.zsh'
 zinit wait'0s' lucid atinit'zicompinit; zicdreplay; compdef _my_nvim nvim' for \
         'zdharma/fast-syntax-highlighting'
 zinit wait'0x' lucid atload'!_zsh_autosuggest_start' for \
@@ -43,40 +50,35 @@ SAVEHIST=1000000
 CORRECT_IGNORE_FILE='.*'
 
 () {
-    local user_name
-    local color
-    if [[ ${SSH_CONNECTION} != '' ]]; then
-        user_name=" ${USER}@${HOST}"
-        # color=yellow
+    local user= host= color=12
+    if [[ -n "${SSH_CONNECTION:-}" ]]; then
+        user=true
+        host=true
         color=11
-    elif [[ ${SUDO_COMMAND} != '' ]]; then
-        user_name=" ${USER}"
-        # color=yellow
-        color=11
-    else
-        user_name=
-        # color=blue
-        color=12
     fi
-    # ((${UID} == 0)) && color=red
-    ((${UID} == 0)) && color=9
+    if [[ -n "${SUDO_COMMAND:-}" ]]; then
+        user=true
+        color=11
+    fi
+    if (( $(id -u) == 0 )); then
+        user=true
+        color=9
+    fi
 
-    local nest=$(repeat $((SHLVL - 1)) echo -n '>')
-
-    PROMPT="%F{${color}}%B%y${user_name}${nest} %#%b%f "
-    RPROMPT="%F{${color}}%B[%~]%b%f"
-    PROMPT2="%F{${color}}%B%_ >%b%f "
+    PROMPT="%F{${color}}%B${host+"%M:"}%y${user+" %n"} ${(l:SHLVL::❯:)}%b%f "
+    RPROMPT="%F{${color}}%B[%(1j.⏳%j .)%b%f\$(type gitprompt >&/dev/null && gitprompt)%F{${color}}%B%~]%b%f"
+    PROMPT2="%F{${color}}%B%_ ❯%b%f "
     PROMPT3="%F{${color}}%B?#%b%f "
-    PROMPT4="%F{${color}}%B+%N:%i >%b%f "
-    SPROMPT="%F{green}%B'%R' -> '%r' [nyae]?%b%f "
+    PROMPT4="%F{${color}}%B+%N:%i ❯%b%f "
+    SPROMPT="%F{10}%B'%R' -> '%r' [Nyae]?%b%f "
 
-    terminal_title="\e]2;${$(tty)#/dev/}${user_name}${nest}\a"
+    terminal_title="${host+"%M:"}%y${user+" %n"}"
 }
 
 autoload -Uz add-zsh-hook
 
 set-terminal-title() {
-    echo -n ${terminal_title}
+    print -P -f '\e]2;%s\a' "${terminal_title}"
 }
 add-zsh-hook precmd set-terminal-title
 
@@ -272,6 +274,7 @@ setopt rm_star_silent
 # setopt monitor
 
 # Prompting
+setopt prompt_subst
 
 # Scripts and Functions
 
