@@ -117,9 +117,6 @@ eval "$(TERM="${TERM:/alacritty/xterm-256color}" dircolors -b)"
 # Modify bold font to 16-color colde
 export LS_COLORS="$(echo "${LS_COLORS}" | perl -pE 's/00;//g, s/01;3(\d)/9\1/g, s/3(\d);01/9\1/g')"
 
-bindkey -v
-KEYTIMEOUT=1
-
 alias run-help &>/dev/null && unalias run-help
 autoload -Uz run-help
 autoload -Uz run-help-git
@@ -127,10 +124,8 @@ autoload -Uz run-help-ip
 autoload -Uz run-help-openssl
 autoload -Uz run-help-sudo
 
-autoload -Uz fzf-select-history
-zle -N fzf-select-history
-autoload -Uz vi-push-line
-zle -N vi-push-line
+bindkey -v
+KEYTIMEOUT=1
 
 bindkey '^P' history-beginning-search-backward
 bindkey '^N' history-beginning-search-forward
@@ -175,6 +170,11 @@ bindkey -a '^R' fzf-select-history
 bindkey -a '^U' vi-change-whole-line
 bindkey -a '^[q' vi-push-line
 bindkey -a '^[h' run-help
+
+autoload -Uz fzf-select-history
+zle -N fzf-select-history
+autoload -Uz vi-push-line
+zle -N vi-push-line
 
 zmodload zsh/complist
 
