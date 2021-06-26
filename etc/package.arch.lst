@@ -5,6 +5,7 @@ libarchive
 neovim
 nodejs
 pacman-contrib
+perl
 python-neovim
 ripgrep
 tmux
