@@ -156,24 +156,24 @@ bindkey '^?' backward-delete-char
 bindkey '^[q' push-line
 bindkey '^[h' run-help
 
-bindkey -M vicmd 'k' history-beginning-search-backward
-bindkey -M vicmd 'j' history-beginning-search-forward
-bindkey -M vicmd '^[[A' history-beginning-search-backward
-bindkey -M vicmd '^[[B' history-beginning-search-forward
-bindkey -M vicmd '^[[H' vi-first-non-blank
-bindkey -M vicmd '^[[F' vi-end-of-line
-bindkey -M vicmd '^[[3~' vi-delete-char
-bindkey -M vicmd '^[OA' history-beginning-search-backward
-bindkey -M vicmd '^[OB' history-beginning-search-forward
-bindkey -M vicmd '^[OH' vi-first-non-blank
-bindkey -M vicmd '^[OF' vi-end-of-line
-bindkey -M vicmd '^[[1~' vi-first-non-blank
-bindkey -M vicmd '^[[4~' vi-end-of-line
-bindkey -M vicmd '^G' send-break
-bindkey -M vicmd '^R' fzf-select-history
-bindkey -M vicmd '^U' vi-change-whole-line
-bindkey -M vicmd '^[q' vi-push-line
-bindkey -M vicmd '^[h' run-help
+bindkey -a 'k' history-beginning-search-backward
+bindkey -a 'j' history-beginning-search-forward
+bindkey -a '^[[A' history-beginning-search-backward
+bindkey -a '^[[B' history-beginning-search-forward
+bindkey -a '^[[H' vi-first-non-blank
+bindkey -a '^[[F' vi-end-of-line
+bindkey -a '^[[3~' vi-delete-char
+bindkey -a '^[OA' history-beginning-search-backward
+bindkey -a '^[OB' history-beginning-search-forward
+bindkey -a '^[OH' vi-first-non-blank
+bindkey -a '^[OF' vi-end-of-line
+bindkey -a '^[[1~' vi-first-non-blank
+bindkey -a '^[[4~' vi-end-of-line
+bindkey -a '^G' send-break
+bindkey -a '^R' fzf-select-history
+bindkey -a '^U' vi-change-whole-line
+bindkey -a '^[q' vi-push-line
+bindkey -a '^[h' run-help
 
 autoload -Uz select-bracketed
 autoload -Uz select-quoted
