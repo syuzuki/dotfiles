@@ -2,7 +2,7 @@
 
 local result="$(history -inr 1 |
     LBUF="${LBUFFER}" perl -nlE 'say if /^[^ ]+ +[^ ]+ +@{[quotemeta($ENV{LBUF})]}/' |
-    fzf --prompt='History > ' --no-sort --delimiter=' +' --nth='3..' --expect=ctrl-f,right --exit-0 --select-1)"
+    fzf --prompt='History > ' --no-sort --delimiter=' +' --nth='3..' --expect=ctrl-f,right --exit-0)"
 zle reset-prompt
 
 if [[ ! -z "${result}" ]]; then
