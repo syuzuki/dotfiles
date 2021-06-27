@@ -26,7 +26,14 @@ zinit wait lucid for \
         'b4b4r07/enhancd' \
         'mollifier/zload' \
     atload'!_zsh_git_prompt_precmd_hook' nocd \
-        'woefe/git-prompt.zsh'
+        'woefe/git-prompt.zsh' \
+    $(: '`LS_COLORS` on GNU ls is case insensitive but it on `zstyle list-colors` is case sensitive') \
+    $(: 'So use `=` form for case insensitive match') \
+    $(: 'See THE ZSH/COMPLIST MODULES section on zshmodules(1)') \
+    atclone'dircolors -b LS_COLORS >colors.sh' atpull'%atclone' \
+    pick'colors.sh' nocompile'!' \
+    atload'zstyle ":completion:*:default" list-colors "${(s.:.)LS_COLORS//:\*/:=(#i)*}"' \
+        'trapd00r/LS_COLORS'
 zinit wait'0s' lucid atinit'zicompinit; zicdreplay; compdef _my_nvim nvim' for \
         'zdharma/fast-syntax-highlighting'
 zinit wait'0x' lucid atload'!_zsh_autosuggest_start' for \
@@ -115,10 +122,6 @@ ssht() {
     ssh "$@" -t tmux new-session -A
 }
 
-eval "$(TERM="${TERM:/alacritty/xterm-256color}" dircolors -b)"
-# Modify bold font to 16-color colde
-export LS_COLORS="$(echo "${LS_COLORS}" | perl -pE 's/00;//g, s/01;3(\d)/9\1/g, s/3(\d);01/9\1/g')"
-
 alias run-help &>/dev/null && unalias run-help
 autoload -Uz run-help
 autoload -Uz run-help-git
@@ -183,7 +186,6 @@ zmodload zsh/complist
 bindkey -M menuselect '^P' up-history
 bindkey -M menuselect '^N' down-history
 
-zstyle ':completion:*' list-colors "${(@s.:.)LS_COLORS}"
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 zstyle ':completion:*' menu select=1
 zstyle ':completion:*' use-cache true
