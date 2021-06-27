@@ -95,7 +95,7 @@ add-zsh-hook precmd set-terminal-title
 autoload -Uz fzf-jobs.zsh; fzf-jobs.zsh
 autoload -Uz zargs
 
-alias l='ls -AhFv --color=always' ll='l -l' c='cd' c.='c ..' c-='c -'
+alias l='ls -AhF --color=always' ll='l -l' c='cd' c.='c ..' c-='c -'
 alias v="${VISUAL:-nvim}" vr='v -R' le="${PAGER:-less}"
 alias g='git'
 alias j='fzf-jobs' f='fzf-fg' b='fzf-bg'
