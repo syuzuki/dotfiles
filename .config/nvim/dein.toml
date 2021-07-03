@@ -8,6 +8,7 @@ repo = 'jonathanfilip/vim-lucius'
 repo = 'junegunn/fzf.vim'
 hook_add = '''
     let g:fzf_layout = { 'window': 'call g:CreateFloatingFzf()' }
+
     function! g:CreateFloatingFzf() abort
         let buf = nvim_create_buf(v:false, v:true)
         let config = {
@@ -20,7 +21,8 @@ hook_add = '''
         call nvim_open_win(buf, v:true, config)
         set winblend=20
     endfunction
-
+'''
+hook_post_source = '''
     if has('nvim')
         nnoremap <silent> <M-b> :Buffers<cr>
         nnoremap <silent> <M-f> :Files<cr>
@@ -58,7 +60,8 @@ hook_add = '''
         \ 'c': { 'left': '//', 'leftAlt': '/*', 'rightAlt': '*/' },
         \ 'arduino': { 'left': '//', 'leftAlt': '/*', 'rightAlt': '*/' },
         \ }
-
+'''
+hook_post_source = '''
     nmap # <Plug>NERDCommenterToggle
     vmap # <Plug>NERDCommenterToggle
 '''
@@ -130,7 +133,8 @@ hook_add = '''
 
     let g:coc_snippet_next = '<Tab>'
     "let g:coc_snippet_prev = '<S-Tab>'
-
+'''
+hook_post_source = '''
     augroup config_coc
         autocmd!
         autocmd User CocOpenFloat set winblend=20
@@ -157,14 +161,13 @@ hook_add = '''
         \     "<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump', ''])<CR>" :
         \ <SID>following_nospace() ?  coc#refresh() :
         \ "\<Tab>"
-'''
-hook_post_source = '''
+
     set statusline=%f\ %h%w%m%r\ %{coc#status()}%{get(b:,'coc_current_function','')}%=%l/%L,%c%V
 '''
 
 [[plugins]]
 repo = 'antoinemadec/coc-fzf'
-hook_add = '''
+hook_post_source = '''
     if has('nvim')
         nnoremap <silent> <M-a> :<C-u>CocFzfList diagnostics<CR>
     else
