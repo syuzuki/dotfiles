@@ -38,10 +38,6 @@ if type nvim >&/dev/null; then
     echo
 fi
 
-if type vagrant >&/dev/null; then
-    vagrant box update
-fi
-
 if type rustup >&/dev/null; then
     run rustup update
 fi
