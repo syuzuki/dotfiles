@@ -105,25 +105,48 @@ add-zsh-hook precmd set-terminal-title
 autoload -Uz fzf-jobs.zsh; fzf-jobs.zsh
 autoload -Uz zargs
 
-alias l='ls -AhF --color=always' ll='l -l' c='cd' c.='c ..' c-='c -'
-alias v="${VISUAL:-nvim}" vr='v -R' le="${PAGER:-less}"
-alias g='git'
-alias j='fzf-jobs' f='fzf-fg' b='fzf-bg'
-alias mv='mv -i' cp='cp -ai' md='mkdir -p'
+alias l='ls -AhF --color=always' ll='l -l'
+alias c='cd' c.='c ..' c-='c -'
+alias mv='mv -i'
+alias cp='cp -ai'
+alias md='mkdir -p'
 alias rd='rmdir'
-alias df='df -h' free='free -h' du='du -hs'
-alias d='git diff --no-index --' vd='v -dR'
-alias t='bsdtar' tt='t -tf' tx='t -xf' tc='t -a -cf' tu='t -uf'
+alias rsync='rsync -av'
+
+alias j='fzf-jobs' f='fzf-fg' b='fzf-bg'
+
+alias d='git diff --no-index --'
+alias vd='v -dR'
 alias rg='rg -pS --hidden'
-alias ma='make' ca='cargo'
+alias du='du -hs'
+alias t='bsdtar' tt='t -tf' tx='t -xf' tc='t -a -cf' tu='t -uf'
+alias le="${PAGER:-less}"
+alias v="${VISUAL:-nvim}" vr='v -R'
+
+alias g='git'
+alias ma='make'
+alias ca='cargo'
+alias dk='docker'
+alias va='vagrant'
+
 alias sudo='sudo --preserve-env=EDITOR,VISUAL,PAGER,SHLVL,ZDOTDIR '
 alias cal='cal -3'
-alias rsync='rsync -av'
+
 alias ip='ip --color'
-alias dk='docker' va='vagrant'
-alias -g L='| less' G='| rg' S='| perl -pE' C='| wc' O='| sort' U='| sort -u'
-alias -g X='| xargs' H='| head' T='| tail' D='| xxd'
-alias -g GG='| grep' SS='| sed'
+alias df='df -h'
+alias free='free -h'
+
+alias -g L='| less'
+alias -g G='| rg' GG='| grep'
+alias -g S='| perl -pE' SS='| sed'
+alias -g C='| wc'
+alias -g O='| sort'
+alias -g U='| sort -u'
+alias -g X='| xargs'
+alias -g H='| head'
+alias -g T='| tail'
+alias -g D='| xxd'
+
 mc() {
     md "$@"
     cd "$@"
