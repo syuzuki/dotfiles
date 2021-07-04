@@ -121,9 +121,9 @@ rev = 'release'
 hook_add = '''
     " # Extentions
     "
+    " * coc-clangd: clangd, clang-format
     " * coc-json
     " * coc-rust-analyzer
-    " * coc-clangd
 
     let g:coc_global_extensions = [
         \ 'coc-snippets',
