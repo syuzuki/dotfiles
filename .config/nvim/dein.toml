@@ -123,6 +123,7 @@ hook_add = '''
     "
     " * coc-clangd: clangd, clang-format
     " * coc-json
+    " * coc-pyright: pyright, black
     " * coc-rust-analyzer
 
     let g:coc_global_extensions = [

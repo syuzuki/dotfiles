@@ -3,8 +3,10 @@
         "c",
         "cpp",
         "json",
+        "python",
         "rust"
     ],
     "suggest.keepCompleteopt": true,
+    "python.formatting.provider": "black",
     "rust-analyzer.checkOnSave.command": "clippy"
 }
