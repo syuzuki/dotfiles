@@ -135,9 +135,9 @@ digraph jj 106   " j
 digraph js 12288 " '　'(\u3000, ideographic space)
 digraph j! 65281 " ！
 digraph j? 65311 " ？
-digraph j, 65292 " ，
+digraph j, 12289 " 、
 digraph j. 12290 " 。
-digraph j< 12289 " 、
+digraph j< 65292 " ，
 digraph j> 65294 " ．
 digraph j: 65306 " ：
 digraph j; 65307 " ；
