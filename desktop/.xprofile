@@ -26,7 +26,7 @@ else
     [[ -n "${TOUCHPAD}" ]] && (sleep 1; touchpad-config; touchpad-disable) &
 
     # service
-    fcitx-autostart
+    fcitx5 &
 
     # system tray
     syncthing-gtk --minimized &
