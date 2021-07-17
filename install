@@ -221,6 +221,18 @@ EOF
 package() {
     region 'Installing packages'
 
+    for set in ${sets}; do
+        for f in "${set}"/etc/package-pre.hook/*; do
+            case "${f##*/}" in
+                .|..) continue;;
+            esac
+            [ -x "${f}" ] || continue
+
+            log 'Running pre-package hook %s' "${f}"
+            "./${f}"
+        done
+    done
+
     case "${env}" in
         arch)
             package_manager=pacman
@@ -254,6 +266,18 @@ package() {
                 ;;
         esac
     fi
+
+    for set in ${sets}; do
+        for f in "${set}"/etc/package-post.hook/*; do
+            case "${f##*/}" in
+                .|..) continue;;
+            esac
+            [ -x "${f}" ] || continue
+
+            log 'Running post-package hook %s' "${f}"
+            "./${f}"
+        done
+    done
 }
 
 deploy_dir() {
@@ -305,7 +329,27 @@ deploy() {
     region 'Deploying files'
 
     for set in ${sets}; do
+        for f in "${set}"/etc/deploy-pre.hook/*; do
+            case "${f##*/}" in
+                .|..) continue;;
+            esac
+            [ -x "${f}" ] || continue
+
+            log 'Running pre-deploy hook %s' "${f}"
+            "./${f}"
+        done
+
         deploy_dir "${set}" ''
+
+        for f in "${set}"/etc/deploy-post.hook/*; do
+            case "${f##*/}" in
+                .|..) continue;;
+            esac
+            [ -x "${f}" ] || continue
+
+            log 'Running post-deploy hook %s' "${f}"
+            "./${f}"
+        done
     done
 }
 
