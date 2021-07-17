@@ -140,17 +140,6 @@ parse_opts() {
     simplify_sets
 }
 
-set_dir() {
-    case "$1" in
-        base)
-            printf ''
-            ;;
-        *)
-            printf '%s/' "$1"
-            ;;
-    esac
-}
-
 simplify_sets() {
     set -- '' '' '' ''
     for set in ${sets}; do
@@ -230,10 +219,10 @@ package() {
 
     package_lists=''
     for set in ${sets}; do
-        if [ ! -e "$(set_dir "${set}")etc/package.${env}.lst" ]; then
+        if [ ! -e "${set}/etc/package.${env}.lst" ]; then
             die 'Unsupported configuration set on env=%s: %s' "${env}" "${set}"
         fi
-        package_lists="${package_lists:+"${package_lists} "}$(set_dir "${set}")etc/package.${env}.lst"
+        package_lists="${package_lists:+"${package_lists} "}${set}/etc/package.${env}.lst"
     done
 
     if [ -z "${dry_run}" ]; then
@@ -300,7 +289,7 @@ deploy() {
     region 'Deploying files'
 
     for set in ${sets}; do
-        deploy_dir "$(set_dir "${set}")" ''
+        deploy_dir "${set}" ''
     done
 }
 
