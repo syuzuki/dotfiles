@@ -24,33 +24,27 @@ _fzf_jobs_list_running=()
 }
 
 fzf-jobs() {
-    local js_array=("${(@f)$(jobs -ld | perl -pE 's/^\[(\d+)][\s+-]+/\1\n/; s/^\(pwd : .*\n//')}")
-    local ds_array=("${(@f)$(jobs -ld | perl -pE 's/^\[(\d+)][\s+-]+.*$/\1/; s/^\(pwd : (.*)\)$/\1/')}")
-
-    local -A js=()
-    local -A ds=()
-    if ((${#js_array} >= 2)); then
-        js=("${js_array[@]}")
-        ds=("${ds_array[@]}")
-    fi
-
-    local jobnum_width=1
-    local info_width=0
+    local jobnum_width=0
+    local state_width=0
+    local text_width=0
     local i
     for i in "${(@Oa)_fzf_jobs_list_suspended}" "${(@Oa)_fzf_jobs_list_running}"; do
         ((jobnum_width = max(jobnum_width, ${#i})))
-        ((info_width = max(info_width, ${#js[${i}]})))
+        ((state_width = max(state_width, ${#jobstates[${i}]%%:*})))
+        ((text_width = max(text_width, ${#jobtexts[${i}]})))
     done
 
     for i in "${(@Oa)_fzf_jobs_list_suspended}" "${(@Oa)_fzf_jobs_list_running}"; do
-        local jobnum="${(l:jobnum_width:: :)i}"
-        local info="${js[${i}]}"
+        local text="${jobtexts[${i}]}"
 
-        echo -n "[${jobnum}] ${info}"
-        if [[ ! "${ds[${i}]/#\~/"${HOME}"}" -ef . ]]; then
-            echo -n "${(l:info_width - ${#info}:: :)}  @${ds[${i}]}"
+        print -nr -- "[${(l:jobnum_width:: :)i}]"
+        print -nr -- " ${(r:state_width:: :)jobstates[${i}]%%:*}"
+        print -nr -- "  ${text}"
+        if [[ ! "${jobdirs[${i}]}" -ef . ]]; then
+            print -nr -- "${(l:text_width - ${#text}:: :)}"
+            print -nr -- "  @${jobdirs[${i}]/#"${HOME}"/~}"
         fi
-        echo
+        print
     done
 }
 
