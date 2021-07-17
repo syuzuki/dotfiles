@@ -7,8 +7,10 @@ repo='http://github.com/syuzuki/dotfiles'
 repo_private='http://github.com/syuzuki/dotfiles-private'
 
 dry_run=
-sets=base
+opt_sets=base
 vagrant=
+
+sets=
 
 help_exit() {
     cat <<EOF
@@ -124,11 +126,11 @@ parse_opts() {
             --vagrant)
                 vagrant=true
                 ;;
-            base|gui|desktop|private)
-                sets="${sets} ${opt}"
+            *[!abcdefghijklmnopqrstuvwxyz]*)
+                error_arg "Unexpected argument: %s" "${opt}"
                 ;;
             *)
-                error_arg "Unexpected argument: %s" "${opt}"
+                opt_sets="${opt_sets} ${opt}"
                 ;;
         esac
 
@@ -136,28 +138,42 @@ parse_opts() {
             shift
         fi
     done
-
-    simplify_sets
 }
 
-simplify_sets() {
-    set -- '' '' '' ''
+add_set() {
     for set in ${sets}; do
-        case "${set}" in
-            base) set -- base "$2" "$3" "$4";;
-            gui) set -- "$1" gui "$3" "$4";;
-            desktop) set -- "$1" "$2" desktop "$4";;
-            private) set -- "$1" "$2" "$3" private;;
-            *) die 'Invalid configuration set: %s' "${set}";;
-        esac
+        if [ "$1" = "${set}" ]; then
+            return
+        fi
     done
-    sets="$*"
+
+    if [ ! -e "${dotfiles}/$1/set.info" ]; then
+        if [ $# -eq 1 ]; then
+            die 'Invalid set specified: %s' "$1"
+        else
+            die 'Invalid set specified: %s, required by %s' "$1" "$2"
+        fi
+    fi
+    deps="$(sh -ceu ". ${dotfiles}/$1/set.info && printf '%s' \"\${dependencies}\"")"
+
+    for dep in ${deps}; do
+        add_set "${dep}" "$1"
+    done
+    sets="${sets+${sets} }$1"
+}
+
+add_sets() {
+    for set in $@; do
+        add_set "${set}"
+    done
 }
 
 load_sets() {
     if [ -e "${dotfiles}/status/installed_sets.lst" ]; then
-        sets="$(cat "${dotfiles}/status/installed_sets.lst")"
-        simplify_sets
+        input="$(cat "${dotfiles}/status/installed_sets.lst")"
+        for i in ${input}; do
+            add_set "${i}"
+        done
     fi
 }
 
@@ -241,12 +257,12 @@ package() {
 }
 
 deploy_dir() {
-    for f in "$1$2"* "$1$2".*; do
-        f="${f#"$1$2"}"
+    for f in "$1/$2"* "$1/$2".*; do
+        f="${f#"$1/$2"}"
         case "${f}" in
             .|..) continue;;
         esac
-        [ -e "$1$2${f}" ] || continue
+        [ -e "$1/$2${f}" ] || continue
 
         if [ -z "$2" ]; then
             case "${f}" in
@@ -255,7 +271,7 @@ deploy_dir() {
             esac
         fi
 
-        if [ -d "$1$2${f}" ]; then
+        if [ -d "$1/$2${f}" ]; then
             case "$2${f}" in
                 .ssh) mode=700;;
                 *) mode=;;
@@ -270,7 +286,7 @@ deploy_dir() {
 
             deploy_dir "$1" "$2${f}/"
         else
-            log 'link %s -> %s' "$2${f}" ".dotfiles/$1$2${f}"
+            log 'link %s -> %s' "$2${f}" ".dotfiles/$1/$2${f}"
             if [ -e ~/"$2${f}" ] && [ ! -L ~/"$2${f}" ]; then
                 timestamp="$(date '+%Y%m%d%H%M%S')"
                 warn 'Backup existing file %s as %s' "$2${f}" "$2${f}.${timestamp}"
@@ -279,7 +295,7 @@ deploy_dir() {
                 fi
             fi
             if [ -z "${dry_run}" ]; then
-                ln -sf "${dotfiles}/$1$2${f}" ~/"$2${f}"
+                ln -sf "${dotfiles}/$1/$2${f}" ~/"$2${f}"
             fi
         fi
     done
@@ -298,6 +314,7 @@ detect_env
 parse_opts "$@"
 
 retrieve
+add_sets ${opt_sets}
 cd "${dotfiles}"
 save_sets
 package
