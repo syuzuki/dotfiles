@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -eu
+
+case "${env}" in
+    ubuntu) ;;
+    *) exit
+esac
+
+LESSKEY=~/.config/less/less lesskey ~/.config/less/lesskey
