@@ -274,5 +274,3 @@ setopt prompt_subst
 # Shell State
 
 # Zle
-
-[[ ${ZDOTDIR}/.zshrc.zwc -nt ${ZDOTDIR}/.zshrc ]] || zcompile ${ZDOTDIR}/.zshrc
