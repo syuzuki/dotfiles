@@ -126,9 +126,9 @@ alias v="${VISUAL:-nvim}" vr='v -R'
 
 alias g='git'
 alias ma='make'
-alias ca='cargo'
-alias dk='docker'
-alias va='vagrant'
+type cargo &>/dev/null && alias ca='cargo'
+type docker &>/dev/null && alias dk='docker'
+type vagrant &>/dev/null && alias va='vagrant'
 
 alias sudo='sudo --preserve-env=EDITOR,VISUAL,PAGER,SHLVL,ZDOTDIR '
 alias cal='cal -3'
