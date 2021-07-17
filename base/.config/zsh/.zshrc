@@ -276,5 +276,3 @@ setopt prompt_subst
 # Zle
 
 [[ ${ZDOTDIR}/.zshrc.zwc -nt ${ZDOTDIR}/.zshrc ]] || zcompile ${ZDOTDIR}/.zshrc
-
-[[ "${LESSKEY}" -nt "${XDG_CONFIG_HOME:-"${HOME}/.config"}/less/lesskey" ]] || lesskey "${XDG_CONFIG_HOME:-"${HOME}/.config"}/less/lesskey"

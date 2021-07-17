@@ -1,5 +1,5 @@
 export PATH=/usr/local/bin:"${PATH}":~/bin:~/src/bin:~/.cargo/bin:~/.local/bin
-export LESSKEY="${XDG_CONFIG_HOME:-${HOME}/.config}"/less/less FZF_DEFAULT_OPTS='--height=10'
+export LESSKEYIN="${XDG_CONFIG_HOME:-${HOME}/.config}"/less/lesskey FZF_DEFAULT_OPTS='--height=10'
 export HOSTALIASES=~/.hostaliases
 export PAGER=less
 export EDITOR='nvim -O'
