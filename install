@@ -194,7 +194,7 @@ retrieve() {
             git clone --filter=blob:none "${repo}" "${dotfiles}"
         fi
 
-        for set in ${sets}; do
+        for set in ${opt_sets} ${sets}; do
             case "${set}" in
                 private) ;;
                 *) continue;;
