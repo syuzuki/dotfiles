@@ -184,8 +184,8 @@ save_sets() {
     fi
 }
 
-retrieve() {
-    region 'Retrieving repositories'
+fetch() {
+    region 'Fetching repositories'
 
     if [ -z "${vagrant}" ]; then
         if [ -d "${dotfiles}" ]; then
@@ -357,7 +357,7 @@ load_sets
 detect_env
 parse_opts "$@"
 
-retrieve
+fetch
 add_sets ${opt_sets}
 cd "${dotfiles}"
 save_sets
