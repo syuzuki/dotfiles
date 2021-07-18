@@ -4,6 +4,11 @@ repo = 'Shougo/dein.vim'
 [[plugins]]
 repo = 'jonathanfilip/vim-lucius'
 
+# `fzf.vim` is not in `runtimepath` on Ubuntu
+[[plugins]]
+repo = '/usr/share/doc/fzf/examples'
+if = '''filereadable('/usr/share/doc/fzf/examples/plugin/fzf.vim')'''
+
 [[plugins]]
 repo = 'junegunn/fzf.vim'
 hook_add = '''
