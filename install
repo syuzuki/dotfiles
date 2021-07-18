@@ -235,7 +235,9 @@ package() {
             [ -x "${f}" ] || continue
 
             log '  %s' "${f}"
-            "./${f}"
+            if [ -z "${dry_run}" ]; then
+                "./${f}"
+            fi
         done
     done
 
@@ -282,7 +284,9 @@ package() {
             [ -x "${f}" ] || continue
 
             log '  %s' "${f}"
-            "./${f}"
+            if [ -z "${dry_run}" ]; then
+                "./${f}"
+            fi
         done
     done
 }
@@ -344,7 +348,9 @@ deploy() {
             [ -x "${f}" ] || continue
 
             log '  %s' "${f}"
-            "./${f}"
+            if [ -z "${dry_run}" ]; then
+                "./${f}"
+            fi
         done
 
         deploy_dir "${set}" ''
@@ -357,7 +363,9 @@ deploy() {
             [ -x "${f}" ] || continue
 
             log '  %s' "${f}"
-            "./${f}"
+            if [ -z "${dry_run}" ]; then
+                "./${f}"
+            fi
         done
     done
 }
