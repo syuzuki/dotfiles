@@ -128,7 +128,6 @@ cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
 " cnoremap <C-d> <Delete>
 cnoremap <C-d> <Del>
-cnoremap <expr> / stridx('/?', getcmdtype()) >= 0 ? '\/' : '/'
 
 cabbrev <expr> h (getcmdtype() ==# ':' && getcmdline() ==# 'h') ? 'vert h' : 'h'
 cabbrev <expr> m (getcmdtype() ==# ':' && getcmdline() ==# 'm') ? 'vert Man' : 'm'
