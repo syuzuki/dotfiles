@@ -131,6 +131,7 @@ cnoremap <C-d> <Del>
 cnoremap <expr> / stridx('/?', getcmdtype()) >= 0 ? '\/' : '/'
 
 cabbrev <expr> h (getcmdtype() ==# ':' && getcmdline() ==# 'h') ? 'vert h' : 'h'
+cabbrev <expr> m (getcmdtype() ==# ':' && getcmdline() ==# 'm') ? 'vert Man' : 'm'
 
 digraph jj 106   " j
 
