@@ -34,7 +34,6 @@ endif
 
 augroup config
     autocmd!
-    autocmd BufWinEnter *.txt if &buftype == 'help' | wincmd L | endif
     autocmd ColorScheme * highlight link IdeographicSpace Visual
     autocmd BufNew,BufRead * match IdeographicSpace /\%u3000/
 augroup end
@@ -51,6 +50,7 @@ set scrolloff=3
 set ignorecase smartcase noincsearch hlsearch nowrapscan
 set wildmode=list:longest,full wildignorecase
 set ttimeout ttimeoutlen=10
+set splitbelow splitright
 set clipboard=unnamed
 set autoread
 set termguicolors
@@ -129,6 +129,8 @@ cnoremap <C-e> <End>
 " cnoremap <C-d> <Delete>
 cnoremap <C-d> <Del>
 cnoremap <expr> / stridx('/?', getcmdtype()) >= 0 ? '\/' : '/'
+
+cabbrev <expr> h (getcmdtype() ==# ':' && getcmdline() ==# 'h') ? 'vert h' : 'h'
 
 digraph jj 106   " j
 
