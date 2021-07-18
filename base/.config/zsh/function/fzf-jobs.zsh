@@ -57,6 +57,10 @@ fzf-jobs() {
 }
 
 fzf-fg() {
+    # `job*` variable is not passed to command substitution
+    local -A jobstates=("${(@kv)jobstates}")
+    local -A jobtexts=("${(@kv)jobtexts}")
+    local -A jobdirs=("${(@kv)jobdirs}")
     local j="$(-fzf-jobs-select)"
 
     if [[ ! -z "${j}" ]]; then
@@ -69,6 +73,10 @@ fzf-fg() {
 }
 
 fzf-bg() {
+    # `job*` variable is not passed to command substitution
+    local -A jobstates=("${(@kv)jobstates}")
+    local -A jobtexts=("${(@kv)jobtexts}")
+    local -A jobdirs=("${(@kv)jobdirs}")
     local j="$(-fzf-jobs-select)"
 
     if [[ ! -z "${j}" ]]; then
