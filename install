@@ -366,7 +366,10 @@ if [ -z "${no_fetch}" ]; then
     fetch
 fi
 add_sets ${opt_sets}
-cd "${dotfiles}"
 save_sets
+if [ -z "${no_fetch}" ]; then
+    exec "${dotfiles}/install" --no-fetch${dry_run:+ --dry-run}${vagrant:+ --vagrant}
+fi
+cd "${dotfiles}"
 package
 deploy
