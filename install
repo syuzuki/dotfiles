@@ -6,6 +6,7 @@ dotfiles=~/.dotfiles
 repo='http://github.com/syuzuki/dotfiles'
 repo_private='http://github.com/syuzuki/dotfiles-private'
 
+no_fetch=
 dry_run=
 opt_sets=base
 vagrant=
@@ -18,6 +19,7 @@ usage: $0 [OPTIONS] [CONFIG_SETS]
 
 OPTIONS:
     -h, --help      Print this help and exit
+    -f, --no-fetch  Skip fetching
     -n, --dry-run   Do not modify filesystem
         --vagrant   Vagrant configuration
 
@@ -119,6 +121,9 @@ parse_opts() {
         case "${opt}" in
             -h|--help)
                 help_exit
+                ;;
+            -f|--no-fetch)
+                no_fetch=true
                 ;;
             -n|--dry-run)
                 dry_run=true
@@ -357,7 +362,9 @@ load_sets
 detect_env
 parse_opts "$@"
 
-fetch
+if [ -z "${no_fetch}" ]; then
+    fetch
+fi
 add_sets ${opt_sets}
 cd "${dotfiles}"
 save_sets
