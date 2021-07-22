@@ -150,7 +150,7 @@ alias -g T='| tail'
 alias -g D='| xxd'
 
 mc() {
-    md "$@"
+    mkdir -p "$@"
     cd "$@"
 }
 ssht() {
