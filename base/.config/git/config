@@ -4,6 +4,7 @@
 [alias]
     brancha = branch --all
     clone = clone --filter blob:none
+    ff = merge --ff-only
     graph = log --graph --date=short --pretty=tformat:\"%x09%ad %C(blue bold)%an%x09%Creset %C(yellow)%h%C(green bold)%d%Creset %s\"
     grapha = graph --branches --tags --remotes
 
