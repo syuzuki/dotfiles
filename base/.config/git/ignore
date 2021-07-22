@@ -1,13 +1,13 @@
-# Vim swap
+# Vim
 *.swp
-# Vim config
-/.vim/
+.vim/
 
 # GDB history
-/.gdb_history
+.gdb_history
 
-# clangd cache
-/.cache/
+# clangd
+.cache/
+compile_commands.json
 
 # LibreOffice lock
 .~lock.*#

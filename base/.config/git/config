@@ -3,12 +3,13 @@
 
 [alias]
     brancha = branch --all
-    clone = clone --depth=1
+    clone = clone --filter blob:none
     graph = log --graph --date=short --pretty=tformat:\"%x09%ad %C(blue bold)%an%x09%Creset %C(yellow)%h%C(green bold)%d%Creset %s\"
     grapha = graph --branches --tags --remotes
 
 [color]
     ui = auto
+    quotePath = false
 
 [credential]
     helper = libsecret
