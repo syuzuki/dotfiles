@@ -44,6 +44,25 @@ hook_post_source = '''
 '''
 
 [[plugins]]
+repo = 'nvim-treesitter/nvim-treesitter'
+rev = '0.5-compat'
+hook_post_source = '''
+    lua <<EOF
+        require'nvim-treesitter.configs'.setup {
+            ensure_installed = 'maintained',
+            ignore_install = {},
+            highlight = {
+                enable = true,
+                disable = {},
+            },
+        }
+EOF
+'''
+hook_post_update = '''
+    TSUpdate
+'''
+
+[[plugins]]
 repo = 'sheerun/vim-polyglot'
 hook_add = '''
     let g:polyglot_disabled = ['sensible']
