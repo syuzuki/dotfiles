@@ -3,8 +3,8 @@
 set -eu
 
 dotfiles=~/.dotfiles
-repo='http://github.com/syuzuki/dotfiles'
-repo_private='http://github.com/syuzuki/dotfiles-private'
+repo='https://github.com/syuzuki/dotfiles'
+repo_private='https://github.com/syuzuki/dotfiles-private'
 
 no_fetch=
 dry_run=
