@@ -2,32 +2,35 @@ font:
     size: 9.0
 
 colors:
-    # LuciusBlack
-    # https://github.com/jonathanfilip/lucius
+    # Sonokai
+    # https://github.com/sainnhe/sonokai
     primary:
-        background: '#121212'
-        foreground: '#d7d7d7'
+        background: '#2c2e34'
+        foreground: '#e2e2e3'
     cursor:
-        text: '#121212'
-        cursor: '#87afd7'
+        text:   CellBackground
+        cursor: CellForeground
+    selection:
+        text:       CellForeground
+        background: '#3b3e48'
     normal:
-        black:   '#121212'
-        red:     '#d75f5f'
-        green:   '#87af5f'
-        yellow:  '#afaf87'
-        blue:    '#5fafd7'
-        magenta: '#af87af'
-        cyan:    '#5faf87'
-        white:   '#bcbcbc'
+        black:   '#2c2e34'
+        red:     '#b64359'
+        green:   '#8ebb67'
+        yellow:  '#d0b25a'
+        blue:    '#6ab8ca'
+        magenta: '#a18ddb'
+        cyan:    '#db8756'
+        white:   '#cbcbcc'
     bright:
-        black:   '#646464'
-        red:     '#ff5f5f'
-        green:   '#afd787'
-        yellow:  '#d7d7af'
-        blue:    '#87d7ff'
-        magenta: '#d7afd7'
-        cyan:    '#87d7af'
-        white:   '#d7d7d7'
+        black:   '#585c68'
+        red:     '#fc5d7c'
+        green:   '#9ed072'
+        yellow:  '#e7c664'
+        blue:    '#76cce0'
+        magenta: '#b39df3'
+        cyan:    '#f39660'
+        white:   '#e2e2e3'
 
 key_bindings:
     # Increase font size on some keyboard layouts
