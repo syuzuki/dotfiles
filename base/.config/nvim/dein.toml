@@ -2,7 +2,7 @@
 repo = 'Shougo/dein.vim'
 
 [[plugins]]
-repo = 'jonathanfilip/vim-lucius'
+repo = 'sainnhe/sonokai'
 
 # `fzf.vim` is not in `runtimepath` on Ubuntu
 [[plugins]]
@@ -166,7 +166,7 @@ hook_add = '''
         \ 'coc-snippets',
         \ ]
 
-    set signcolumn=yes
+    set signcolumn=number
 
     let g:coc_snippet_next = '<Tab>'
     "let g:coc_snippet_prev = '<S-Tab>'
