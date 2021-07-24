@@ -16,11 +16,11 @@ colors:
     normal:
         black:   '#2c2e34'
         red:     '#b64359'
-        green:   '#8ebb67'
-        yellow:  '#d0b25a'
-        blue:    '#6ab8ca'
-        magenta: '#a18ddb'
-        cyan:    '#db8756'
+        green:   '#86b161'
+        yellow:  '#c4a855'
+        blue:    '#64adbe'
+        magenta: '#9885cf'
+        cyan:    '#4fbea7'
         white:   '#cbcbcc'
     bright:
         black:   '#585c68'
@@ -29,7 +29,7 @@ colors:
         yellow:  '#e7c664'
         blue:    '#76cce0'
         magenta: '#b39df3'
-        cyan:    '#f39660'
+        cyan:    '#5de0c4'
         white:   '#e2e2e3'
 
 key_bindings:
