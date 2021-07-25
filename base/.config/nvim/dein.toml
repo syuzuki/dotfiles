@@ -135,7 +135,8 @@ hook_post_source = '''
         }
 EOF
 
-    nnoremap <silent> s :lua require'hop'.hint_char2()<CR>
+    nnoremap <silent> s :<C-u>lua require'hop'.hint_char2()<CR>
+    xnoremap <silent> s :<C-u>lua require'hop'.hint_char2()<CR>
 '''
 
 [[plugins]]
