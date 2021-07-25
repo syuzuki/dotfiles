@@ -78,38 +78,20 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
-if has('nvim')
-    nnoremap <M-h> <C-w>H
-    nnoremap <M-j> <C-w>J
-    nnoremap <M-k> <C-w>K
-    nnoremap <M-l> <C-w>L
+nnoremap <M-h> <C-w>H
+nnoremap <M-j> <C-w>J
+nnoremap <M-k> <C-w>K
+nnoremap <M-l> <C-w>L
 
-    nnoremap <M--> <C-w>=
-    nnoremap <M-w> <C-w>c
+nnoremap <M--> <C-w>=
+nnoremap <M-w> <C-w>c
 
-    nnoremap <silent> <M-d> <Cmd>bp<CR><Cmd>bd #<CR>
-    nnoremap <silent> <M-D> <Cmd>bd<CR>
-    nnoremap <silent> <M-u> <Cmd>nohlsearch<CR>
-    nnoremap <silent> <M-s> <Cmd>w<CR>
-    nnoremap <silent> <M-q> <Cmd>qa<CR>
-    nnoremap <silent> <M-Q> <Cmd>qa!<CR>
-else
-    nnoremap <Esc> <Nop>
-    nnoremap <Esc>h <C-w>H
-    nnoremap <Esc>j <C-w>J
-    nnoremap <Esc>k <C-w>K
-    nnoremap <Esc>l <C-w>L
-
-    nnoremap <Esc>w <C-w>c
-    nnoremap <Esc>- <C-w>=
-
-    nnoremap <silent> <Esc>d <Cmd>bp<CR><Cmd>bd #<CR>
-    nnoremap <silent> <Esc>D <Cmd>bd<CR>
-    nnoremap <silent> <Esc>u <Cmd>nohlsearch<CR>
-    nnoremap <silent> <Esc>s <Cmd>w<CR>
-    nnoremap <silent> <Esc>q <Cmd>qa<CR>
-    nnoremap <silent> <Esc>Q <Cmd>qa!<CR>
-endif
+nnoremap <silent> <M-d> <Cmd>bp<CR><Cmd>bd #<CR>
+nnoremap <silent> <M-D> <Cmd>bd<CR>
+nnoremap <silent> <M-u> <Cmd>nohlsearch<CR>
+nnoremap <silent> <M-s> <Cmd>w<CR>
+nnoremap <silent> <M-q> <Cmd>qa<CR>
+nnoremap <silent> <M-Q> <Cmd>qa!<CR>
 
 vnoremap <silent> * y/\V<C-r>"<CR>
 

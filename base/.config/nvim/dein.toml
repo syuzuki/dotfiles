@@ -28,19 +28,11 @@ hook_add = '''
     endfunction
 '''
 hook_post_source = '''
-    if has('nvim')
-        nnoremap <silent> <M-b> :Buffers<cr>
-        nnoremap <silent> <M-f> :Files<cr>
-        nnoremap <silent> <M-F> :Locate *<cr>
-        nnoremap <silent> <M-g> :Lines<cr>
-        nnoremap <silent> <M-G> :Rg<cr>
-    else
-        nnoremap <silent> <Esc>b :Buffers<cr>
-        nnoremap <silent> <Esc>f :Files<cr>
-        nnoremap <silent> <Esc>F :Locate *<cr>
-        nnoremap <silent> <Esc>g :Lines<cr>
-        nnoremap <silent> <Esc>G :Rg<cr>
-    endif
+    nnoremap <silent> <M-b> :Buffers<cr>
+    nnoremap <silent> <M-f> :Files<cr>
+    nnoremap <silent> <M-F> :Locate *<cr>
+    nnoremap <silent> <M-g> :Lines<cr>
+    nnoremap <silent> <M-G> :Rg<cr>
 '''
 
 [[plugins]]
@@ -216,9 +208,5 @@ hook_post_source = '''
 [[plugins]]
 repo = 'antoinemadec/coc-fzf'
 hook_post_source = '''
-    if has('nvim')
-        nnoremap <silent> <M-a> <Cmd>CocFzfList diagnostics<CR>
-    else
-        nnoremap <silent> <Esc>a <Cmd>CocFzfList diagnostics<CR>
-    endif
+    nnoremap <silent> <M-a> <Cmd>CocFzfList diagnostics<CR>
 '''
