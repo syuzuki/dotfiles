@@ -3,7 +3,6 @@ git
 gnome-keyring
 libarchive-tools
 nodejs
-python3-neovim
 ripgrep
 tmux
 xxd
