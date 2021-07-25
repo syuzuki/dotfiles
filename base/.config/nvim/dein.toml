@@ -4,35 +4,35 @@ repo = 'Shougo/dein.vim'
 [[plugins]]
 repo = 'sainnhe/sonokai'
 
-# `fzf.vim` is not in `runtimepath` on Ubuntu
 [[plugins]]
-repo = '/usr/share/doc/fzf/examples'
-if = '''filereadable('/usr/share/doc/fzf/examples/plugin/fzf.vim')'''
+repo = 'nvim-lua/plenary.nvim'
 
 [[plugins]]
-repo = 'junegunn/fzf.vim'
-hook_add = '''
-    let g:fzf_layout = { 'window': 'call g:CreateFloatingFzf()' }
+repo = 'nvim-lua/popup.nvim'
+depends = ['nvim-lua/plenary.nvim']
 
-    function! g:CreateFloatingFzf() abort
-        let buf = nvim_create_buf(v:false, v:true)
-        let config = {
-            \ 'relative': 'editor',
-            \ 'width': float2nr(&columns * 0.6),
-            \ 'height': float2nr(&lines * 0.6),
-            \ 'col': float2nr(&columns * 0.2),
-            \ 'row': float2nr(&lines * 0.2),
-            \ }
-        call nvim_open_win(buf, v:true, config)
-        set winblend=20
-    endfunction
-'''
+[[plugins]]
+repo = 'nvim-telescope/telescope.nvim'
+depends = ['nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim']
 hook_post_source = '''
-    nnoremap <silent> <M-b> :Buffers<cr>
-    nnoremap <silent> <M-f> :Files<cr>
-    nnoremap <silent> <M-F> :Locate *<cr>
-    nnoremap <silent> <M-g> :Lines<cr>
-    nnoremap <silent> <M-G> :Rg<cr>
+    lua <<EOF
+        require'telescope'.setup {
+            defaults = {
+                mappings = {
+                    i = {
+                        ['<Esc>'] = 'close',
+                    },
+                },
+            },
+        }
+EOF
+
+    nnoremap <M-b> <Cmd>lua require('telescope.builtin').buffers{ignore_current_buffer = true, sort_lastused = true}<CR>
+    nnoremap <M-f> <Cmd>lua require('telescope.builtin').find_files{follow = true, hidden = true}<CR>
+    nnoremap <M-F> <Cmd>lua require('telescope.builtin').file_browser{}<CR>
+    nnoremap <M-g> <Cmd>lua require('telescope.builtin').current_buffer_fuzzy_find{}<CR>
+    nnoremap <M-G> <Cmd>lua require('telescope.builtin').live_grep{}<CR>
+    nnoremap <M-t> <Cmd>lua require('telescope.builtin').treesitter{}<CR>
 '''
 
 [[plugins]]
@@ -203,10 +203,4 @@ hook_post_source = '''
         \ "\<Tab>"
 
     set statusline=%f\ %h%w%m%r\ %{coc#status()}%{get(b:,'coc_current_function','')}%=%l/%L,%c%V
-'''
-
-[[plugins]]
-repo = 'antoinemadec/coc-fzf'
-hook_post_source = '''
-    nnoremap <silent> <M-a> <Cmd>CocFzfList diagnostics<CR>
 '''
