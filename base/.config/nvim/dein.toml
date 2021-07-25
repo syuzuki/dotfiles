@@ -27,12 +27,12 @@ hook_post_source = '''
         }
 EOF
 
-    nnoremap <M-b> <Cmd>lua require('telescope.builtin').buffers{ignore_current_buffer = true, sort_lastused = true}<CR>
-    nnoremap <M-f> <Cmd>lua require('telescope.builtin').find_files{follow = true, hidden = true}<CR>
-    nnoremap <M-F> <Cmd>lua require('telescope.builtin').file_browser{}<CR>
-    nnoremap <M-g> <Cmd>lua require('telescope.builtin').current_buffer_fuzzy_find{}<CR>
-    nnoremap <M-G> <Cmd>lua require('telescope.builtin').live_grep{}<CR>
-    nnoremap <M-t> <Cmd>lua require('telescope.builtin').treesitter{}<CR>
+    nnoremap <M-b> <Cmd>lua require('telescope.builtin').buffers {ignore_current_buffer = true, sort_lastused = true}<CR>
+    nnoremap <M-f> <Cmd>lua require('telescope.builtin').find_files {follow = true, hidden = true}<CR>
+    nnoremap <M-F> <Cmd>lua require('telescope.builtin').file_browser {}<CR>
+    nnoremap <M-g> <Cmd>lua require('telescope.builtin').current_buffer_fuzzy_find {}<CR>
+    nnoremap <M-G> <Cmd>lua require('telescope.builtin').live_grep {}<CR>
+    nnoremap <M-t> <Cmd>lua require('telescope.builtin').treesitter {}<CR>
 '''
 
 [[plugins]]
