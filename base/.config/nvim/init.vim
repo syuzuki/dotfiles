@@ -72,8 +72,8 @@ noremap gK K
 nnoremap Y y$
 nnoremap / /\v
 
-nnoremap <silent> - :<C-u>split<CR>
-nnoremap <silent> <bar> :<C-u>vsplit<CR>
+nnoremap <silent> - <Cmd>split<CR>
+nnoremap <silent> <bar> <Cmd>vsplit<CR>
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
@@ -87,12 +87,12 @@ if has('nvim')
     nnoremap <M--> <C-w>=
     nnoremap <M-w> <C-w>c
 
-    nnoremap <silent> <M-d> :<C-u>bp<cr>:bd #<cr>
-    nnoremap <silent> <M-D> :<C-u>bd<cr>
-    nnoremap <silent> <M-u> :<C-u>nohlsearch<cr>
-    nnoremap <silent> <M-s> :<C-u>w<cr>
-    nnoremap <silent> <M-q> :<C-u>qa<cr>
-    nnoremap <silent> <M-Q> :<C-u>qa!<cr>
+    nnoremap <silent> <M-d> <Cmd>bp<CR><Cmd>bd #<CR>
+    nnoremap <silent> <M-D> <Cmd>bd<CR>
+    nnoremap <silent> <M-u> <Cmd>nohlsearch<CR>
+    nnoremap <silent> <M-s> <Cmd>w<CR>
+    nnoremap <silent> <M-q> <Cmd>qa<CR>
+    nnoremap <silent> <M-Q> <Cmd>qa!<CR>
 else
     nnoremap <Esc> <Nop>
     nnoremap <Esc>h <C-w>H
@@ -103,12 +103,12 @@ else
     nnoremap <Esc>w <C-w>c
     nnoremap <Esc>- <C-w>=
 
-    nnoremap <silent> <Esc>d :<C-u>bp<CR>:bd #<CR>
-    nnoremap <silent> <Esc>D :<C-u>bd<CR>
-    nnoremap <silent> <Esc>u :<C-u>nohlsearch<CR>
-    nnoremap <silent> <Esc>s :<C-u>w<CR>
-    nnoremap <silent> <Esc>q :<C-u>qa<CR>
-    nnoremap <silent> <Esc>Q :<C-u>qa!<CR>
+    nnoremap <silent> <Esc>d <Cmd>bp<CR><Cmd>bd #<CR>
+    nnoremap <silent> <Esc>D <Cmd>bd<CR>
+    nnoremap <silent> <Esc>u <Cmd>nohlsearch<CR>
+    nnoremap <silent> <Esc>s <Cmd>w<CR>
+    nnoremap <silent> <Esc>q <Cmd>qa<CR>
+    nnoremap <silent> <Esc>Q <Cmd>qa!<CR>
 endif
 
 vnoremap <silent> * y/\V<C-r>"<CR>

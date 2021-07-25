@@ -145,8 +145,8 @@ hook_post_source = '''
         }
 EOF
 
-    nnoremap <silent> s :<C-u>lua require'hop'.hint_char2()<CR>
-    xnoremap <silent> s :<C-u>lua require'hop'.hint_char2()<CR>
+    nnoremap <silent> s <Cmd>lua require'hop'.hint_char2()<CR>
+    xnoremap <silent> s <Cmd>lua require'hop'.hint_char2()<CR>
 '''
 
 [[plugins]]
@@ -191,7 +191,7 @@ hook_post_source = '''
     map <silent> [a <Plug>(coc-diagnostic-prev)
     map <silent> ]a <Plug>(coc-diagnostic-next)
 
-    nnoremap <silent> K :<C-u>call CocAction('doHover')<CR>
+    nnoremap <silent> K <Cmd>call CocAction('doHover')<CR>
 
     nmap <silent> gd <Plug>(coc-definition)
     nmap <silent> gy <Plug>(coc-type-definition)
@@ -217,8 +217,8 @@ hook_post_source = '''
 repo = 'antoinemadec/coc-fzf'
 hook_post_source = '''
     if has('nvim')
-        nnoremap <silent> <M-a> :<C-u>CocFzfList diagnostics<CR>
+        nnoremap <silent> <M-a> <Cmd>CocFzfList diagnostics<CR>
     else
-        nnoremap <silent> <Esc>a :<C-u>CocFzfList diagnostics<CR>
+        nnoremap <silent> <Esc>a <Cmd>CocFzfList diagnostics<CR>
     endif
 '''
