@@ -2,7 +2,6 @@ fzf
 git
 gnome-keyring
 libarchive-tools
-neovim
 nodejs
 python3-neovim
 ripgrep
