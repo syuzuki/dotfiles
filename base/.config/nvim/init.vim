@@ -92,8 +92,10 @@ nnoremap <silent> <M-u> <Cmd>nohlsearch<CR>
 nnoremap <silent> <M-s> <Cmd>w<CR>
 nnoremap <silent> <M-q> <Cmd>qa<CR>
 nnoremap <silent> <M-Q> <Cmd>qa!<CR>
+nnoremap <M-z> zz
 
-vnoremap <silent> * y/\V<C-r>"<CR>
+xnoremap <silent> * y/\V<C-r>"<CR>
+xnoremap <M-z> zz
 
 inoremap <C-e> <C-o>3<C-e>
 inoremap <C-y> <C-o>3<C-y>
