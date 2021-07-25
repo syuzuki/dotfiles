@@ -178,7 +178,7 @@ beautiful.border_width           = scale(2, screen.primary)
 beautiful.notification_icon_size = scale(32, screen.primary)
 
 -- This is used later as the default terminal and editor to run.
-terminal = "alacritty"
+terminal = "kitty"
 editor = os.getenv("EDITOR") or "vim"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -205,7 +205,7 @@ wingroups.groups = {
     {
         key  = "j",
         cmd  = terminal,
-        rule = { class = "Alacritty" },
+        rule = { class = "kitty" },
     },
     {
         key  = "k",
