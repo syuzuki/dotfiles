@@ -163,8 +163,18 @@ hook_source = '''
     lua <<EOF
         local nvim_lsp = require'lspconfig'
 
-        nvim_lsp.clangd.setup {}
-        nvim_lsp.pyright.setup {}
-        nvim_lsp.rust_analyzer.setup {}
+        local function on_attach(client, bufnr)
+        end
+
+        local servers = {
+            'clangd',
+            'pyright',
+            'rust_analyzer',
+        }
+        for _, lsp in ipairs(servers) do
+            nvim_lsp[lsp].setup {
+                on_attach = on_attach,
+            }
+        end
 EOF
 '''
