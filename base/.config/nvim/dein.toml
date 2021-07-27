@@ -38,7 +38,8 @@ EOF
 [[plugins]]
 repo = 'nvim-treesitter/nvim-treesitter'
 rev = '0.5-compat'
-hook_post_source = '''
+on_event = 'BufRead'
+hook_source = '''
     lua <<EOF
         require'nvim-treesitter.configs'.setup {
             ensure_installed = 'maintained',
