@@ -19,9 +19,8 @@ if dein#load_state(s:dein_dir)
     call dein#load_toml(expand('<sfile>:h') . '/dein.toml')
     call dein#end()
     call dein#save_state()
-    call dein#call_hook('source')
 endif
-" call dein#call_hook('source')
+call dein#call_hook('source')
 augroup config_dein
     autocmd!
     autocmd VimEnter * call dein#call_hook('post_source')
