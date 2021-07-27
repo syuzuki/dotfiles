@@ -42,6 +42,7 @@ colorscheme sonokai
 
 set modeline
 set number
+set signcolumn=number
 set fileencodings=utf-8,cp932,euc-jp
 set autoindent smartindent
 set tabstop=4 shiftwidth=0 expandtab

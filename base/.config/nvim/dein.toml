@@ -158,52 +158,13 @@ hook_add = '''
 '''
 
 [[plugins]]
-repo = 'neoclide/coc.nvim'
-rev = 'release'
-hook_add = '''
-    " # Extentions
-    "
-    " * coc-clangd: clangd, clang-format
-    " * coc-json
-    " * coc-pyright: pyright, black
-    " * coc-rust-analyzer
+repo = 'neovim/nvim-lspconfig'
+hook_source = '''
+    lua <<EOF
+        local nvim_lsp = require'lspconfig'
 
-    let g:coc_global_extensions = [
-        \ 'coc-snippets',
-        \ ]
-
-    set signcolumn=number
-
-    let g:coc_snippet_next = '<Tab>'
-    "let g:coc_snippet_prev = '<S-Tab>'
-'''
-hook_post_source = '''
-    augroup config_coc
-        autocmd!
-        autocmd User CocOpenFloat set winblend=20
-    augroup END
-
-    map <silent> [a <Plug>(coc-diagnostic-prev)
-    map <silent> ]a <Plug>(coc-diagnostic-next)
-
-    nnoremap <silent> K <Cmd>call CocAction('doHover')<CR>
-
-    nmap <silent> gd <Plug>(coc-definition)
-    nmap <silent> gy <Plug>(coc-type-definition)
-    nmap <silent> gi <Plug>(coc-implementation)
-    nmap <silent> gr <Plug>(coc-reference)
-
-    function! s:following_nospace() abort
-        let col = col('.') - 1
-        return col > 0 && getline('.')[col - 1] =~# '\S'
-    endfunction
-
-    inoremap <expr> <Tab>
-        \ pumvisible() ? coc#_select_confirm() :
-        \ coc#expandableOrJumpable() ?
-        \     "<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump', ''])<CR>" :
-        \ <SID>following_nospace() ?  coc#refresh() :
-        \ "\<Tab>"
-
-    set statusline=%f\ %h%w%m%r\ %{coc#status()}%{get(b:,'coc_current_function','')}%=%l/%L,%c%V
+        nvim_lsp.clangd.setup {}
+        nvim_lsp.pyright.setup {}
+        nvim_lsp.rust_analyzer.setup {}
+EOF
 '''
