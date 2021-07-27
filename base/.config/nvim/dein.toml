@@ -131,15 +131,17 @@ hook_add = '''
 
 [[plugins]]
 repo = 'phaazon/hop.nvim'
-hook_post_source = '''
+on_lua = 'hop'
+hook_add = '''
+    nnoremap <silent> s <Cmd>lua require'hop'.hint_char2()<CR>
+    xnoremap <silent> s <Cmd>lua require'hop'.hint_char2()<CR>
+'''
+hook_source = '''
     lua <<EOF
         require'hop'.setup {
             create_hl_autocmd = true,
         }
 EOF
-
-    nnoremap <silent> s <Cmd>lua require'hop'.hint_char2()<CR>
-    xnoremap <silent> s <Cmd>lua require'hop'.hint_char2()<CR>
 '''
 
 [[plugins]]
