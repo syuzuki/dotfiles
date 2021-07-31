@@ -233,10 +233,12 @@ hook_source = '''
             ]]
         end
 
+        local settings = {}
+
         local servers = {
-            'clangd',
-            'pyright',
-            'rust_analyzer',
+            clangd = {},
+            pyright = {},
+            rust_analyzer = {},
         }
 
         vim.g.autoformat_enable_ft = {
@@ -246,10 +248,11 @@ hook_source = '''
             'rust',
         }
 
-        for _, lsp in ipairs(servers) do
-            nvim_lsp[lsp].setup {
+        for lsp, params in pairs(servers) do
+            nvim_lsp[lsp].setup(vim.tbl_deep_extend('keep', params, {
                 on_attach = on_attach,
-            }
+                settings = settings,
+            }))
         end
 EOF
 '''
