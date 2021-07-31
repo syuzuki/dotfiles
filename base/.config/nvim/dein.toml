@@ -239,6 +239,24 @@ hook_source = '''
             clangd = {},
             pyright = {},
             rust_analyzer = {},
+            efm = {
+                filetypes = { 'python' },
+                init_options = {
+                    documentFormatting = true,
+                },
+                settings = {
+                    rootMarkers = { '.git' },
+                    languages = {
+                        python = {
+                            {
+                                formatCommand = 'black --quiet -',
+                                formatStdin = true,
+                            },
+                        },
+
+                    },
+                },
+            },
         }
 
         vim.g.autoformat_enable_ft = {
