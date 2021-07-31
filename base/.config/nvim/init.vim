@@ -1,4 +1,5 @@
-filetype plugin indent on
+filetype off
+filetype plugin indent off
 
 let s:cache_home = !empty($XDG_DATA_HOME) ? $XDG_DATA_HOME : expand('~/.local/share')
 let s:dein_dir = s:cache_home . '/dein'
@@ -20,24 +21,21 @@ if dein#load_state(s:dein_dir)
     call dein#end()
     call dein#save_state()
 endif
-call dein#call_hook('source')
-augroup config_dein
-    autocmd!
-    autocmd VimEnter * call dein#call_hook('post_source')
-augroup end
 
 " Install plugins
 if dein#check_install()
     call dein#install()
 endif
 
+call dein#call_hook('source')
+
 augroup config
     autocmd!
+    autocmd VimEnter * call dein#call_hook('post_source')
     autocmd ColorScheme * highlight link IdeographicSpace Visual
     autocmd BufNew,BufRead * match IdeographicSpace /\%u3000/
 augroup end
 
-syntax on
 colorscheme sonokai
 
 set modeline
@@ -147,3 +145,6 @@ digraph j6 65302 " ６
 digraph j7 65303 " ７
 digraph j8 65304 " ８
 digraph j9 65305 " ９
+
+filetype plugin indent on
+syntax enable
