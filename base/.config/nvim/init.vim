@@ -99,7 +99,6 @@ inoremap <C-y> <C-o>3<C-y>
 inoremap <C-z> <C-o>zz
 inoremap <C-p> <Up>
 inoremap <C-n> <Down>
-inoremap <expr> <C-g> pumvisible() ? '<C-e>' : ''
 
 cnoremap <C-b> <Left>
 cnoremap <C-f> <Right>

@@ -177,6 +177,30 @@ hook_source = '''
                 nvim_lua = true,
             },
         }
+
+        local regex_start_with_nonspace = vim.regex([[^\S]])
+        _G.super_tab = function()
+            if vim.fn.pumvisible() ~= 0 then
+                local break_undo = vim.api.nvim_replace_termcodes('<C-g>u', true, true, true)
+                return break_undo .. vim.fn['compe#confirm']('<Tab>')
+            end
+
+            local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+            if col > 0 and regex_start_with_nonspace:match_line(0, row - 1, col - 1) then
+                return vim.fn['compe#complete']()
+            end
+
+            return vim.api.nvim_replace_termcodes('<Tab>', true, true, true)
+        end
+
+        local opts = {
+            noremap = true,
+            silent = true,
+            expr = true,
+        }
+
+        vim.api.nvim_set_keymap('i', '<Tab>', [[v:lua.super_tab()]], opts)
+        vim.api.nvim_set_keymap('i', '<C-g>', [[compe#close('')]], opts)
 EOF
 '''
 
