@@ -293,5 +293,17 @@ hook_source = '''
                 settings = settings,
             }))
         end
+
+        local signs = {
+            Error = ' ',
+            Warning = ' ',
+            Hint = ' ',
+            Information = ' ',
+        }
+
+        for type, text in pairs(signs) do
+            local hl = 'LspDiagnosticsSign' .. type
+            vim.fn.sign_define(hl, { text = text, texthl = hl, numhl = '' })
+        end
 EOF
 '''
