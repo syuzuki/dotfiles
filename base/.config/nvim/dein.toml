@@ -161,6 +161,26 @@ hook_add = '''
 '''
 
 [[plugins]]
+repo = 'hrsh7th/nvim-compe'
+on_event = 'InsertEnter'
+hook_source = '''
+    lua <<EOF
+        vim.o.completeopt = 'menuone,noselect'
+
+        require'compe'.setup {
+            preselect = 'always',
+            source = {
+                path = true,
+                buffer = true,
+                calc = true,
+                nvim_lsp = true,
+                nvim_lua = true,
+            },
+        }
+EOF
+'''
+
+[[plugins]]
 repo = 'neovim/nvim-lspconfig'
 # Initialize after `:syntax enable` to do LSP formatting correctly
 on_event = 'VimEnter'

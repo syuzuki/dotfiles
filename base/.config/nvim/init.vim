@@ -53,7 +53,6 @@ set clipboard=unnamed
 set autoread
 set termguicolors
 set pumblend=20
-set completeopt=menuone,noinsert
 set list listchars=tab:»-,trail:␣,nbsp:%
 
 let mapleader = ' '
