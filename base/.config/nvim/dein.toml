@@ -226,10 +226,10 @@ hook_source = '''
             vim.b.autoformat_enable = false
 
             vim.cmd [[
-                augroup config_lsp
-                autocmd! * <buffer>
-                autocmd! BufWritePre <buffer> lua autoformat()
-                augroup END
+                augroup config_lsp_buf
+                    autocmd!
+                    autocmd BufWritePre <buffer> lua autoformat()
+                augroup end
             ]]
         end
 
