@@ -196,6 +196,10 @@ hook_source = '''
                 },
                 nvim_lsp = true,
                 nvim_lua = true,
+                luasnip = {
+                    kind = ' ',
+                    menu = '[SNIP]',
+                },
             },
         }
 
