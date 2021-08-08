@@ -173,9 +173,16 @@ hook_source = '''
                 border = 'rounded',
             },
             source = {
-                path = true,
-                buffer = { menu = '[B]' },
-                calc = true,
+                path = {
+                    kind = ' ',
+                },
+                buffer = {
+                    kind = ' ',
+                    menu = '[B]',
+                },
+                calc = {
+                    kind = ' ',
+                },
                 nvim_lsp = true,
                 nvim_lua = true,
             },
