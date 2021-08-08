@@ -171,7 +171,7 @@ hook_source = '''
             preselect = 'always',
             source = {
                 path = true,
-                buffer = true,
+                buffer = { menu = '[B]' },
                 calc = true,
                 nvim_lsp = true,
                 nvim_lua = true,
