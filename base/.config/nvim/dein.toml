@@ -169,6 +169,9 @@ hook_source = '''
 
         require'compe'.setup {
             preselect = 'always',
+            documentation = {
+                border = 'rounded',
+            },
             source = {
                 path = true,
                 buffer = { menu = '[B]' },
