@@ -350,7 +350,7 @@ hook_source = '''
 
         local kinds = {
             Text          = ' ',
-            Method        = ' ',
+            Method        = ' ',
             Function      = 'ƒ ',
             Constructor   = ' ',
             Field         = ' ',
