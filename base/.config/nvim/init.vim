@@ -54,7 +54,6 @@ set splitbelow splitright
 set clipboard=unnamed
 set autoread
 set termguicolors
-set pumblend=20
 set list listchars=tab:»-,trail:␣,nbsp:%
 
 let mapleader = ' '
