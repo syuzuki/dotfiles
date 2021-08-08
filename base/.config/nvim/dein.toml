@@ -231,7 +231,6 @@ EOF
 
 [[plugins]]
 repo = 'kabouzeid/nvim-lspinstall'
-on_lua = 'lspinstall'
 
 [[plugins]]
 repo = 'neovim/nvim-lspconfig'
@@ -239,9 +238,8 @@ repo = 'neovim/nvim-lspconfig'
 on_event = 'VimEnter'
 hook_source = '''
     lua <<EOF
-        require'lspinstall'.setup()
-
         local nvim_lsp = require'lspconfig'
+        local lspinstall = require'lspinstall'
 
         -- This can override in project configuration
         vim.g.autoformat_disable_ft = {}
@@ -356,9 +354,28 @@ hook_source = '''
             'rust',
         }
 
+        local lspinstall_map = {
+            clangd = 'cpp',
+            pyright = 'python',
+            rust_analyzer = 'rust',
+            efm = 'efm',
+        }
+
         for lsp, params in pairs(servers) do
+            local cmd = nil
+            if lspinstall_map[lsp] then
+                local lsp_ = lspinstall_map[lsp]
+                if lspinstall.is_server_installed(lsp_) then
+                    cmd = require'lspinstall/servers'[lsp_].default_config.cmd
+                    if vim.regex([[^\.\{1,2}\/]]):match_str(cmd[1]) then
+                        cmd[1] = require'lspinstall/util'.install_path(lsp_) .. '/' .. cmd[1]
+                    end
+                end
+            end
+
             nvim_lsp[lsp].setup(vim.tbl_deep_extend('keep', params, {
                 on_attach = on_attach,
+                cmd = cmd,
                 capabilities = capabilities,
                 settings = settings,
             }))
