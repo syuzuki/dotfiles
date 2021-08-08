@@ -349,5 +349,39 @@ hook_source = '''
             local hl = 'LspDiagnosticsSign' .. type
             vim.fn.sign_define(hl, { text = text, texthl = hl, numhl = '' })
         end
+
+        local kinds = {
+            Text          = ' ',
+            Method        = ' ',
+            Function      = 'ƒ ',
+            Constructor   = ' ',
+            Field         = ' ',
+            Variable      = ' ',
+            Class         = ' ',
+            Interface     = ' ',
+            Module        = ' ',
+            Property      = ' ',
+            Unit          = ' ',
+            Value         = ' ',
+            Enum          = ' ',
+            Keyword       = ' ',
+            Snippet       = ' ',
+            Color         = ' ',
+            File          = ' ',
+            Reference     = ' ',
+            Folder        = ' ',
+            EnumMember    = ' ',
+            Constant      = ' ',
+            Struct        = ' ',
+            Event         = ' ',
+            Operator      = ' ',
+            TypeParameter = ' ',
+        }
+
+        for name, str in pairs(kinds) do
+            if vim.lsp.protocol.CompletionItemKind[name] ~= nil then
+                vim.lsp.protocol.CompletionItemKind[vim.lsp.protocol.CompletionItemKind[name]] = str
+            end
+        end
 EOF
 '''
