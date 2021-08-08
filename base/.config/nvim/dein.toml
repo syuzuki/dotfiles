@@ -296,6 +296,16 @@ hook_source = '''
                 vim.lsp.with(vim.lsp.handlers.signature_help, { border = 'rounded' })
         end
 
+        local capabilities = vim.lsp.protocol.make_client_capabilities()
+        capabilities.textDocument.completion.completionItem.snippetSupport = true
+        capabilities.textDocument.completion.completionItem.resolveSupport = {
+            properties = {
+                'documentation',
+                'detail',
+                'additionalTextEdits',
+            }
+        }
+
         local settings = {}
 
         local servers = {
@@ -332,6 +342,7 @@ hook_source = '''
         for lsp, params in pairs(servers) do
             nvim_lsp[lsp].setup(vim.tbl_deep_extend('keep', params, {
                 on_attach = on_attach,
+                capabilities = capabilities,
                 settings = settings,
             }))
         end
