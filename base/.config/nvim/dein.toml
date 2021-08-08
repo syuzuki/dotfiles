@@ -240,11 +240,6 @@ hook_source = '''
             vim.lsp.buf.formatting_sync(nil, 1000)
         end
 
-        vim.cmd [[
-            highlight link NormalFloat TelescopeNormal
-            highlight link FloatBorder TelescopeBorder
-        ]]
-
         local border = {
             { '╭', 'FloatBorder' },
             { '─', 'FloatBorder' },

@@ -33,6 +33,8 @@ augroup config
     autocmd!
     autocmd VimEnter * call dein#call_hook('post_source')
     autocmd ColorScheme * highlight link IdeographicSpace Visual
+    autocmd ColorScheme * highlight! link NormalFloat TelescopeNormal
+    autocmd ColorScheme * highlight! link FloatBorder TelescopeBorder
     autocmd BufNew,BufRead * match IdeographicSpace /\%u3000/
 augroup end
 
