@@ -231,6 +231,10 @@ EOF
 '''
 
 [[plugins]]
+repo = 'ray-x/lsp_signature.nvim'
+on_lua = 'lsp_signature'
+
+[[plugins]]
 repo = 'kabouzeid/nvim-lspinstall'
 on_lua = 'lspinstall'
 hook_add = '''
@@ -286,6 +290,10 @@ hook_source = '''
         local lspinstall_servers = require'lspinstall/servers'
         local lspinstall_install_path = require'lspinstall/util'.install_path
 
+        local signature_config = {
+            bind = true,
+        }
+
         -- This can override in project configuration
         vim.g.autoformat_disable_ft = {}
 
@@ -312,6 +320,8 @@ hook_source = '''
         end
 
         local function on_attach(client, bufnr)
+            require 'lsp_signature'.on_attach(signature_config)
+
             local function buf_set_keymap(...)
                 vim.api.nvim_buf_set_keymap(bufnr, ...)
             end
