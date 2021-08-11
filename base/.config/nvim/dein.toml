@@ -320,11 +320,17 @@ hook_source = '''
                 silent = true,
             }
 
-            buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+            buf_set_keymap('n', 'gd',
+                [[<Cmd>lua require('telescope.builtin').lsp_definitions {}<CR>]], opts)
             buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-            buf_set_keymap('n', 'gi', '<Cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+            buf_set_keymap('n', 'gi',
+                [[<Cmd>lua require('telescope.builtin').lsp_implementations {}<CR>]], opts)
             buf_set_keymap('n', 'g<C-d>', '<Cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-            buf_set_keymap('n', 'gn', '<Cmd>lua vim.lsp.buf.rename()<CR>', opts)
+
+            buf_set_keymap('n', '<M-y>',
+                [[<Cmd>lua require('telescope.builtin').lsp_document_symbols {}<CR>]], opts)
+            buf_set_keymap('n', '<M-Y>',
+                [[<Cmd>lua require('telescope.builtin').lsp_workspace_symbols {}<CR>]], opts)
             buf_set_keymap('n', 'gr', '<Cmd>lua vim.lsp.buf.reference()<CR>', opts)
             buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
             buf_set_keymap('n', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
@@ -332,8 +338,14 @@ hook_source = '''
             buf_set_keymap('n', 'gf', '<Cmd>lua vim.lsp.buf.formatting()<CR>', opts)
             buf_set_keymap('x', 'gf', '<Cmd>lua vim.lsp.buf.range_formatting()<CR>', opts)
 
-            buf_set_keymap('n', '<Leader>a', '<Cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+            buf_set_keymap('n', 'gn', '<Cmd>lua vim.lsp.buf.rename()<CR>', opts)
+            buf_set_keymap('n', '<Leader>a',
+                [[<Cmd>lua require('telescope.builtin').lsp_code_actions {}<CR>]], opts)
 
+            buf_set_keymap('n', '<M-a>',
+                [[<Cmd>lua require('telescope.builtin').lsp_document_diagnostics {}<CR>]], opts)
+            buf_set_keymap('n', '<M-A>',
+                [[<Cmd>lua require('telescope.builtin').lsp_workspace_diagnostics {}<CR>]], opts)
             buf_set_keymap('n', '[d', '<Cmd>lua vim.lsp.diagnostic.goto_prev { wrap = false }<CR>', opts)
             buf_set_keymap('n', ']d', '<Cmd>lua vim.lsp.diagnostic.goto_next { wrap = false }<CR>', opts)
             buf_set_keymap('x', '[d', '<Cmd>lua vim.lsp.diagnostic.goto_prev { wrap = false }<CR>', opts)
