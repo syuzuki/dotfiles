@@ -334,10 +334,10 @@ hook_source = '''
 
             buf_set_keymap('n', '<Leader>a', '<Cmd>lua vim.lsp.buf.code_action()<CR>', opts)
 
-            buf_set_keymap('n', '[d', '<Cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-            buf_set_keymap('n', ']d', '<Cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-            buf_set_keymap('x', '[d', '<Cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-            buf_set_keymap('x', ']d', '<Cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+            buf_set_keymap('n', '[d', '<Cmd>lua vim.lsp.diagnostic.goto_prev { wrap = false }<CR>', opts)
+            buf_set_keymap('n', ']d', '<Cmd>lua vim.lsp.diagnostic.goto_next { wrap = false }<CR>', opts)
+            buf_set_keymap('x', '[d', '<Cmd>lua vim.lsp.diagnostic.goto_prev { wrap = false }<CR>', opts)
+            buf_set_keymap('x', ']d', '<Cmd>lua vim.lsp.diagnostic.goto_next { wrap = false }<CR>', opts)
 
             vim.b.autoformat_disable = false
             vim.b.autoformat_enable = false
