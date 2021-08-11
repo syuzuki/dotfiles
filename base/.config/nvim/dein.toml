@@ -282,6 +282,8 @@ hook_source = '''
     lua <<EOF
         local nvim_lsp = require'lspconfig'
         local lspinstall = require'lspinstall'
+        local lspinstall_servers = require'lspinstall/servers'
+        local lspinstall_install_path = require'lspinstall/util'.install_path
 
         -- This can override in project configuration
         vim.g.autoformat_disable_ft = {}
@@ -403,19 +405,19 @@ hook_source = '''
             efm = 'efm',
         }
 
-        for lsp, params in pairs(servers) do
+        for lang, params in pairs(servers) do
             local cmd = nil
-            if lspinstall_map[lsp] then
-                local lsp_ = lspinstall_map[lsp]
-                if lspinstall.is_server_installed(lsp_) then
-                    cmd = require'lspinstall/servers'[lsp_].default_config.cmd
+            if lspinstall_map[lang] then
+                local lang_ = lspinstall_map[lang]
+                if lspinstall.is_server_installed(lang_) then
+                    cmd = lspinstall_servers[lang_].default_config.cmd
                     if vim.regex([[^\.\{1,2}\/]]):match_str(cmd[1]) then
-                        cmd[1] = require'lspinstall/util'.install_path(lsp_) .. '/' .. cmd[1]
+                        cmd[1] = lspinstall_install_path(lang_) .. '/' .. cmd[1]
                     end
                 end
             end
 
-            nvim_lsp[lsp].setup(vim.tbl_deep_extend('keep', params, {
+            nvim_lsp[lang].setup(vim.tbl_deep_extend('keep', params, {
                 on_attach = on_attach,
                 cmd = cmd,
                 capabilities = capabilities,
