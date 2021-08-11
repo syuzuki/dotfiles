@@ -235,7 +235,7 @@ repo = 'kabouzeid/nvim-lspinstall'
 [[plugins]]
 repo = 'neovim/nvim-lspconfig'
 # Initialize after `:syntax enable` to do LSP formatting correctly
-on_event = 'VimEnter'
+on_event = 'Syntax'
 hook_source = '''
     lua <<EOF
         local nvim_lsp = require'lspconfig'
