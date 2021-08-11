@@ -503,3 +503,12 @@ hook_source = '''
         ]]
 EOF
 '''
+
+[[plugins]]
+repo = 'simrat39/rust-tools.nvim'
+on_ft = 'rust'
+hook_source = '''
+    lua <<EOF
+        require'rust-tools'.setup {}
+EOF
+'''
