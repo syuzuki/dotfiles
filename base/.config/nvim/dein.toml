@@ -470,5 +470,13 @@ hook_source = '''
                 vim.lsp.protocol.CompletionItemKind[vim.lsp.protocol.CompletionItemKind[name]] = str
             end
         end
+
+        vim.cmd [[
+            augroup config_lsp
+                autocmd!
+                " Set rounded border to the window opened by `LspInfo`
+                autocmd FileType lspinfo call nvim_win_set_config(0, { 'border': 'rounded' })
+            augroup end
+        ]]
 EOF
 '''
