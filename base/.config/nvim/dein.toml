@@ -231,6 +231,48 @@ EOF
 
 [[plugins]]
 repo = 'kabouzeid/nvim-lspinstall'
+on_lua = 'lspinstall'
+hook_add = '''
+    lua <<END
+        -- Reinstall/update specified language servers, work with headless
+        _G.lsp_install_headless = function(lang)
+            local servers = require'lspinstall/servers'
+            local install_path = require'lspinstall/util'.install_path
+
+            print('Install lsp ' .. lang .. '\n')
+
+            local shell = vim.o.shell
+            vim.o.shell = '/usr/bin/env bash'
+
+            local function output_callback(job, data, event)
+                -- `print()` cannot treat multiple newlines
+                vim.api.nvim_echo({{ table.concat(data, '\n'), 'None' }}, true, {})
+            end
+
+            local job = vim.fn.jobstart('set -e; ' .. servers[lang].install_script, {
+                cwd = install_path(lang),
+                on_stdout = output_callback,
+                on_stderr = output_callback,
+            })
+            if job <= 0 then
+                print('jobstart failed with ' .. job .. '\n')
+                return
+            end
+
+            vim.o.shell = shell
+
+            vim.fn.jobwait { job }
+        end
+
+        -- Reinstall/update all installed language servers, work with headless
+        _G.lsp_reinstall_all_headless = function()
+            local lspinstall = require'lspinstall'
+            for _, lsp in ipairs(lspinstall.installed_servers()) do
+                _G.lsp_install_headless(lsp)
+            end
+        end
+END
+'''
 
 [[plugins]]
 repo = 'neovim/nvim-lspconfig'
