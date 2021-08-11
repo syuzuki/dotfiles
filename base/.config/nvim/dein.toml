@@ -182,6 +182,7 @@ hook_source = '''
             preselect = 'always',
             documentation = {
                 border = 'rounded',
+                winhighlight = 'NormalFloat:NormalFloat,FloatBorder:FloatBorder',
             },
             source = {
                 path = {
