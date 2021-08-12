@@ -233,6 +233,9 @@ repo = 'ray-x/lsp_signature.nvim'
 on_lua = 'lsp_signature'
 
 [[plugins]]
+repo = 'simrat39/rust-tools.nvim'
+
+[[plugins]]
 repo = 'kabouzeid/nvim-lspinstall'
 on_lua = 'lspinstall'
 hook_add = '''
@@ -400,6 +403,12 @@ hook_source = '''
             rust_analyzer = {
                 autoformat = { 'rust' },
                 lspinstall = 'rust',
+                setup = function(opts)
+                    require'rust-tools'.setup {
+                        tools = {},
+                        server = opts,
+                    }
+                end,
             },
             efm = {
                 lspinstall = 'efm',
@@ -522,14 +531,5 @@ hook_source = '''
                 autocmd FileType lspinfo call nvim_win_set_config(0, { 'border': 'rounded' })
             augroup end
         ]]
-EOF
-'''
-
-[[plugins]]
-repo = 'simrat39/rust-tools.nvim'
-on_ft = 'rust'
-hook_source = '''
-    lua <<EOF
-        require'rust-tools'.setup {}
 EOF
 '''
