@@ -95,32 +95,25 @@ hook_post_source = '''
 '''
 
 [[plugins]]
-repo = 'cohama/lexima.vim'
-hook_add = '''
-    " Do not map <Esc> automatically
-    let g:lexima_map_escape = ''
-'''
-hook_post_source = '''
-    call lexima#set_default_rules()
+repo = 'windwp/nvim-autopairs'
+on_event = 'InsertEnter'
+hook_source = '''
+    lua <<EOF
+        require'nvim-autopairs'.setup {}
 
-    call lexima#add_rule({'char': '(', 'at': '\%#\w'})
-    call lexima#add_rule({'char': '{', 'at': '\%#\w'})
-    call lexima#add_rule({'char': '[', 'at': '\%#\w'})
-    call lexima#add_rule({'char': '"', 'at': '\%#\w'})
-    call lexima#add_rule({'char': "'", 'at': '\%#\w'})
-    call lexima#add_rule({'char': '`', 'at': '\%#\w'})
+        require'nvim-autopairs/completion/compe'.setup {
+            map_cr = false,
+        }
 
-    call lexima#add_rule({'char': '<CR>', 'at': '"""\%#"""', 'input_after': '<CR>'})
-    call lexima#add_rule({'char': '<CR>', 'at': '"""\%#$', 'input_after': '<CR>)', 'except': '\C\v^(\s*)\S.*%#\n%(%(\s*|\1\s.+)\n)*\1""""'})
-    call lexima#add_rule({'char': '<CR>', 'at': "''" . "'\\%#'" . "''", 'input_after': '<CR>'})
-    call lexima#add_rule({'char': '<CR>', 'at': "''" . "'\\%#$", 'input_after': '<CR>}', 'except': '\C\v^(\s*)\S.*%#\n%(%(\s*|\1\s.+)\n)*\1' + "''" . "'"})
-    call lexima#add_rule({'char': '<CR>', 'at': '```\%#```', 'input_after': '<CR>'})
-    call lexima#add_rule({'char': '<CR>', 'at': '```\%#$', 'input_after': '<CR>]', 'except': '\C\v^(\s*)\S.*%#\n%(%(\s*|\1\s.+)\n)*\1```'})
+        local opts = {
+            noremap = true,
+            silent = true,
+            expr = true,
+        }
 
-    " Do not complete whenever popup menu is visible
-    inoremap <silent> <CR> <C-g>u<C-r>=lexima#expand('<lt>CR>', 'i')<CR>
-    " Close popup before calling `lexima#insmode#escape()`
-    inoremap <silent><expr> <Esc> (pumvisible() ? '<C-e>' : '') . lexima#insmode#escape() . '<Esc>'
+        vim.api.nvim_set_keymap('i', '<CR>',
+            [[compe#close() . '<C-g>u' . luaeval('require"nvim-autopairs".autopairs_cr()')]], opts)
+EOF
 '''
 
 [[plugins]]
