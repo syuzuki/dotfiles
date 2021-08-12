@@ -461,7 +461,12 @@ hook_source = '''
                 }
             )
 
-            nvim_lsp[lang].setup(opts)
+            local setup = nvim_lsp[lang].setup
+            if config.setup then
+                setup = config.setup
+            end
+
+            setup(opts)
         end
 
         local signs = {
