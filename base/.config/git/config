@@ -16,6 +16,13 @@
 
 [diff]
     algorithm = histogram
+    tool = nvimdiff
+
+[difftool]
+    prompt = false
+
+[difftool.nvimdiff]
+    cmd = nvim -dR "${LOCAL}" "${REMOTE}"
 
 [fetch]
     prune = true

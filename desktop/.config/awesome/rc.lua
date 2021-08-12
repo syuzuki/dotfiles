@@ -629,9 +629,7 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Control" }, "r", awesome.restart),
     awful.key({ modkey, "Shift"   }, "q", awesome.quit),
     awful.key({ modkey, "Shift"   }, "w", function()
-        -- awful.spawn("sh -c 'lock & sleep 1; exec systemctl hibernate'")
-        -- awful.spawn("sh -c 'lock & sleep 1; (($(free | perl -n -E '\\''print if s/^Swap: *\\d+ +(\\d+).*/\\1/'\\'') > 0)) || { sudo swapoff /swapfile; sudo swapon /swapfile; }; exec systemctl hibernate'")
-        awful.spawn([[bash -c 'lock & sleep 1; (($(free | perl -n -E '\''print if s/^Swap: *\d+ +(\d+).*/\1/'\'') > 0)) && { sudo swapoff /swapfile; sudo swapon /swapfile; }; exec systemctl hibernate']])
+        awful.spawn("sh -c 'lock & sleep 1; exec systemctl hibernate'")
     end),
     awful.key({ modkey, "Shift"   }, "e", function()
         awful.spawn("sh -c 'lock & sleep 1; exec systemctl suspend'")
