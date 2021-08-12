@@ -54,7 +54,9 @@ hook_source = '''
             incremental_selection = {
                 enable = true,
                 keymaps = {
+                    init_selection = '<Plug>(treesitter-init-selection)',
                     node_incremental = 'J',
+                    scope_incremental = '<Plug>(treesitter-scope-incremental)',
                     node_decremental = 'K',
                 },
             },
