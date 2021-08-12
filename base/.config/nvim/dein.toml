@@ -403,9 +403,19 @@ hook_source = '''
             rust_analyzer = {
                 autoformat = { 'rust' },
                 lspinstall = 'rust',
+                on_attach = function(client, bufnr)
+                    vim.cmd [[
+                        augroup config_lsp_rust_buf
+                            autocmd!
+                            autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost <buffer> lua require'rust-tools/inlay_hints'.set_inlay_hints()
+                        augroup end
+                    ]]
+                end,
                 setup = function(opts)
                     require'rust-tools'.setup {
-                        tools = {},
+                        tools = {
+                            autoSetHints = false,
+                        },
                         server = opts,
                     }
                 end,
