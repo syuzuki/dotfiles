@@ -318,7 +318,7 @@ hook_source = '''
         end
 
         local function on_attach(client, bufnr)
-            require 'lsp_signature'.on_attach(signature_config)
+            require'lsp_signature'.on_attach(signature_config)
 
             local function buf_set_keymap(...)
                 vim.api.nvim_buf_set_keymap(bufnr, ...)
@@ -389,47 +389,50 @@ hook_source = '''
         local settings = {}
 
         local servers = {
-            clangd = {},
-            pyright = {},
-            rust_analyzer = {},
+            clangd = {
+                autoformat = { 'c', 'cpp' },
+                lspinstall = 'cpp',
+            },
+            pyright = {
+                autoformat = { 'python' },
+                lspinstall = 'python',
+            },
+            rust_analyzer = {
+                autoformat = { 'rust' },
+                lspinstall = 'rust',
+            },
             efm = {
-                filetypes = { 'python' },
-                init_options = {
-                    documentFormatting = true,
-                },
-                settings = {
-                    rootMarkers = { '.git' },
-                    languages = {
-                        python = {
-                            {
-                                formatCommand = 'black --quiet -',
-                                formatStdin = true,
+                lspinstall = 'efm',
+                config = {
+                    filetypes = { 'python' },
+                    init_options = {
+                        documentFormatting = true,
+                    },
+                    settings = {
+                        rootMarkers = { '.git' },
+                        languages = {
+                            python = {
+                                {
+                                    formatCommand = 'black --quiet -',
+                                    formatStdin = true,
+                                },
                             },
                         },
-
                     },
                 },
             },
         }
 
-        vim.g.autoformat_enable_ft = {
-            'c',
-            'cpp',
-            'python',
-            'rust',
-        }
+        vim.g.autoformat_enable_ft = {}
 
-        local lspinstall_map = {
-            clangd = 'cpp',
-            pyright = 'python',
-            rust_analyzer = 'rust',
-            efm = 'efm',
-        }
+        for lang, config in pairs(servers) do
+            if config.autoformat then
+                vim.g.autoformat_enable_ft = vim.list_extend(vim.g.autoformat_enable_ft, config.autoformat)
+            end
 
-        for lang, params in pairs(servers) do
             local cmd = nil
-            if lspinstall_map[lang] then
-                local lang_ = lspinstall_map[lang]
+            if config.lspinstall then
+                local lang_ = config.lspinstall
                 if lspinstall.is_server_installed(lang_) then
                     cmd = lspinstall_servers[lang_].default_config.cmd
                     if vim.regex([[^\.\{1,2}\/]]):match_str(cmd[1]) then
@@ -439,10 +442,10 @@ hook_source = '''
             end
 
             nvim_lsp[lang].setup(vim.tbl_deep_extend('keep', params, {
-                on_attach = on_attach,
                 cmd = cmd,
                 capabilities = capabilities,
                 settings = settings,
+                on_attach = on_attach,
             }))
         end
 
