@@ -441,12 +441,27 @@ hook_source = '''
                 end
             end
 
-            nvim_lsp[lang].setup(vim.tbl_deep_extend('keep', params, {
-                cmd = cmd,
-                capabilities = capabilities,
-                settings = settings,
-                on_attach = on_attach,
-            }))
+            local attach = on_attach
+            if config.on_attach then
+                local config_on_attach = config.on_attach
+                attach = function(client, bufnr)
+                    on_attach(client, bufnr)
+                    config_on_attach(client, bufnr)
+                end
+            end
+
+            local opts = vim.tbl_deep_extend(
+                'keep',
+                config.config or {},
+                {
+                    cmd = cmd,
+                    capabilities = capabilities,
+                    settings = settings,
+                    on_attach = attach,
+                }
+            )
+
+            nvim_lsp[lang].setup(opts)
         end
 
         local signs = {
