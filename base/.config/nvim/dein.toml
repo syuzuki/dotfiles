@@ -120,9 +120,9 @@ hook_post_source = '''
     call lexima#add_rule({'char': '<CR>', 'at': '```\%#$', 'input_after': '<CR>]', 'except': '\C\v^(\s*)\S.*%#\n%(%(\s*|\1\s.+)\n)*\1```'})
 
     " Do not complete whenever popup menu is visible
-    inoremap <CR> <C-g>u<C-r>=lexima#expand('<lt>CR>', 'i')<CR>
+    inoremap <silent> <CR> <C-g>u<C-r>=lexima#expand('<lt>CR>', 'i')<CR>
     " Close popup before calling `lexima#insmode#escape()`
-    inoremap <expr> <Esc> (pumvisible() ? '<C-e>' : '') . lexima#insmode#escape() . '<Esc>'
+    inoremap <silent><expr> <Esc> (pumvisible() ? '<C-e>' : '') . lexima#insmode#escape() . '<Esc>'
 '''
 
 [[plugins]]
