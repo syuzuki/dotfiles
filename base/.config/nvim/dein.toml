@@ -60,9 +60,6 @@ hook_source = '''
                     node_decremental = 'K',
                 },
             },
-            indent = {
-                enable = true,
-            },
         }
 EOF
 '''
