@@ -406,6 +406,10 @@ hook_source = '''
             dockerls = {
                 lspinstall = 'dockerfile',
             },
+            jsonls = {
+                autoformat = { 'json' },
+                lspinstall = 'json',
+            },
             pyright = {
                 autoformat = { 'python' },
                 lspinstall = 'python',
