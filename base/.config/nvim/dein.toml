@@ -434,6 +434,9 @@ hook_source = '''
                     }
                 end,
             },
+            tailwindcss = {
+                lspinstall = 'tailwindcss',
+            },
             texlab = {
                 lspinstall = 'latex',
             },
