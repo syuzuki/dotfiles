@@ -202,7 +202,7 @@ hook_source = '''
             },
         }
 
-        require'nvim-autopairs/completion/compe'.setup {
+        require'nvim-autopairs.completion.compe'.setup {
             map_cr = false,
         }
 
@@ -248,8 +248,8 @@ hook_add = '''
     lua <<END
         -- Reinstall/update specified language servers, work with headless
         _G.lsp_install_headless = function(lang)
-            local servers = require'lspinstall/servers'
-            local install_path = require'lspinstall/util'.install_path
+            local servers = require'lspinstall.servers'
+            local install_path = require'lspinstall.util'.install_path
 
             print('Install lsp ' .. lang .. '\n')
 
@@ -294,8 +294,8 @@ hook_source = '''
     lua <<EOF
         local nvim_lsp = require'lspconfig'
         local lspinstall = require'lspinstall'
-        local lspinstall_servers = require'lspinstall/servers'
-        local lspinstall_install_path = require'lspinstall/util'.install_path
+        local lspinstall_servers = require'lspinstall.servers'
+        local lspinstall_install_path = require'lspinstall.util'.install_path
 
         local signature_config = {
             hint_prefix = ' ',
@@ -411,7 +411,7 @@ hook_source = '''
                     vim.cmd [[
                         augroup config_lsp_rust_buf
                             autocmd!
-                            autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost <buffer> lua require'rust-tools/inlay_hints'.set_inlay_hints()
+                            autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost <buffer> lua require'rust-tools.inlay_hints'.set_inlay_hints()
                         augroup end
                     ]]
                 end,
