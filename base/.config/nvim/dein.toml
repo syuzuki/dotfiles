@@ -298,7 +298,6 @@ hook_source = '''
         local lspinstall_install_path = require'lspinstall/util'.install_path
 
         local signature_config = {
-            bind = true,
             hint_prefix = ' ',
         }
 
