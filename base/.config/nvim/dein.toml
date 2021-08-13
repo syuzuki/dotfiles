@@ -403,6 +403,9 @@ hook_source = '''
                 autoformat = { 'c', 'cpp' },
                 lspinstall = 'cpp',
             },
+            dockerls = {
+                lspinstall = 'dockerfile',
+            },
             pyright = {
                 autoformat = { 'python' },
                 lspinstall = 'python',
