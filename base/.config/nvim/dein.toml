@@ -109,6 +109,7 @@ hook_source = '''
     lua <<EOF
         require'nvim-autopairs'.setup {
             check_ts = true,
+            fast_wrap = {},
         }
 EOF
 '''
