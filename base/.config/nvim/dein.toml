@@ -437,6 +437,9 @@ hook_source = '''
             texlab = {
                 lspinstall = 'latex',
             },
+            vimls = {
+                lspinstall = 'vim',
+            },
             efm = {
                 lspinstall = 'efm',
                 config = {
