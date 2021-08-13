@@ -393,7 +393,13 @@ hook_source = '''
             }
         }
 
-        local settings = {}
+        local settings = {
+            ["rust-analyzer"] = {
+                checkOnSave = {
+                    command = 'clippy',
+                },
+            },
+        }
 
         local servers = {
             bashls = {
