@@ -59,6 +59,9 @@ hook_source = '''
                     node_decremental = 'K',
                 },
             },
+            autopairs = {
+                enable = true,
+            },
         }
 EOF
 '''
@@ -96,23 +99,17 @@ hook_post_source = '''
 
 [[plugins]]
 repo = 'windwp/nvim-autopairs'
-on_event = 'InsertEnter'
+# Specify same trigger to `nvim-treesitter`
+# Required load order:
+# 1. Add `nvim-treesitter` into lua `package.path`
+# 1. Load `nvim-autopairs.vim`
+# 1. Call `setup` of `nvim-treesitter` with `autopairs`
+on_event = 'BufRead'
 hook_source = '''
     lua <<EOF
-        require'nvim-autopairs'.setup {}
-
-        require'nvim-autopairs/completion/compe'.setup {
-            map_cr = false,
+        require'nvim-autopairs'.setup {
+            check_ts = true,
         }
-
-        local opts = {
-            noremap = true,
-            silent = true,
-            expr = true,
-        }
-
-        vim.api.nvim_set_keymap('i', '<CR>',
-            [[compe#close() . '<C-g>u' . luaeval('require"nvim-autopairs".autopairs_cr()')]], opts)
 EOF
 '''
 
@@ -195,6 +192,10 @@ hook_source = '''
             },
         }
 
+        require'nvim-autopairs/completion/compe'.setup {
+            map_cr = false,
+        }
+
         local regex_start_with_nonspace = vim.regex([[^\S]])
         _G.super_tab = function()
             if vim.fn.pumvisible() ~= 0 then
@@ -217,7 +218,9 @@ hook_source = '''
         }
 
         vim.api.nvim_set_keymap('i', '<Tab>', [[v:lua.super_tab()]], opts)
-        vim.api.nvim_set_keymap('i', '<C-g>', [[compe#close('')]], opts)
+        vim.api.nvim_set_keymap('i', '<C-g>', [[compe#close()]], opts)
+        vim.api.nvim_set_keymap('i', '<CR>',
+            [[compe#close() . '<C-g>u' . luaeval('require"nvim-autopairs".autopairs_cr()')]], opts)
 EOF
 '''
 
