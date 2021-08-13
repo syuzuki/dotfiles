@@ -396,6 +396,9 @@ hook_source = '''
         local settings = {}
 
         local servers = {
+            bashls = {
+                lspinstall = 'bash',
+            },
             clangd = {
                 autoformat = { 'c', 'cpp' },
                 lspinstall = 'cpp',
