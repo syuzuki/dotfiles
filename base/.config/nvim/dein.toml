@@ -299,6 +299,7 @@ hook_source = '''
 
         local signature_config = {
             bind = true,
+            hint_prefix = ' ',
         }
 
         -- This can override in project configuration
