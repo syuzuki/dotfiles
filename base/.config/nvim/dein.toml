@@ -107,9 +107,18 @@ repo = 'windwp/nvim-autopairs'
 on_event = 'BufRead'
 hook_source = '''
     lua <<EOF
-        require'nvim-autopairs'.setup {
+        local autopairs = require'nvim-autopairs'
+        local Rule = require'nvim-autopairs.rule'
+        local cond = require'nvim-autopairs.ts-conds'
+
+        autopairs.setup {
             check_ts = true,
             fast_wrap = {},
+        }
+
+        autopairs.add_rules {
+            Rule("''" .. "'", "''" .. "'", 'toml')
+                :with_pair(cond.is_not_ts_node { 'string', 'comment' }),
         }
 EOF
 '''
