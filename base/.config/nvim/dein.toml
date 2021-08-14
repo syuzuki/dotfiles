@@ -304,7 +304,7 @@ hook_source = '''
         -- This can override in project configuration
         vim.g.autoformat_disable_ft = {}
 
-        function autoformat()
+        _G.autoformat = function()
             local function to_bool(x)
                 return x and x ~= 0
             end
@@ -375,7 +375,7 @@ hook_source = '''
             vim.cmd [[
                 augroup config_lsp_buf
                     autocmd!
-                    autocmd BufWritePre <buffer> lua autoformat()
+                    autocmd BufWritePre <buffer> call v:lua.autoformat()
                 augroup end
             ]]
 
