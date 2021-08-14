@@ -9,9 +9,11 @@ repo = 'sainnhe/sonokai'
 
 [[plugins]]
 repo = 'nvim-lua/plenary.nvim'
+on_lua = 'plenary'
 
 [[plugins]]
 repo = 'nvim-lua/popup.nvim'
+on_lua = 'popup'
 
 [[plugins]]
 repo = 'nvim-telescope/telescope.nvim'
@@ -71,7 +73,7 @@ hook_post_update = '''
 
 [[plugins]]
 repo = 'sheerun/vim-polyglot'
-hook_add = '''
+hook_source = '''
     let g:polyglot_disabled = ['sensible']
 
     let g:vim_markdown_frontmatter = 1
@@ -83,7 +85,12 @@ on_path = '^sudo:'
 
 [[plugins]]
 repo = 'scrooloose/nerdcommenter'
+on_map = '<Plug>NERDCommenter'
 hook_add = '''
+    nmap # <Plug>NERDCommenterToggle
+    xmap # <Plug>NERDCommenterToggle
+'''
+hook_source = '''
     let g:NERDCommentWholeLinesInVMode = 1
     let g:NERDSpaceDelims = 1
     let g:NERDDefaultAlign = 'left'
@@ -91,10 +98,6 @@ hook_add = '''
         \ 'c': { 'left': '//', 'leftAlt': '/*', 'rightAlt': '*/' },
         \ 'arduino': { 'left': '//', 'leftAlt': '/*', 'rightAlt': '*/' },
         \ }
-'''
-hook_post_source = '''
-    nmap # <Plug>NERDCommenterToggle
-    vmap # <Plug>NERDCommenterToggle
 '''
 
 [[plugins]]
@@ -149,13 +152,15 @@ EOF
 
 [[plugins]]
 repo = 'tpope/vim-speeddating'
+on_map = ['<C-a>', '<C-x>']
 
 [[plugins]]
 repo = 'tpope/vim-repeat'
 
 [[plugins]]
 repo = 'dhruvasagar/vim-table-mode'
-hook_add = '''
+on_map = { n = '<Space>t' } # Cannot use `<Leader>`
+hook_source = '''
     " let g:table_mode_corner_corner = '+'
     " let g:table_mode_header_fillchar = '='
 '''
@@ -242,6 +247,7 @@ on_lua = 'lsp_signature'
 
 [[plugins]]
 repo = 'simrat39/rust-tools.nvim'
+on_lua = 'rust-tools'
 
 [[plugins]]
 repo = 'kabouzeid/nvim-lspinstall'
