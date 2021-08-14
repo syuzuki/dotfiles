@@ -9,9 +9,48 @@ repo = 'sainnhe/sonokai'
 
 [[plugins]]
 repo = 'hoob3rt/lualine.nvim'
+on_event = 'ColorScheme'
 hook_source = '''
     lua <<EOF
-        require'lualine'.setup {}
+        local theme_name = 'sonokai'
+
+        -- Convert lightline theme to lualine's
+        -- https://gist.github.com/shadmansaleh/000871c9a608a012721c6acc6d7a19b9
+
+        -- Use `nvim_eval` to autoload variable
+        local lightline_palette =
+            vim.api.nvim_eval('g:lightline#colorscheme#' .. theme_name .. '#palette')
+
+        local theme = {}
+        for mode, section in pairs(lightline_palette) do
+            theme[mode] = {}
+
+            local function set(name, colors)
+                theme[mode][name] = {
+                    fg = colors[1],
+                    bg = colors[2],
+                }
+                if #colors >= 5 then
+                    theme[mode][name].gui = colors[5]
+                end
+            end
+
+            set('a', section.left[1])
+            if section.left[2] then
+                set('b', section.left[2])
+            elseif section.right then
+                set('b', section.right[1])
+            end
+            if section.middle then
+                set('c', section.middle[1])
+            end
+        end
+
+        require'lualine'.setup {
+            options = {
+                theme = theme,
+            },
+        }
 EOF
 '''
 
