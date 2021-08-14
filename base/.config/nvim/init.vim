@@ -107,7 +107,6 @@ cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
-" cnoremap <C-d> <Delete>
 cnoremap <C-d> <Del>
 
 cabbrev <expr> h (getcmdtype() ==# ':' && getcmdline() ==# 'h') ? 'vert h' : 'h'
