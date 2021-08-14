@@ -22,7 +22,6 @@ hook_add = '''
     nnoremap <M-F> <Cmd>lua require('telescope.builtin').file_browser {}<CR>
     nnoremap <M-g> <Cmd>lua require('telescope.builtin').current_buffer_fuzzy_find {}<CR>
     nnoremap <M-G> <Cmd>lua require('telescope.builtin').live_grep {}<CR>
-    nnoremap <M-t> <Cmd>lua require('telescope.builtin').treesitter {}<CR>
 '''
 hook_source = '''
     lua <<EOF
@@ -60,6 +59,9 @@ hook_source = '''
                     node_decremental = 'K',
                 },
             },
+            autopairs = {
+                enable = true,
+            },
         }
 EOF
 '''
@@ -96,32 +98,29 @@ hook_post_source = '''
 '''
 
 [[plugins]]
-repo = 'cohama/lexima.vim'
-hook_add = '''
-    " Do not map <Esc> automatically
-    let g:lexima_map_escape = ''
-'''
-hook_post_source = '''
-    call lexima#set_default_rules()
+repo = 'windwp/nvim-autopairs'
+# Specify same trigger to `nvim-treesitter`
+# Required load order:
+# 1. Add `nvim-treesitter` into lua `package.path`
+# 1. Load `nvim-autopairs.vim`
+# 1. Call `setup` of `nvim-treesitter` with `autopairs`
+on_event = 'BufRead'
+hook_source = '''
+    lua <<EOF
+        local autopairs = require'nvim-autopairs'
+        local Rule = require'nvim-autopairs.rule'
+        local cond = require'nvim-autopairs.ts-conds'
 
-    call lexima#add_rule({'char': '(', 'at': '\%#\w'})
-    call lexima#add_rule({'char': '{', 'at': '\%#\w'})
-    call lexima#add_rule({'char': '[', 'at': '\%#\w'})
-    call lexima#add_rule({'char': '"', 'at': '\%#\w'})
-    call lexima#add_rule({'char': "'", 'at': '\%#\w'})
-    call lexima#add_rule({'char': '`', 'at': '\%#\w'})
+        autopairs.setup {
+            check_ts = true,
+            fast_wrap = {},
+        }
 
-    call lexima#add_rule({'char': '<CR>', 'at': '"""\%#"""', 'input_after': '<CR>'})
-    call lexima#add_rule({'char': '<CR>', 'at': '"""\%#$', 'input_after': '<CR>)', 'except': '\C\v^(\s*)\S.*%#\n%(%(\s*|\1\s.+)\n)*\1""""'})
-    call lexima#add_rule({'char': '<CR>', 'at': "''" . "'\\%#'" . "''", 'input_after': '<CR>'})
-    call lexima#add_rule({'char': '<CR>', 'at': "''" . "'\\%#$", 'input_after': '<CR>}', 'except': '\C\v^(\s*)\S.*%#\n%(%(\s*|\1\s.+)\n)*\1' + "''" . "'"})
-    call lexima#add_rule({'char': '<CR>', 'at': '```\%#```', 'input_after': '<CR>'})
-    call lexima#add_rule({'char': '<CR>', 'at': '```\%#$', 'input_after': '<CR>]', 'except': '\C\v^(\s*)\S.*%#\n%(%(\s*|\1\s.+)\n)*\1```'})
-
-    " Do not complete whenever popup menu is visible
-    inoremap <silent> <CR> <C-g>u<C-r>=lexima#expand('<lt>CR>', 'i')<CR>
-    " Close popup before calling `lexima#insmode#escape()`
-    inoremap <silent><expr> <Esc> (pumvisible() ? '<C-e>' : '') . lexima#insmode#escape() . '<Esc>'
+        autopairs.add_rules {
+            Rule("''" .. "'", "''" .. "'", 'toml')
+                :with_pair(cond.is_not_ts_node { 'string', 'comment' }),
+        }
+EOF
 '''
 
 [[plugins]]
@@ -160,52 +159,416 @@ hook_add = '''
 '''
 
 [[plugins]]
-repo = 'neoclide/coc.nvim'
-rev = 'release'
-hook_add = '''
-    " # Extentions
-    "
-    " * coc-clangd: clangd, clang-format
-    " * coc-json
-    " * coc-pyright: pyright, black
-    " * coc-rust-analyzer
+repo = 'L3MON4D3/LuaSnip'
+on_lua = 'luasnip'
+hook_source = '''
+    inoremap <silent> <C-j> <Cmd>lua require'luasnip'.jump(1)<CR>
+    inoremap <silent> <C-k> <Cmd>lua require'luasnip'.jump(-1)<CR>
 
-    let g:coc_global_extensions = [
-        \ 'coc-snippets',
-        \ ]
-
-    set signcolumn=number
-
-    let g:coc_snippet_next = '<Tab>'
-    "let g:coc_snippet_prev = '<S-Tab>'
+    snoremap <silent> <C-j> <Cmd>lua require'luasnip'.jump(1)<CR>
+    snoremap <silent> <C-k> <Cmd>lua require'luasnip'.jump(-1)<CR>
 '''
-hook_post_source = '''
-    augroup config_coc
-        autocmd!
-        autocmd User CocOpenFloat set winblend=20
-    augroup END
 
-    map <silent> [a <Plug>(coc-diagnostic-prev)
-    map <silent> ]a <Plug>(coc-diagnostic-next)
+[[plugins]]
+repo = 'hrsh7th/nvim-compe'
+on_event = 'InsertEnter'
+hook_source = '''
+    lua <<EOF
+        vim.o.completeopt = 'menuone,noselect'
 
-    nnoremap <silent> K <Cmd>call CocAction('doHover')<CR>
+        require'compe'.setup {
+            preselect = 'always',
+            documentation = {
+                border = 'rounded',
+                winhighlight = 'NormalFloat:NormalFloat,FloatBorder:FloatBorder',
+            },
+            source = {
+                path = {
+                    kind = ' ',
+                },
+                buffer = {
+                    kind = ' ',
+                    menu = '[B]',
+                },
+                calc = {
+                    kind = ' ',
+                },
+                nvim_lsp = true,
+                nvim_lua = true,
+                luasnip = {
+                    kind = ' ',
+                    menu = '[SNIP]',
+                },
+            },
+        }
 
-    nmap <silent> gd <Plug>(coc-definition)
-    nmap <silent> gy <Plug>(coc-type-definition)
-    nmap <silent> gi <Plug>(coc-implementation)
-    nmap <silent> gr <Plug>(coc-reference)
+        require'nvim-autopairs.completion.compe'.setup {
+            map_cr = false,
+        }
 
-    function! s:following_nospace() abort
-        let col = col('.') - 1
-        return col > 0 && getline('.')[col - 1] =~# '\S'
-    endfunction
+        local regex_start_with_nonspace = vim.regex([[^\S]])
+        _G.super_tab = function()
+            if vim.fn.pumvisible() ~= 0 then
+                local break_undo = vim.api.nvim_replace_termcodes('<C-g>u', true, true, true)
+                return break_undo .. vim.fn['compe#confirm']('<Tab>')
+            end
 
-    inoremap <expr> <Tab>
-        \ pumvisible() ? coc#_select_confirm() :
-        \ coc#expandableOrJumpable() ?
-        \     "<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump', ''])<CR>" :
-        \ <SID>following_nospace() ?  coc#refresh() :
-        \ "\<Tab>"
+            local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+            if col > 0 and regex_start_with_nonspace:match_line(0, row - 1, col - 1) then
+                return vim.fn['compe#complete']()
+            end
 
-    set statusline=%f\ %h%w%m%r\ %{coc#status()}%{get(b:,'coc_current_function','')}%=%l/%L,%c%V
+            return vim.api.nvim_replace_termcodes('<Tab>', true, true, true)
+        end
+
+        local opts = {
+            noremap = true,
+            silent = true,
+            expr = true,
+        }
+
+        vim.api.nvim_set_keymap('i', '<Tab>', [[v:lua.super_tab()]], opts)
+        vim.api.nvim_set_keymap('i', '<C-g>', [[compe#close()]], opts)
+        vim.api.nvim_set_keymap('i', '<CR>',
+            [[compe#close() . '<C-g>u' . luaeval('require"nvim-autopairs".autopairs_cr()')]], opts)
+EOF
+'''
+
+[[plugins]]
+repo = 'ray-x/lsp_signature.nvim'
+on_lua = 'lsp_signature'
+
+[[plugins]]
+repo = 'simrat39/rust-tools.nvim'
+
+[[plugins]]
+repo = 'kabouzeid/nvim-lspinstall'
+on_lua = 'lspinstall'
+hook_add = '''
+    lua <<END
+        -- Reinstall/update specified language servers, work with headless
+        _G.lsp_install_headless = function(lang)
+            local servers = require'lspinstall.servers'
+            local install_path = require'lspinstall.util'.install_path
+
+            print('Install lsp ' .. lang .. '\n')
+
+            local shell = vim.o.shell
+            vim.o.shell = '/usr/bin/env bash'
+
+            local function output_callback(job, data, event)
+                -- `print()` cannot treat multiple newlines
+                vim.api.nvim_echo({{ table.concat(data, '\n'), 'None' }}, true, {})
+            end
+
+            local job = vim.fn.jobstart('set -e; ' .. servers[lang].install_script, {
+                cwd = install_path(lang),
+                on_stdout = output_callback,
+                on_stderr = output_callback,
+            })
+            if job <= 0 then
+                print('jobstart failed with ' .. job .. '\n')
+                return
+            end
+
+            vim.o.shell = shell
+
+            vim.fn.jobwait { job }
+        end
+
+        -- Reinstall/update all installed language servers, work with headless
+        _G.lsp_reinstall_all_headless = function()
+            local lspinstall = require'lspinstall'
+            for _, lsp in ipairs(lspinstall.installed_servers()) do
+                _G.lsp_install_headless(lsp)
+            end
+        end
+END
+'''
+
+[[plugins]]
+repo = 'neovim/nvim-lspconfig'
+# Initialize after `:syntax enable` to do LSP formatting correctly
+on_event = 'Syntax'
+hook_source = '''
+    lua <<EOF
+        local nvim_lsp = require'lspconfig'
+        local lspinstall = require'lspinstall'
+        local lspinstall_servers = require'lspinstall.servers'
+        local lspinstall_install_path = require'lspinstall.util'.install_path
+
+        local signature_config = {
+            hint_prefix = ' ',
+        }
+
+        -- This can override in project configuration
+        vim.g.autoformat_disable_ft = {}
+
+        function autoformat()
+            local function to_bool(x)
+                return x and x ~= 0
+            end
+
+            if to_bool(vim.b.autoformat_disable) then
+                return
+            end
+
+            if not to_bool(vim.b.autoformat_enable) then
+                if vim.tbl_contains(vim.g.autoformat_disable_ft, vim.bo.filetype) then
+                    return
+                end
+
+                if not vim.tbl_contains(vim.g.autoformat_enable_ft, vim.bo.filetype) then
+                    return
+                end
+            end
+
+            vim.lsp.buf.formatting_sync(nil, 1000)
+        end
+
+        local function on_attach(client, bufnr)
+            require'lsp_signature'.on_attach(signature_config)
+
+            local function buf_set_keymap(...)
+                vim.api.nvim_buf_set_keymap(bufnr, ...)
+            end
+
+            local opts = {
+                noremap = true,
+                silent = true,
+            }
+
+            buf_set_keymap('n', 'gd',
+                [[<Cmd>lua require('telescope.builtin').lsp_definitions {}<CR>]], opts)
+            buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+            buf_set_keymap('n', 'gi',
+                [[<Cmd>lua require('telescope.builtin').lsp_implementations {}<CR>]], opts)
+            buf_set_keymap('n', 'g<C-d>', '<Cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+
+            buf_set_keymap('n', '<M-y>',
+                [[<Cmd>lua require('telescope.builtin').lsp_document_symbols {}<CR>]], opts)
+            buf_set_keymap('n', '<M-Y>',
+                [[<Cmd>lua require('telescope.builtin').lsp_workspace_symbols {}<CR>]], opts)
+            buf_set_keymap('n', 'gr', '<Cmd>lua vim.lsp.buf.reference()<CR>', opts)
+            buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+            buf_set_keymap('n', '<C-k>', '<Cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+
+            buf_set_keymap('n', 'gf', '<Cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+            buf_set_keymap('x', 'gf', '<Cmd>lua vim.lsp.buf.range_formatting()<CR>', opts)
+
+            buf_set_keymap('n', 'gn', '<Cmd>lua vim.lsp.buf.rename()<CR>', opts)
+            buf_set_keymap('n', '<Leader>a',
+                [[<Cmd>lua require('telescope.builtin').lsp_code_actions {}<CR>]], opts)
+
+            buf_set_keymap('n', '<M-a>',
+                [[<Cmd>lua require('telescope.builtin').lsp_document_diagnostics {}<CR>]], opts)
+            buf_set_keymap('n', '<M-A>',
+                [[<Cmd>lua require('telescope.builtin').lsp_workspace_diagnostics {}<CR>]], opts)
+            buf_set_keymap('n', '[d', '<Cmd>lua vim.lsp.diagnostic.goto_prev { wrap = false }<CR>', opts)
+            buf_set_keymap('n', ']d', '<Cmd>lua vim.lsp.diagnostic.goto_next { wrap = false }<CR>', opts)
+            buf_set_keymap('x', '[d', '<Cmd>lua vim.lsp.diagnostic.goto_prev { wrap = false }<CR>', opts)
+            buf_set_keymap('x', ']d', '<Cmd>lua vim.lsp.diagnostic.goto_next { wrap = false }<CR>', opts)
+
+            vim.b.autoformat_disable = false
+            vim.b.autoformat_enable = false
+
+            vim.cmd [[
+                augroup config_lsp_buf
+                    autocmd!
+                    autocmd BufWritePre <buffer> lua autoformat()
+                augroup end
+            ]]
+
+            vim.lsp.handlers['textDocument/hover'] =
+                vim.lsp.with(vim.lsp.handlers.hover, { border = 'rounded' })
+        end
+
+        local capabilities = vim.lsp.protocol.make_client_capabilities()
+        capabilities.textDocument.completion.completionItem.snippetSupport = true
+        capabilities.textDocument.completion.completionItem.resolveSupport = {
+            properties = {
+                'documentation',
+                'detail',
+                'additionalTextEdits',
+            }
+        }
+
+        local settings = {
+            ["rust-analyzer"] = {
+                checkOnSave = {
+                    command = 'clippy',
+                },
+            },
+        }
+
+        local servers = {
+            bashls = {
+                lspinstall = 'bash',
+            },
+            clangd = {
+                autoformat = { 'c', 'cpp' },
+                lspinstall = 'cpp',
+            },
+            dockerls = {
+                lspinstall = 'dockerfile',
+            },
+            jsonls = {
+                autoformat = { 'json' },
+                lspinstall = 'json',
+            },
+            pyright = {
+                autoformat = { 'python' },
+                lspinstall = 'python',
+            },
+            rust_analyzer = {
+                autoformat = { 'rust' },
+                lspinstall = 'rust',
+                on_attach = function(client, bufnr)
+                    vim.cmd [[
+                        augroup config_lsp_rust_buf
+                            autocmd!
+                            autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost <buffer> lua require'rust-tools.inlay_hints'.set_inlay_hints()
+                        augroup end
+                    ]]
+                end,
+                setup = function(opts)
+                    require'rust-tools'.setup {
+                        tools = {
+                            autoSetHints = false,
+                        },
+                        server = opts,
+                    }
+                end,
+            },
+            tailwindcss = {
+                lspinstall = 'tailwindcss',
+            },
+            texlab = {
+                lspinstall = 'latex',
+            },
+            vimls = {
+                lspinstall = 'vim',
+            },
+            efm = {
+                lspinstall = 'efm',
+                config = {
+                    filetypes = { 'python' },
+                    init_options = {
+                        documentFormatting = true,
+                    },
+                    settings = {
+                        rootMarkers = { '.git' },
+                        languages = {
+                            python = {
+                                {
+                                    formatCommand = 'black --quiet -',
+                                    formatStdin = true,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        }
+
+        vim.g.autoformat_enable_ft = {}
+
+        for lang, config in pairs(servers) do
+            if config.autoformat then
+                vim.g.autoformat_enable_ft = vim.list_extend(vim.g.autoformat_enable_ft, config.autoformat)
+            end
+
+            local cmd = nil
+            if config.lspinstall then
+                local lang_ = config.lspinstall
+                if lspinstall.is_server_installed(lang_) then
+                    cmd = lspinstall_servers[lang_].default_config.cmd
+                    if vim.regex([[^\.\{1,2}\/]]):match_str(cmd[1]) then
+                        cmd[1] = lspinstall_install_path(lang_) .. '/' .. cmd[1]
+                    end
+                end
+            end
+
+            local attach = on_attach
+            if config.on_attach then
+                local config_on_attach = config.on_attach
+                attach = function(client, bufnr)
+                    on_attach(client, bufnr)
+                    config_on_attach(client, bufnr)
+                end
+            end
+
+            local opts = vim.tbl_deep_extend(
+                'keep',
+                config.config or {},
+                {
+                    cmd = cmd,
+                    capabilities = capabilities,
+                    settings = settings,
+                    on_attach = attach,
+                }
+            )
+
+            local setup = nvim_lsp[lang].setup
+            if config.setup then
+                setup = config.setup
+            end
+
+            setup(opts)
+        end
+
+        local signs = {
+            Error = ' ',
+            Warning = ' ',
+            Hint = ' ',
+            Information = ' ',
+        }
+
+        for type, text in pairs(signs) do
+            local hl = 'LspDiagnosticsSign' .. type
+            vim.fn.sign_define(hl, { text = text, texthl = hl, numhl = '' })
+        end
+
+        local kinds = {
+            Text          = ' ',
+            Method        = ' ',
+            Function      = 'ƒ ',
+            Constructor   = ' ',
+            Field         = ' ',
+            Variable      = ' ',
+            Class         = ' ',
+            Interface     = ' ',
+            Module        = ' ',
+            Property      = ' ',
+            Unit          = ' ',
+            Value         = ' ',
+            Enum          = ' ',
+            Keyword       = ' ',
+            Snippet       = ' ',
+            Color         = ' ',
+            File          = ' ',
+            Reference     = ' ',
+            Folder        = ' ',
+            EnumMember    = ' ',
+            Constant      = ' ',
+            Struct        = ' ',
+            Event         = ' ',
+            Operator      = ' ',
+            TypeParameter = ' ',
+        }
+
+        for name, str in pairs(kinds) do
+            if vim.lsp.protocol.CompletionItemKind[name] ~= nil then
+                vim.lsp.protocol.CompletionItemKind[vim.lsp.protocol.CompletionItemKind[name]] = str
+            end
+        end
+
+        vim.cmd [[
+            augroup config_lsp
+                autocmd!
+                " Set rounded border to the window opened by `LspInfo`
+                autocmd FileType lspinfo call nvim_win_set_config(0, { 'border': 'rounded' })
+            augroup end
+        ]]
+EOF
 '''

@@ -33,6 +33,8 @@ augroup config
     autocmd!
     autocmd VimEnter * call dein#call_hook('post_source')
     autocmd ColorScheme * highlight link IdeographicSpace Visual
+    autocmd ColorScheme * highlight! link NormalFloat TelescopeNormal
+    autocmd ColorScheme * highlight! link FloatBorder TelescopeBorder
     autocmd BufNew,BufRead * match IdeographicSpace /\%u3000/
 augroup end
 
@@ -40,6 +42,7 @@ colorscheme sonokai
 
 set modeline
 set number
+set signcolumn=number
 set fileencodings=utf-8,cp932,euc-jp
 set autoindent smartindent
 set tabstop=4 shiftwidth=0 expandtab
@@ -51,8 +54,6 @@ set splitbelow splitright
 set clipboard=unnamed
 set autoread
 set termguicolors
-set pumblend=20
-set completeopt=menuone,noinsert
 set list listchars=tab:»-,trail:␣,nbsp:%
 
 let mapleader = ' '
@@ -99,7 +100,6 @@ inoremap <C-y> <C-o>3<C-y>
 inoremap <C-z> <C-o>zz
 inoremap <C-p> <Up>
 inoremap <C-n> <Down>
-inoremap <expr> <C-g> pumvisible() ? '<C-e>' : ''
 
 cnoremap <C-b> <Left>
 cnoremap <C-f> <Right>
