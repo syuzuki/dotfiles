@@ -8,6 +8,14 @@ hook_add = '''
 repo = 'sainnhe/sonokai'
 
 [[plugins]]
+repo = 'hoob3rt/lualine.nvim'
+hook_source = '''
+    lua <<EOF
+        require'lualine'.setup {}
+EOF
+'''
+
+[[plugins]]
 repo = 'nvim-lua/plenary.nvim'
 on_lua = 'plenary'
 
