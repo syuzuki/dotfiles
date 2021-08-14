@@ -136,6 +136,8 @@ on_lua = 'hop'
 hook_add = '''
     nnoremap <silent> s <Cmd>lua require'hop'.hint_char2()<CR>
     xnoremap <silent> s <Cmd>lua require'hop'.hint_char2()<CR>
+    nnoremap <silent> S <Cmd>lua require'hop'.hint_lines()<CR>
+    xnoremap <silent> S <Cmd>lua require'hop'.hint_lines()<CR>
 '''
 hook_source = '''
     lua <<EOF
