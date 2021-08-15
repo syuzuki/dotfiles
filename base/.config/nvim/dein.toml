@@ -135,6 +135,15 @@ repo = 'nvim-treesitter/nvim-treesitter'
 rev = '0.5-compat'
 on_event = 'BufRead'
 hook_source = '''
+    " Loading external modules (such as `nvim-treesitter-textobjects`)
+    "
+    " Required load order:
+    " 1. Add `nvim-treesitter` into lua `package.path`
+    " 2. Load `MODULE_PLUGIN.vim` to call `init` of the module
+    " 3. Call `setup` of `nvim-treesitter` with `MODULE = { enable = true }`
+    "
+    " 1 and 2 can be done by specifying same `on_*` to `nvim-treesitter` to the plugin of the module
+
     lua <<EOF
         require'nvim-treesitter.configs'.setup {
             ensure_installed = 'maintained',
@@ -152,6 +161,7 @@ hook_source = '''
                     node_decremental = 'K',
                 },
             },
+            textobjects = {},
             autopairs = {
                 enable = true,
             },
@@ -161,6 +171,11 @@ EOF
 hook_post_update = '''
     TSUpdate
 '''
+
+[[plugins]]
+repo = 'nvim-treesitter/nvim-treesitter-textobjects'
+rev = '0.5-compat'
+on_event = 'BufRead'
 
 [[plugins]]
 repo = 'sheerun/vim-polyglot'
@@ -193,11 +208,6 @@ hook_source = '''
 
 [[plugins]]
 repo = 'windwp/nvim-autopairs'
-# Specify same trigger to `nvim-treesitter`
-# Required load order:
-# 1. Add `nvim-treesitter` into lua `package.path`
-# 1. Load `nvim-autopairs.vim`
-# 1. Call `setup` of `nvim-treesitter` with `autopairs`
 on_event = 'BufRead'
 hook_source = '''
     lua <<EOF
