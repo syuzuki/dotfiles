@@ -8,6 +8,10 @@ hook_add = '''
 repo = 'sainnhe/sonokai'
 
 [[plugins]]
+repo = 'kyazdani42/nvim-web-devicons'
+on_lua = 'nvim-web-devicons'
+
+[[plugins]]
 repo = 'hoob3rt/lualine.nvim'
 on_event = 'ColorScheme'
 hook_source = '''
