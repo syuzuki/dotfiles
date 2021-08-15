@@ -48,6 +48,8 @@ hook_source = '''
 
         require'lualine'.setup {
             options = {
+                section_separators = { '', '' },
+                component_separators = { '', '' },
                 theme = theme,
             },
         }
