@@ -50,12 +50,50 @@ hook_source = '''
             end
         end
 
+        local sections = {
+            lualine_a = {
+                '" "',
+            },
+            lualine_b = {
+                {
+                    'filename',
+                    path = 1, -- relative path
+                },
+            },
+            lualine_c = {
+                'branch',
+                'diff',
+                {
+                    'diagnostics',
+                    sources = { 'nvim_lsp' },
+                },
+            },
+            lualine_x = {
+                'encoding',
+                'fileformat',
+                'filetype',
+            },
+            lualine_y = {
+                'location',
+                'vim.api.nvim_buf_line_count(0)',
+                'progress',
+            },
+            lualine_z = {
+                '" "',
+            },
+        }
+
+        local inactive_sections = vim.deepcopy(sections)
+        inactive_sections.lualine_c = {}
+
         require'lualine'.setup {
             options = {
                 section_separators = { '', '' },
                 component_separators = { '', '' },
                 theme = theme,
             },
+            sections = sections,
+            inactive_sections = inactive_sections,
         }
 EOF
 '''
