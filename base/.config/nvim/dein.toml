@@ -15,7 +15,7 @@ hook_source = '''
         local theme_name = 'sonokai'
 
         -- Convert lightline theme to lualine's
-        -- https://gist.github.com/shadmansaleh/000871c9a608a012721c6acc6d7a19b9
+        -- See https://gist.github.com/shadmansaleh/000871c9a608a012721c6acc6d7a19b9
 
         -- Use `nvim_eval` to autoload variable
         local lightline_palette =
