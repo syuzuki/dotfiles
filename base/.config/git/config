@@ -1,5 +1,6 @@
 [core]
     pager = less -F
+    quotePath = false
 
 [alias]
     cloneb = clone --filter blob:none
@@ -9,7 +10,6 @@
 
 [color]
     ui = auto
-    quotePath = false
 
 [credential]
     helper = libsecret
