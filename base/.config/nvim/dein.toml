@@ -289,7 +289,9 @@ hook_source = '''
 
         autopairs.setup {
             check_ts = true,
-            fast_wrap = {},
+            fast_wrap = {
+                pattern2 = { [=[.%f[^%w_]]=], [=[[%'%"%`%)%>%]%)%}%,]]=] },
+            },
         }
 
         do
@@ -320,17 +322,36 @@ hook_source = '''
                     local index = 1
                     local str_length = #line
                     local is_have_end = false
-                    for i = col + 2, #line, 1 do
-                        local char = line:sub(i, i)
-                        if string.match(char, config.pattern) then
-                            local key = config.keys:sub(index, index)
-                            index = index + 1
-                            if str_length == i then
-                                key = config.end_key
-                                is_have_end = true
+                    if not config.pattern2 then
+                        for i = col + 2, #line, 1 do
+                            local char = line:sub(i, i)
+                            if string.match(char, config.pattern) then
+                                local key = config.keys:sub(index, index)
+                                index = index + 1
+                                if str_length == i then
+                                    key = config.end_key
+                                    is_have_end = true
+                                end
+                                table.insert(list_pos, { col = i, key = key, char = char })
                             end
-                            table.insert(list_pos, { col = i, key = key, char = char })
                         end
+                    else
+                        local indices = {}
+                        for _, pat in ipairs(config.pattern2) do
+                            local last_col = col + 1
+                            while true do
+                                local i, _ = string.find(line, pat, last_col)
+                                if not i then
+                                    break
+                                end
+                                indices[i + 1] = {}
+                                last_col = i + 1
+                            end
+                        end
+                        indices = vim.tbl_keys(indices)
+                        table.sort(indices)
+
+                        -- TODO
                     end
 
                     if not is_have_end then
