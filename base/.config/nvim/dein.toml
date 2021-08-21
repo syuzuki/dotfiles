@@ -6,6 +6,20 @@ hook_add = '''
 
 [[plugins]]
 repo = 'sainnhe/sonokai'
+hook_add = '''
+    function! s:colorscheme_override() abort
+        highlight! link NormalFloat TelescopeNormal
+        highlight! link FloatBorder TelescopeBorder
+
+        highlight link IdeographicSpace Visual
+        match IdeographicSpace /\%u3000/
+    endfunction
+
+    augroup config_colorscheme
+        autocmd VimEnter * nested colorscheme sonokai
+        autocmd ColorScheme sonokai call s:colorscheme_override()
+    augroup end
+'''
 
 [[plugins]]
 repo = 'kyazdani42/nvim-web-devicons'
