@@ -27,8 +27,6 @@ if dein#check_install()
     call dein#install()
 endif
 
-call dein#call_hook('source')
-
 function! s:highlight_ideographicspace() abort
     highlight link IdeographicSpace Visual
     match IdeographicSpace /\%u3000/
@@ -36,7 +34,6 @@ endfunction
 
 augroup config
     autocmd!
-    autocmd VimEnter * call dein#call_hook('post_source')
     autocmd ColorScheme * call s:highlight_ideographicspace()
 augroup end
 
