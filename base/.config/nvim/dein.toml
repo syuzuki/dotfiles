@@ -10,9 +10,6 @@ hook_add = '''
     function! s:colorscheme_override() abort
         highlight! link NormalFloat TelescopeNormal
         highlight! link FloatBorder TelescopeBorder
-
-        highlight link IdeographicSpace Visual
-        match IdeographicSpace /\%u3000/
     endfunction
 
     augroup config_colorscheme
