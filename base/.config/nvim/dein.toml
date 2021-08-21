@@ -234,9 +234,6 @@ hook_source = '''
                     },
                 },
             },
-            autopairs = {
-                enable = true,
-            },
         }
 EOF
 '''
@@ -279,107 +276,32 @@ hook_source = '''
 '''
 
 [[plugins]]
-repo = 'windwp/nvim-autopairs'
-on_event = 'BufRead'
-hook_source = '''
-    lua <<EOF
-        local autopairs = require'nvim-autopairs'
-        local Rule = require'nvim-autopairs.rule'
-        local cond = require'nvim-autopairs.ts-conds'
+repo = 'cohama/lexima.vim'
+hook_add = '''
+    " Do not map <Esc> automatically
+    let g:lexima_map_escape = ''
+'''
+hook_post_source = '''
+    call lexima#set_default_rules()
 
-        autopairs.setup {
-            check_ts = true,
-            fast_wrap = {
-                pattern2 = { [=[.%f[^%w_]]=], [=[[%'%"%`%)%>%]%)%}%,]]=] },
-            },
-        }
+    call lexima#add_rule({'char': '(', 'at': '\%#\w'})
+    call lexima#add_rule({'char': '{', 'at': '\%#\w'})
+    call lexima#add_rule({'char': '[', 'at': '\%#\w'})
+    call lexima#add_rule({'char': '"', 'at': '\%#\w'})
+    call lexima#add_rule({'char': "'", 'at': '\%#\w'})
+    call lexima#add_rule({'char': '`', 'at': '\%#\w'})
 
-        do
-            local fastwrap = require'nvim-autopairs.fastwrap'
-            local utils = require'nvim-autopairs.utils'
-            local log = require'nvim-autopairs._log'
-            local npairs = autopairs
+    call lexima#add_rule({'char': '<CR>', 'at': '"""\%#"""', 'input_after': '<CR>'})
+    call lexima#add_rule({'char': '<CR>', 'at': '"""\%#$', 'input_after': '<CR>)', 'except': '\C\v^(\s*)\S.*%#\n%(%(\s*|\1\s.+)\n)*\1""""'})
+    call lexima#add_rule({'char': '<CR>', 'at': "''" . "'\\%#'" . "''", 'input_after': '<CR>'})
+    call lexima#add_rule({'char': '<CR>', 'at': "''" . "'\\%#$", 'input_after': '<CR>}', 'except': '\C\v^(\s*)\S.*%#\n%(%(\s*|\1\s.+)\n)*\1' + "''" . "'"})
+    call lexima#add_rule({'char': '<CR>', 'at': '```\%#```', 'input_after': '<CR>'})
+    call lexima#add_rule({'char': '<CR>', 'at': '```\%#$', 'input_after': '<CR>]', 'except': '\C\v^(\s*)\S.*%#\n%(%(\s*|\1\s.+)\n)*\1```'})
 
-            local state = npairs.state
-            local config = npairs.config.fast_wrap
-
-            fastwrap.show = function(line)
-                line = line or utils.text_get_current_line(0)
-                log.debug(line)
-                local row, col = utils.get_cursor()
-                local prev_char = utils.text_cusor_line(line, col, 1, 1, false)
-                local end_pair = ''
-                if utils.is_in_table(config.chars, prev_char) then
-                    for _, rule in pairs(state.rules) do
-                        if rule.start_pair == prev_char then
-                            end_pair = rule.end_pair
-                        end
-                    end
-                    if end_pair == '' then
-                        return
-                    end
-                    local list_pos = {}
-                    local index = 1
-                    local str_length = #line
-                    local is_have_end = false
-                    if not config.pattern2 then
-                        for i = col + 2, #line, 1 do
-                            local char = line:sub(i, i)
-                            if string.match(char, config.pattern) then
-                                local key = config.keys:sub(index, index)
-                                index = index + 1
-                                if str_length == i then
-                                    key = config.end_key
-                                    is_have_end = true
-                                end
-                                table.insert(list_pos, { col = i, key = key, char = char })
-                            end
-                        end
-                    else
-                        local indices = {}
-                        for _, pat in ipairs(config.pattern2) do
-                            local last_col = col + 1
-                            while true do
-                                local i, _ = string.find(line, pat, last_col)
-                                if not i then
-                                    break
-                                end
-                                indices[i + 1] = {}
-                                last_col = i + 1
-                            end
-                        end
-                        indices = vim.tbl_keys(indices)
-                        table.sort(indices)
-
-                        -- TODO
-                    end
-
-                    if not is_have_end then
-                        table.insert(list_pos, { col = str_length + 1, key = config.end_key })
-                    end
-
-                    fastwrap.highlight_wrap(list_pos, row)
-                    vim.defer_fn(function()
-                        local char = fastwrap.getchar_handler()
-                        for _, pos in pairs(list_pos) do
-                            if char == pos.key then
-                                fastwrap.move_bracket(line, pos.col, end_pair, pos.char)
-                            end
-                        end
-                        vim.api.nvim_buf_clear_namespace(0, fastwrap.ns_fast_wrap, row - 1, row + 1)
-                        vim.cmd('startinsert')
-                    end, 10)
-                    return
-                end
-                vim.cmd('startinsert')
-            end
-        end
-
-        autopairs.add_rules {
-            Rule("''" .. "'", "''" .. "'", 'toml')
-                :with_pair(cond.is_not_ts_node { 'string', 'comment' }),
-        }
-EOF
+    " Do not complete whenever popup menu is visible
+    inoremap <silent> <CR> <C-g>u<C-r>=lexima#expand('<lt>CR>', 'i')<CR>
+    " Close popup before calling `lexima#insmode#escape()`
+    inoremap <silent><expr> <Esc> (pumvisible() ? '<C-e>' : '') . lexima#insmode#escape() . '<Esc>'
 '''
 
 [[plugins]]
@@ -492,8 +414,6 @@ hook_source = '''
 
         vim.api.nvim_set_keymap('i', '<Tab>', [[v:lua.super_tab()]], opts)
         vim.api.nvim_set_keymap('i', '<C-g>', [[compe#close()]], opts)
-        vim.api.nvim_set_keymap('i', '<CR>',
-            [[compe#close() . '<C-g>u' . luaeval('require"nvim-autopairs".autopairs_cr()')]], opts)
 EOF
 '''
 
