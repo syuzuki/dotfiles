@@ -114,6 +114,14 @@ repo = 'nvim-lua/plenary.nvim'
 on_lua = 'plenary'
 
 [[plugins]]
+repo = 'lewis6991/gitsigns.nvim'
+hook_add = '''
+    lua <<EOF
+        require('gitsigns').setup {}
+EOF
+'''
+
+[[plugins]]
 repo = 'nvim-lua/popup.nvim'
 on_lua = 'popup'
 
