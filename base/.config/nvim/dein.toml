@@ -347,9 +347,25 @@ hook_post_source = '''
 
 [[plugins]]
 repo = 'tpope/vim-surround'
-hook_add = '''
+on_event = 'VimEnter'
+hook_source = '''
     let g:surround_{char2nr('c')} = "\\\1command: \1{\r}"
     let g:surround_{char2nr('C')} = "\\\1command: \1{\n\r\n}"
+
+    let g:surround_no_mappings = v:true
+
+    nmap ds <Plug>Dsurround
+    nmap cs <Plug>Csurround
+    nmap cS <Plug>CSurround
+    nmap ys <Plug>Ysurround
+    nmap yS <Plug>YSurround
+    nmap yss <Plug>Yssurround
+    nmap ySs <Plug>YSsurround
+    nmap ySS <Plug>YSsurround
+
+    " Change to avoid conflicting with Hop
+    xmap gs <Plug>VSurround
+    xmap gS <Plug>VgSurround
 '''
 
 [[plugins]]
