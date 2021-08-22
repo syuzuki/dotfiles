@@ -1,6 +1,8 @@
 filetype off
 filetype plugin indent off
 
+let mapleader = ' '
+
 let s:cache_home = !empty($XDG_DATA_HOME) ? $XDG_DATA_HOME : expand('~/.local/share')
 let s:dein_dir = s:cache_home . '/dein'
 let s:dein_repo = '/Shougo/dein.vim'
@@ -51,8 +53,6 @@ set clipboard=unnamed
 set autoread
 set termguicolors
 set list listchars=tab:»-,trail:␣,nbsp:%
-
-let mapleader = ' '
 
 noremap <C-e> 3<C-e>
 noremap <C-y> 3<C-y>

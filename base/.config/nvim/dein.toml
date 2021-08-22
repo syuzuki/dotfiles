@@ -134,14 +134,35 @@ hook_add = '''
     nnoremap <M-F> <Cmd>lua require('telescope.builtin').file_browser {}<CR>
     nnoremap <M-g> <Cmd>lua require('telescope.builtin').current_buffer_fuzzy_find {}<CR>
     nnoremap <M-G> <Cmd>lua require('telescope.builtin').live_grep {}<CR>
+
+    nnoremap <Leader>gc <Cmd>lua require('telescope.builtin').git_bcommits {}<CR>
+    nnoremap <Leader>gC <Cmd>lua require('telescope.builtin').git_commits {}<CR>
+    nnoremap <Leader>gs <Cmd>lua require('telescope.builtin').git_status {}<CR>
+    nnoremap <Leader>gb <Cmd>lua require('telescope.builtin').git_branches {}<CR>
 '''
 hook_source = '''
     lua <<EOF
+        local function preview_scrolling_lines(lines)
+            local action_state = require'telescope.actions.state'
+
+            return function(prompt_buffer)
+                local previewer = action_state.get_current_picker(prompt_buffer).previewer
+                if type(previewer) ~= 'table' or not previewer.scroll_fn then
+                    return
+                end
+
+                previewer:scroll_fn(lines)
+            end
+        end
+
         require'telescope'.setup {
             defaults = {
+                scroll_strategy = 'limit',
                 mappings = {
                     i = {
                         ['<Esc>'] = 'close',
+                        ['<C-e>'] = preview_scrolling_lines(3),
+                        ['<C-y>'] = preview_scrolling_lines(-3),
                     },
                 },
             },
