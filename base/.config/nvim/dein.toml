@@ -646,6 +646,7 @@ hook_source = '''
             clangd = {
                 autoformat = { 'c', 'cpp' },
                 lspinstall = 'cpp',
+                args = { '--header-insertion=never' },
             },
             dockerls = {
                 lspinstall = 'dockerfile',
