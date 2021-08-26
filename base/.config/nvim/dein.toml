@@ -722,17 +722,9 @@ hook_source = '''
             if config.lspinstall then
                 local lang_ = config.lspinstall
                 if lspinstall.is_server_installed(lang_) then
-                    local function make_absolute_path(file)
-                        if not vim.regex([[^\.\{1,2}\/]]):match_str(file) then
-                            return file
-                        end
-                        return lspinstall_install_path(lang_) .. '/' .. file
-                    end
-
                     cmd = lspinstall_servers[lang_].default_config.cmd
-                    cmd[1] = make_absolute_path(cmd[1])
-                    if #cmd >= 2 and vim.tbl_contains({ 'node' }, cmd[1]) then
-                        cmd[2] = make_absolute_path(cmd[2])
+                    if vim.regex([[^\.\{1,2}\/]]):match_str(cmd[1]) then
+                        cmd[1] = lspinstall_install_path(lang_) .. '/' .. cmd[1]
                     end
                 end
             end
