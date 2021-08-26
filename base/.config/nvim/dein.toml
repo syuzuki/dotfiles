@@ -719,6 +719,7 @@ hook_source = '''
 
             require('lspconfig.' .. lang)
             local cmd = lspconfig_configs[lang].document_config.default_config.cmd
+            local cmd_cwd = nil
             if config.lspinstall then
                 local lang_ = config.lspinstall
                 if lspinstall.is_server_installed(lang_) then
@@ -726,6 +727,7 @@ hook_source = '''
                     if vim.regex([[^\.\{1,2}\/]]):match_str(cmd[1]) then
                         cmd[1] = lspinstall_install_path(lang_) .. '/' .. cmd[1]
                     end
+                    cmd_cwd = lspinstall_install_path(lang_)
                 end
             end
             vim.list_extend(cmd, config.args or {})
@@ -744,6 +746,7 @@ hook_source = '''
                 config.config or {},
                 {
                     cmd = cmd,
+                    cmd_cwd = cmd_cwd,
                     capabilities = capabilities,
                     settings = settings,
                     on_attach = attach,
