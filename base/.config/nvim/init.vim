@@ -46,7 +46,7 @@ set autoindent smartindent
 set tabstop=4 shiftwidth=0 expandtab
 set scrolloff=3
 set ignorecase smartcase noincsearch hlsearch nowrapscan
-set wildmode=list:longest,full wildignorecase
+set wildmode=longest:full,full wildignorecase
 set ttimeout ttimeoutlen=10
 set splitbelow splitright
 set clipboard=unnamed
@@ -104,6 +104,10 @@ cnoremap <C-n> <Down>
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
 cnoremap <C-d> <Del>
+cnoremap <expr> <CR> wildmenumode() ? '<C-y>' : '<CR>'
+cnoremap <expr> <Esc> wildmenumode() ? '<C-e>' : '<C-c>'
+cnoremap <expr> <Up> wildmenumode() ? '<C-p>' : '<Up>'
+cnoremap <expr> <Down> wildmenumode() ? '<C-n>' : '<Down>'
 
 cabbrev <expr> h (getcmdtype() ==# ':' && getcmdline() ==# 'h') ? 'vert h' : 'h'
 cabbrev <expr> m (getcmdtype() ==# ':' && getcmdline() ==# 'm') ? 'vert Man' : 'm'
