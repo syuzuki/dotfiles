@@ -129,16 +129,16 @@ on_lua = 'popup'
 repo = 'nvim-telescope/telescope.nvim'
 on_lua = 'telescope'
 hook_add = '''
-    nnoremap <M-b> <Cmd>lua require('telescope.builtin').buffers {ignore_current_buffer = true, sort_lastused = true}<CR>
-    nnoremap <M-f> <Cmd>lua require('telescope.builtin').find_files {follow = true, hidden = true}<CR>
-    nnoremap <M-F> <Cmd>lua require('telescope.builtin').file_browser {}<CR>
-    nnoremap <M-g> <Cmd>lua require('telescope.builtin').current_buffer_fuzzy_find {}<CR>
-    nnoremap <M-G> <Cmd>lua require('telescope.builtin').live_grep {}<CR>
+    nnoremap <M-b> <Cmd>lua require'telescope.builtin'.buffers {}<CR>
+    nnoremap <M-f> <Cmd>lua require'telescope.builtin'.find_files {}<CR>
+    nnoremap <M-F> <Cmd>lua require'telescope.builtin'.file_browser {}<CR>
+    nnoremap <M-g> <Cmd>lua require'telescope.builtin'.current_buffer_fuzzy_find {}<CR>
+    nnoremap <M-G> <Cmd>lua require'telescope.builtin'.live_grep {}<CR>
 
-    nnoremap <Leader>gc <Cmd>lua require('telescope.builtin').git_bcommits {}<CR>
-    nnoremap <Leader>gC <Cmd>lua require('telescope.builtin').git_commits {}<CR>
-    nnoremap <Leader>gs <Cmd>lua require('telescope.builtin').git_status {}<CR>
-    nnoremap <Leader>gb <Cmd>lua require('telescope.builtin').git_branches {}<CR>
+    nnoremap <Leader>gl <Cmd>lua require'telescope.builtin'.git_bcommits {}<CR>
+    nnoremap <Leader>gL <Cmd>lua require'telescope.builtin'.git_commits {}<CR>
+    nnoremap <Leader>gs <Cmd>lua require'telescope.builtin'.git_status {}<CR>
+    nnoremap <Leader>gb <Cmd>lua require'telescope.builtin'.git_branches {}<CR>
 '''
 hook_source = '''
     lua <<EOF
@@ -164,6 +164,16 @@ hook_source = '''
                         ['<C-e>'] = preview_scrolling_lines(3),
                         ['<C-y>'] = preview_scrolling_lines(-3),
                     },
+                },
+            },
+            pickers = {
+                buffers = {
+                    ignore_current_buffer = true,
+                    sort_lastused = true,
+                },
+                find_files = {
+                    follow = true,
+                    hidden = true,
                 },
             },
         }
