@@ -320,8 +320,9 @@ hook_source = '''
     let g:NERDSpaceDelims = 1
     let g:NERDDefaultAlign = 'left'
     let g:NERDCustomDelimiters = {
-        \ 'c': { 'left': '//', 'leftAlt': '/*', 'rightAlt': '*/' },
         \ 'arduino': { 'left': '//', 'leftAlt': '/*', 'rightAlt': '*/' },
+        \ 'c': { 'left': '//', 'leftAlt': '/*', 'rightAlt': '*/' },
+        \ 'python': { 'left': '#', 'leftAlt': '#' },
         \ }
 '''
 
