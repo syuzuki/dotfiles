@@ -11,6 +11,9 @@
 [color]
     ui = auto
 
+[commit]
+    gpgsign = true
+
 [credential]
     helper = libsecret
 
@@ -44,6 +47,7 @@
 [user]
     name = syuzuki
     email = 77492100+syuzuki@users.noreply.github.com
+    signingkey = 551741641F3BF84C
 
 [include]
     path = config.local
