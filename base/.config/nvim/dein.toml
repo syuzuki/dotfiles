@@ -20,7 +20,6 @@ hook_add = '''
 
 [[plugins]]
 repo = 'kyazdani42/nvim-web-devicons'
-on_lua = 'nvim-web-devicons'
 
 [[plugins]]
 repo = 'hoob3rt/lualine.nvim'
@@ -111,7 +110,6 @@ EOF
 
 [[plugins]]
 repo = 'nvim-lua/plenary.nvim'
-on_lua = 'plenary'
 
 [[plugins]]
 repo = 'lewis6991/gitsigns.nvim'
@@ -123,24 +121,10 @@ EOF
 
 [[plugins]]
 repo = 'nvim-lua/popup.nvim'
-on_lua = 'popup'
 
 [[plugins]]
 repo = 'nvim-telescope/telescope.nvim'
-on_lua = 'telescope'
 hook_add = '''
-    nnoremap <M-b> <Cmd>lua require'telescope.builtin'.buffers {}<CR>
-    nnoremap <M-f> <Cmd>lua require'telescope.builtin'.find_files {}<CR>
-    nnoremap <M-F> <Cmd>lua require'telescope.builtin'.file_browser {}<CR>
-    nnoremap <M-g> <Cmd>lua require'telescope.builtin'.current_buffer_fuzzy_find {}<CR>
-    nnoremap <M-G> <Cmd>lua require'telescope.builtin'.live_grep {}<CR>
-
-    nnoremap <Leader>gl <Cmd>lua require'telescope.builtin'.git_bcommits {}<CR>
-    nnoremap <Leader>gL <Cmd>lua require'telescope.builtin'.git_commits {}<CR>
-    nnoremap <Leader>gs <Cmd>lua require'telescope.builtin'.git_status {}<CR>
-    nnoremap <Leader>gb <Cmd>lua require'telescope.builtin'.git_branches {}<CR>
-'''
-hook_source = '''
     lua <<EOF
         local function preview_scrolling_lines(lines)
             local action_state = require'telescope.actions.state'
@@ -178,6 +162,17 @@ hook_source = '''
             },
         }
 EOF
+
+    nnoremap <M-b> <Cmd>lua require'telescope.builtin'.buffers {}<CR>
+    nnoremap <M-f> <Cmd>lua require'telescope.builtin'.find_files {}<CR>
+    nnoremap <M-F> <Cmd>lua require'telescope.builtin'.file_browser {}<CR>
+    nnoremap <M-g> <Cmd>lua require'telescope.builtin'.current_buffer_fuzzy_find {}<CR>
+    nnoremap <M-G> <Cmd>lua require'telescope.builtin'.live_grep {}<CR>
+
+    nnoremap <Leader>gl <Cmd>lua require'telescope.builtin'.git_bcommits {}<CR>
+    nnoremap <Leader>gL <Cmd>lua require'telescope.builtin'.git_commits {}<CR>
+    nnoremap <Leader>gs <Cmd>lua require'telescope.builtin'.git_status {}<CR>
+    nnoremap <Leader>gb <Cmd>lua require'telescope.builtin'.git_branches {}<CR>
 '''
 
 [[plugins]]
@@ -381,19 +376,17 @@ hook_source = '''
 
 [[plugins]]
 repo = 'phaazon/hop.nvim'
-on_lua = 'hop'
 hook_add = '''
-    nnoremap <silent> s <Cmd>lua require'hop'.hint_char2()<CR>
-    xnoremap <silent> s <Cmd>lua require'hop'.hint_char2()<CR>
-    nnoremap <silent> S <Cmd>lua require'hop'.hint_lines_skip_whitespace()<CR>
-    xnoremap <silent> S <Cmd>lua require'hop'.hint_lines_skip_whitespace()<CR>
-'''
-hook_source = '''
     lua <<EOF
         require'hop'.setup {
             create_hl_autocmd = true,
         }
 EOF
+
+    nnoremap <silent> s <Cmd>lua require'hop'.hint_char2()<CR>
+    xnoremap <silent> s <Cmd>lua require'hop'.hint_char2()<CR>
+    nnoremap <silent> S <Cmd>lua require'hop'.hint_lines_skip_whitespace()<CR>
+    xnoremap <silent> S <Cmd>lua require'hop'.hint_lines_skip_whitespace()<CR>
 '''
 
 [[plugins]]
@@ -413,8 +406,7 @@ hook_source = '''
 
 [[plugins]]
 repo = 'L3MON4D3/LuaSnip'
-on_lua = 'luasnip'
-hook_source = '''
+hook_add = '''
     inoremap <silent> <C-j> <Cmd>lua require'luasnip'.jump(1)<CR>
     inoremap <silent> <C-k> <Cmd>lua require'luasnip'.jump(-1)<CR>
 
@@ -483,16 +475,13 @@ EOF
 
 [[plugins]]
 repo = 'ray-x/lsp_signature.nvim'
-on_lua = 'lsp_signature'
 
 [[plugins]]
 repo = 'simrat39/rust-tools.nvim'
-on_lua = 'rust-tools'
 
 [[plugins]]
 repo = 'kabouzeid/nvim-lspinstall'
-on_lua = 'lspinstall'
-hook_source = '''
+hook_add = '''
     lua <<END
         -- Reinstall/update specified language servers, work with headless
         _G.lsp_install_headless = function(lang)
