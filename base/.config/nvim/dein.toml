@@ -109,6 +109,9 @@ EOF
 '''
 
 [[plugins]]
+repo = 'lukas-reineke/indent-blankline.nvim'
+
+[[plugins]]
 repo = 'nvim-lua/plenary.nvim'
 
 [[plugins]]
