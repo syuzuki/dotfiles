@@ -480,60 +480,83 @@ repo = 'ray-x/lsp_signature.nvim'
 repo = 'simrat39/rust-tools.nvim'
 
 [[plugins]]
-repo = 'kabouzeid/nvim-lspinstall'
-hook_add = '''
-    lua <<END
-        -- Reinstall/update specified language servers, work with headless
-        _G.lsp_install_headless = function(lang)
-            local servers = require'lspinstall.servers'
-            local install_path = require'lspinstall.util'.install_path
-
-            print('Install lsp ' .. lang .. '\n')
-
-            local shell = vim.o.shell
-            vim.o.shell = '/usr/bin/env bash'
-
-            local function output_callback(job, data, event)
-                -- `print()` cannot treat multiple newlines
-                vim.api.nvim_echo({{ table.concat(data, '\n'), 'None' }}, true, {})
-            end
-
-            local job = vim.fn.jobstart('set -e; ' .. servers[lang].install_script, {
-                cwd = install_path(lang),
-                on_stdout = output_callback,
-                on_stderr = output_callback,
-            })
-            if job <= 0 then
-                print('jobstart failed with ' .. job .. '\n')
-                return
-            end
-
-            vim.o.shell = shell
-
-            vim.fn.jobwait { job }
-        end
-
-        -- Reinstall/update all installed language servers, work with headless
-        _G.lsp_reinstall_all_headless = function()
-            local lspinstall = require'lspinstall'
-            for _, lsp in ipairs(lspinstall.installed_servers()) do
-                _G.lsp_install_headless(lsp)
-            end
-        end
-END
-'''
+repo = 'neovim/nvim-lspconfig'
 
 [[plugins]]
-repo = 'neovim/nvim-lspconfig'
+repo = 'williamboman/nvim-lsp-installer'
 # Initialize after `:syntax enable` to do LSP formatting correctly
 on_event = 'Syntax'
 hook_source = '''
     lua <<EOF
-        local nvim_lsp = require'lspconfig'
-        local lspconfig_configs = require'lspconfig/configs'
-        local lspinstall = require'lspinstall'
-        local lspinstall_servers = require'lspinstall.servers'
-        local lspinstall_install_path = require'lspinstall.util'.install_path
+        local configs = {
+            bashls = {},
+            clangd = {
+                autoformat = { 'c', 'cpp' },
+                args = { '--header-insertion=never' },
+            },
+            dockerls = {},
+            jsonls = {
+                autoformat = { 'json' },
+            },
+            pyright = {
+                autoformat = { 'python' },
+            },
+            rust_analyzer = {
+                autoformat = { 'rust' },
+                opts = {
+                    settings = {
+                        ['rust-analyzer'] = {
+                            checkOnSave = {
+                                command = 'clippy',
+                            },
+                        },
+                    },
+                },
+                on_attach = function(client, bufnr)
+                    vim.cmd [[
+                        augroup config_lsp_rust_buf
+                            autocmd!
+                            autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost <buffer> lua require'rust-tools.inlay_hints'.set_inlay_hints()
+                        augroup end
+                    ]]
+                end,
+                custom_setup = function(server, opts)
+                    opts = vim.tbl_deep_extend('keep', opts, {
+                        cmd = server:get_default_options().cmd,
+                    })
+
+                    require'rust-tools'.setup {
+                        tools = {
+                            autoSetHints = false,
+                        },
+                        server = opts,
+                    }
+                    server:attach_buffers()
+                end,
+            },
+            tailwindcss = {},
+            texlab = {},
+            vimls = {},
+            efm = {
+                opts = {
+                    filetypes = { 'python' },
+                    init_options = {
+                        documentFormatting = true,
+                    },
+                    settings = {
+                        rootMarkers = { '.git' },
+                        languages = {
+                            python = {
+                                {
+                                    formatCommand = 'black --quiet -',
+                                    formatStdin = true,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        }
 
         local signature_config = {
             hint_prefix = ' ',
@@ -541,6 +564,13 @@ hook_source = '''
 
         -- This can override in project configuration
         vim.g.autoformat_disable_ft = {}
+
+        vim.g.autoformat_enable_ft = {}
+        for _, config in pairs(configs) do
+            if config.autoformat then
+                vim.g.autoformat_enable_ft = vim.list_extend(vim.g.autoformat_enable_ft, config.autoformat)
+            end
+        end
 
         _G.autoformat = function()
             local function to_bool(x)
@@ -631,145 +661,65 @@ hook_source = '''
             }
         }
 
-        local settings = {
-            ["rust-analyzer"] = {
-                checkOnSave = {
-                    command = 'clippy',
-                },
-            },
-        }
-
-        local servers = {
-            bashls = {
-                lspinstall = 'bash',
-            },
-            clangd = {
-                autoformat = { 'c', 'cpp' },
-                lspinstall = 'cpp',
-                args = { '--header-insertion=never' },
-            },
-            dockerls = {
-                lspinstall = 'dockerfile',
-            },
-            jsonls = {
-                autoformat = { 'json' },
-                lspinstall = 'json',
-            },
-            pyright = {
-                autoformat = { 'python' },
-                lspinstall = 'python',
-            },
-            rust_analyzer = {
-                autoformat = { 'rust' },
-                lspinstall = 'rust',
-                on_attach = function(client, bufnr)
-                    vim.cmd [[
-                        augroup config_lsp_rust_buf
-                            autocmd!
-                            autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost <buffer> lua require'rust-tools.inlay_hints'.set_inlay_hints()
-                        augroup end
-                    ]]
-                end,
-                setup = function(opts)
-                    require'rust-tools'.setup {
-                        tools = {
-                            autoSetHints = false,
-                        },
-                        server = opts,
-                    }
-                end,
-            },
-            tailwindcss = {
-                lspinstall = 'tailwindcss',
-            },
-            texlab = {
-                lspinstall = 'latex',
-            },
-            vimls = {
-                lspinstall = 'vim',
-            },
-            efm = {
-                lspinstall = 'efm',
-                config = {
-                    filetypes = { 'python' },
-                    init_options = {
-                        documentFormatting = true,
-                    },
-                    settings = {
-                        rootMarkers = { '.git' },
-                        languages = {
-                            python = {
-                                {
-                                    formatCommand = 'black --quiet -',
-                                    formatStdin = true,
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        }
-
-        vim.g.autoformat_enable_ft = {}
-
-        for lang, config in pairs(servers) do
-            if config.autoformat then
-                vim.g.autoformat_enable_ft = vim.list_extend(vim.g.autoformat_enable_ft, config.autoformat)
-            end
-
-            require('lspconfig.' .. lang)
-            local cmd = lspconfig_configs[lang].document_config.default_config.cmd
-            local cmd_cwd = nil
-            if config.lspinstall then
-                local lang_ = config.lspinstall
-                if lspinstall.is_server_installed(lang_) then
-                    cmd = lspinstall_servers[lang_].default_config.cmd
-                    if vim.regex([[^\.\{1,2}\/]]):match_str(cmd[1]) then
-                        cmd[1] = lspinstall_install_path(lang_) .. '/' .. cmd[1]
-                    end
-                    cmd_cwd = lspinstall_install_path(lang_)
-                end
-            end
-            vim.list_extend(cmd, config.args or {})
-
+        require'nvim-lsp-installer'.on_server_ready(function(server)
+            local opts = {}
+            local cmd = nil
             local attach = on_attach
-            if config.on_attach then
-                local config_on_attach = config.on_attach
-                attach = function(client, bufnr)
-                    on_attach(client, bufnr)
-                    config_on_attach(client, bufnr)
+
+            local setup = function(server, opts)
+                server:setup(opts)
+            end
+
+            local config = configs[server.name]
+            if config then
+                if config.opts then
+                    opts = config.opts
+                end
+
+                if config.args then
+                    local function tbl_clone(t)
+                        local result = {}
+                        for k, v in pairs(t) do
+                            result[k] = v
+                        end
+                        return result
+                    end
+
+                    cmd = tbl_clone(server:get_default_options().cmd)
+                    cmd = vim.list_extend(cmd, config.args)
+                end
+
+                if config.on_attach then
+                    local config_on_attach = config.on_attach
+                    attach = function(client, bufnr)
+                        on_attach(client, bufnr)
+                        config_on_attach(client, bufnr)
+                    end
+                end
+
+                if config.custom_setup then
+                    setup = config.custom_setup
                 end
             end
 
-            local opts = vim.tbl_deep_extend(
-                'keep',
-                config.config or {},
-                {
-                    cmd = cmd,
-                    cmd_cwd = cmd_cwd,
-                    capabilities = capabilities,
-                    settings = settings,
-                    on_attach = attach,
-                }
-            )
+            opts = vim.tbl_deep_extend('keep', opts, {
+                cmd = cmd,
+                on_attach = attach,
+                capabilities = capabilities,
+            })
 
-            local setup = nvim_lsp[lang].setup
-            if config.setup then
-                setup = config.setup
-            end
-
-            setup(opts)
-        end
+            setup(server, opts)
+        end)
 
         local signs = {
             Error = ' ',
-            Warning = ' ',
+            Warn = ' ',
             Hint = ' ',
-            Information = ' ',
+            Info = ' ',
         }
 
         for type, text in pairs(signs) do
-            local hl = 'LspDiagnosticsSign' .. type
+            local hl = 'DiagnosticSign' .. type
             vim.fn.sign_define(hl, { text = text, texthl = hl, numhl = '' })
         end
 
