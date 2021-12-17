@@ -41,7 +41,8 @@ augroup end
 
 set modeline
 set signcolumn=yes
-set fileencodings=utf-8,cp932,euc-jp
+set fileencodings=utf-8,cp932,euc-jp,utf-16le
+set nofixendofline
 set autoindent smartindent
 set tabstop=4 shiftwidth=0 expandtab
 set scrolloff=3
