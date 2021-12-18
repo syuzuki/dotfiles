@@ -35,7 +35,6 @@ if type nvim >&/dev/null; then
         -c 'call dein#update()' \
         -c 'call map(dein#check_clean(), "delete(v:val, '\''rf'\'')")' \
         -c 'echo "\n"' \
-        -c 'call v:lua.lsp_reinstall_all_headless()' \
         -c 'quit'
 fi
 
