@@ -95,16 +95,7 @@ xnoremap <M-z> zz
 inoremap <C-e> <C-o>3<C-e>
 inoremap <C-y> <C-o>3<C-y>
 inoremap <C-z> <C-o>zz
-inoremap <C-p> <Up>
-inoremap <C-n> <Down>
 
-cnoremap <C-b> <Left>
-cnoremap <C-f> <Right>
-cnoremap <C-p> <Up>
-cnoremap <C-n> <Down>
-cnoremap <C-a> <Home>
-cnoremap <C-e> <End>
-cnoremap <C-d> <Del>
 cnoremap <expr> <CR> wildmenumode() ? '<C-y>' : '<CR>'
 cnoremap <expr> <Esc> wildmenumode() ? '<C-e>' : '<C-c>'
 cnoremap <expr> <Up> wildmenumode() ? '<C-p>' : '<Up>'
