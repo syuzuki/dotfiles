@@ -5,16 +5,70 @@ hook_add = '''
 '''
 
 [[plugins]]
-repo = 'sainnhe/sonokai'
+repo = 'RRethy/nvim-base16'
 hook_add = '''
-    function! s:colorscheme_override() abort
-        highlight! link NormalFloat TelescopeNormal
-        highlight! link FloatBorder TelescopeBorder
-    endfunction
+    lua <<EOF
+        -- Customized decaf
+        require'base16-colorscheme'.colorschemes.custom = {
+            base00 = '#16161d', base01 = '#303030', base02 = '#404040', base03 = '#808080',
+            base04 = '#aaaaaa', base05 = '#cccccc', base06 = '#e0e0e0', base07 = '#ffffff',
+            base08 = '#e57e62', base09 = '#f2b56a', base0A = '#f2cb75', base0B = '#abc46c',
+            base0C = '#abc0e5', base0D = '#88b4d5', base0E = '#e3aaea', base0F = '#f28baa',
+        }
+
+        _G.setup_colorscheme = function()
+            local cs = require'base16-colorscheme'
+
+            cs.setup('custom')
+            local colors = cs.colors
+
+            for _, hi in ipairs({
+                'Add',
+                'Change',
+                'Delete',
+                'Text',
+                'Added',
+                'File',
+                'NewFile',
+                'Line',
+                'Removed',
+            }) do
+                vim.cmd('highlight Diff' .. hi .. ' guibg=' .. colors.base01)
+            end
+
+            vim.cmd [[
+                highlight! link IndentBlanklineChar Whitespace
+                highlight! link IndentBlanklineSpaceChar Whitespace
+                highlight! link IndentBlanklineSpaceCharBlankline Whitespace
+                highlight! link IndentBlanklineContextChar Whitespace
+                highlight! link IndentBlanklineContextStart Label
+
+                highlight! link GitSignsAdd GitGutterAdd
+                highlight! link GitSignsChange GitGutterChange
+                highlight! link GitSignsDelete GitGutterDelete
+            ]]
+
+            for _, hi in ipairs({
+                { name = 'NextKey', color = 'base08' },
+                { name = 'NextKey1', color = 'base0D' },
+                { name = 'NextKey2', color = 'base0C' },
+            }) do
+                vim.cmd('highlight Hop' .. hi.name .. ' guifg=' .. colors[hi.color])
+            end
+            vim.cmd [[
+                highlight! link HopUnmatched Comment
+                highlight! link HopCursor Cursor
+            ]]
+
+            vim.cmd [[
+                doautocmd ColorScheme base16-custom
+            ]]
+        end
+EOF
 
     augroup config_colorscheme
-        autocmd VimEnter * nested colorscheme sonokai
-        autocmd ColorScheme sonokai call s:colorscheme_override()
+        autocmd!
+        autocmd VimEnter * nested call v:lua.setup_colorscheme()
     augroup end
 '''
 
@@ -26,39 +80,36 @@ repo = 'hoob3rt/lualine.nvim'
 on_event = 'ColorScheme'
 hook_source = '''
     lua <<EOF
-        local theme_name = 'sonokai'
+        local colors = require'base16-colorscheme'.colors
 
-        -- Convert lightline theme to lualine's
-        -- See https://gist.github.com/shadmansaleh/000871c9a608a012721c6acc6d7a19b9
+        local palette = {
+            normal = colors.base0D,
+            insert = colors.base0B,
+            visual = colors.base0E,
+            replace = colors.base09,
+            command = colors.base0A,
+            fg = colors.base05,
+            bg = colors.base02,
+            fg_inactive = colors.base04,
+            bg_inactive = colors.base01,
+        }
 
-        -- Use `nvim_eval` to autoload variable
-        local lightline_palette =
-            vim.api.nvim_eval('g:lightline#colorscheme#' .. theme_name .. '#palette')
-
-        local theme = {}
-        for mode, section in pairs(lightline_palette) do
-            theme[mode] = {}
-
-            local function set(name, colors)
-                theme[mode][name] = {
-                    fg = colors[1],
-                    bg = colors[2],
-                }
-                if #colors >= 5 then
-                    theme[mode][name].gui = colors[5]
-                end
-            end
-
-            set('a', section.left[1])
-            if section.left[2] then
-                set('b', section.left[2])
-            elseif section.right then
-                set('b', section.right[1])
-            end
-            if section.middle then
-                set('c', section.middle[1])
-            end
-        end
+        local theme = {
+            normal = {
+                a = { fg = palette.fg, bg = palette.normal },
+                b = { fg = palette.fg, bg = palette.bg },
+                c = { fg = palette.fg, bg = palette.bg },
+            },
+            insert = { a = { fg = palette.bg, bg = palette.insert } },
+            visual = { a = { fg = palette.bg, bg = palette.visual } },
+            replace = { a = { fg = palette.bg, bg = palette.replace } },
+            command = { a = { fg = palette.bg, bg = palette.command } },
+            inactive = {
+                a = { fg = palette.fg_inactive, bg = palette.bg_inactive },
+                b = { fg = palette.fg_inactive, bg = palette.bg_inactive },
+                c = { fg = palette.fg_inactive, bg = palette.bg_inactive },
+            },
+        }
 
         local sections = {
             lualine_a = {
@@ -386,9 +437,7 @@ hook_source = '''
 repo = 'phaazon/hop.nvim'
 hook_add = '''
     lua <<EOF
-        require'hop'.setup {
-            create_hl_autocmd = true,
-        }
+        require'hop'.setup {}
 EOF
 
     nnoremap <silent> s <Cmd>lua require'hop'.hint_char2()<CR>
