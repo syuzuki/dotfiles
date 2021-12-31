@@ -5,32 +5,34 @@ return {
     font_size = 9,
 
     colors = {
-        -- Customized sainnhe/sonokai
-        foreground = "#e2e2e3",
-        background = "#181819",
+        -- Customized RRethy/nvim-base16 decaf
+        foreground = '#cccccc', -- base05
+        background = '#16161d', -- base00
 
-        selection_fg = "#e2e2e3",
-        selection_bg = "#3b3e48",
+        cursor_border = '#cccccc', -- base05
+
+        selection_fg = '#cccccc', -- base05
+        selection_bg = '#404040', -- base02
 
         ansi = {
-            "#181819",
-            "#b64359",
-            "#86b161",
-            "#c4a855",
-            "#64adbe",
-            "#9885cf",
-            "#4fbea7",
-            "#cbcbcc",
+            '#16161d', -- base00
+            '#c26b53', -- base08*0.85
+            '#91a65b', -- base0b*0.85
+            '#cdac63', -- base0a*0.85
+            '#7399b5', -- base0d*0.85
+            '#c090c6', -- base0e*0.85
+            '#91a3c2', -- base0c*0.85
+            '#aaaaaa', -- base04
         },
         brights = {
-            "#78787d",
-            "#fc5d7c",
-            "#9ed072",
-            "#e7c664",
-            "#76cce0",
-            "#b39df3",
-            "#5de0c4",
-            "#e2e2e3",
+            '#808080', -- base03
+            '#e57e62', -- base08
+            '#abc46c', -- base0b
+            '#f2cb75', -- base0a
+            '#88b4d5', -- base0d
+            '#e3aaea', -- base0e
+            '#abc0e5', -- base0c
+            '#cccccc', -- base05
         },
     },
     force_reverse_video_cursor = true,
