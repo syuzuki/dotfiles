@@ -82,7 +82,7 @@ nnoremap <M--> <C-w>=
 nnoremap <M-w> <C-w>c
 
 nnoremap <silent> <M-d> <Cmd>bp<CR><Cmd>bd #<CR>
-nnoremap <silent> <M-D> <Cmd>bd<CR>
+nnoremap <silent> <M-D> <Cmd>bp<CR><Cmd>bd! #<CR>
 nnoremap <silent> <M-u> <Cmd>nohlsearch<CR>
 nnoremap <silent> <M-s> <Cmd>w<CR>
 nnoremap <silent> <M-q> <Cmd>qa<CR>
