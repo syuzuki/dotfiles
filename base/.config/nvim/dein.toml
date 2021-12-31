@@ -110,6 +110,11 @@ EOF
 
 [[plugins]]
 repo = 'lukas-reineke/indent-blankline.nvim'
+hook_add = '''
+    lua <<EOF
+        require'indent_blankline'.setup {}
+EOF
+'''
 
 [[plugins]]
 repo = 'nvim-lua/plenary.nvim'
