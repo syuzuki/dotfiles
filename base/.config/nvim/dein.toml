@@ -235,6 +235,10 @@ EOF
 '''
 
 [[plugins]]
+repo = 'editorconfig/editorconfig-vim'
+on_event = ['BufNewFile', 'BufRead']
+
+[[plugins]]
 repo = 'nvim-treesitter/nvim-treesitter'
 rev = '0.5-compat'
 on_event = ['BufNew', 'BufRead']
