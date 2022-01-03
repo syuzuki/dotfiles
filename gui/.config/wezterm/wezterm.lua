@@ -46,4 +46,7 @@ return {
     },
 
     use_ime = true,
+
+    check_for_updates = false,
+    warn_about_missing_glyphs = false,
 }
