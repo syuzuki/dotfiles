@@ -742,7 +742,7 @@ hook_source = '''
                         return result
                     end
 
-                    cmd = tbl_clone(server:get_default_options().cmd)
+                    cmd = tbl_clone(require'lspconfig'[server.name].document_config.default_config.cmd)
                     cmd = vim.list_extend(cmd, config.args)
                 end
 
