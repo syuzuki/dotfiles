@@ -1,7 +1,10 @@
 local wezterm = require 'wezterm';
 
 return {
-    font = wezterm.font('Sarasa Nerd Term J'),
+    font = wezterm.font_with_fallback {
+        'Sarasa Term J',
+        'Symbols Nerd Font',
+    },
     font_size = 9,
 
     colors = {
