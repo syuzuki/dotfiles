@@ -45,18 +45,62 @@ function selectScrollTarget() {
 }
 
 function modifyUrl() {
+    const rules = [
+        {
+            pattern: /^https?:\/\/www\.amazon\.co\.jp\/s(?:\?.*)?$/,
+            new_url: (url, match) => {
+                const magic = '&rh=p_6%3AAN1VRQENFRJN5';
+                const pat = new RegExp(String.raw`${magic}(&.*)?$`);
+                if (pat.test(url)) {
+                    return url.replace(pat, '$1');
+                } else {
+                    return url + magic;
+                }
+            },
+        },
+        {
+            pattern: /^https:\/\/wiki\.archlinux\.jp\//,
+            new_url: (url, match) => {
+                const a = document.querySelector('a.interlanguage-link-target[hreflang="en"]');
+                return a?.getAttribute('href');
+            },
+        },
+        {
+            pattern: /^https:\/\/wiki\.archlinux\.org\//,
+            new_url: (url, match) => {
+                const a = document.querySelector('a.interlanguage-link-target[hreflang="ja"]');
+                return a?.getAttribute('href');
+            },
+        },
+        {
+            pattern: /^(https:\/\/docs\.python\.org\/)[A-Za-z]{2}\/(.*)$/,
+            new_url: (url, match) => `${match[1]}${match[2]}`,
+        },
+        {
+            pattern: /^(https:\/\/docs\.python\.org\/)(.*)$/,
+            new_url: (url, match) => `${match[1]}ja/${match[2]}`,
+        },
+        {
+            pattern: /^(https:\/\/docs\.microsoft\.com\/)en-us\/(.*)$/,
+            new_url: (url, match) => `${match[1]}ja-jp/${match[2]}`,
+        },
+        {
+            pattern: /^(https:\/\/docs\.microsoft\.com\/)[A-Za-z]{2}-[A-Za-z]{2}\/(.*)$/,
+            new_url: (url, match) => `${match[1]}en-us/${match[2]}`,
+        },
+    ];
+
     const url = location.href;
-    switch (true) {
-    case /^https?:\/\/www\.amazon\.co\.jp\/s(?:\?.*)?$/.test(url):
-        // const magic = '&emi=AN1VRQENFRJN5';
-        const magic = '&rh=p_6%3AAN1VRQENFRJN5';
-        const pat = new RegExp(String.raw`${magic}(&.*)?$`);
-        if (pat.test(url)) {
-            location.href = url.replace(pat, '$1');
-        } else {
-            location.href = url + magic;
+    for (const r of rules) {
+        const match = r.pattern.exec(url);
+        if (match) {
+            const new_url = r.new_url(url, match);
+            if (new_url) {
+                location.href = new_url
+            }
+
+            break;
         }
-        break;
     }
 }
 
