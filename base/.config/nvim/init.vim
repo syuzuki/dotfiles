@@ -39,6 +39,231 @@ augroup config
     autocmd ColorScheme * call s:highlight_ideographicspace()
 augroup end
 
+lua <<EOF
+    vim.cmd [[
+        augroup config_statusline
+            autocmd!
+            autocmd ColorScheme * call v:lua.statusline_colorscheme()
+        augroup end
+    ]]
+
+    _G.statusline_colorscheme = function()
+        local function get_color(hl, color)
+            return vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(hl)), color)
+        end
+
+        local guibg_c = get_color('StatusLine', 'bg#')
+        local guibg_nc = get_color('StatusLineNC', 'bg#')
+        local function highlight(name, guifg_hl)
+            local guifg = get_color(guifg_hl or name, 'fg#')
+
+            local function def(name, guibg)
+                vim.cmd('highlight StatusLine' .. name .. ' guifg=' .. guifg .. ' guibg=' .. guibg)
+            end
+
+            def(name, guibg_c)
+            def(name .. 'NC', guibg_nc)
+        end
+
+        highlight('DiagnosticError')
+        highlight('DiagnosticWarn')
+        highlight('DiagnosticInfo')
+        highlight('DiagnosticHint')
+
+        highlight('GitSignsBranch', 'GitGutterChangeDelete')
+
+        highlight('GitSignsAdd')
+        highlight('GitSignsChange')
+        highlight('GitSignsDelete')
+
+        local devicons = require'nvim-web-devicons'
+        devicons.set_up_highlights()
+        for _, data in pairs(devicons.get_icons()) do
+            if data.name ~= nil then
+                highlight('DevIcon' .. data.name)
+            end
+        end
+    end
+
+    _G.statusline = function()
+        return '%{%v:lua.statusline_impl(' .. vim.fn.winnr() .. ')%}'
+    end
+
+    _G.statusline_impl = function(current_winnr)
+        local winnr = vim.fn.winnr()
+        local active = winnr == current_winnr
+        local hl_suffix = active and '' or 'NC'
+        local left = ''
+        local right = ''
+
+        local function hl(name)
+            name = name or ''
+            local suffix = active and '' or 'NC'
+            return '%#StatusLine' .. name .. suffix .. '#'
+        end
+
+        local function append_left(str)
+            if str == nil then
+                return
+            end
+
+            if left ~= '' then
+                left = left .. ' '
+            end
+            left = left .. str
+        end
+
+        local function append_right(str)
+            if str == nil then
+                return
+            end
+
+            if right ~= '' then
+                right = ' ' .. right
+            end
+            right = str .. right
+        end
+
+        -- Mode
+        local mode = vim.fn.mode()
+        local mode_highlights = {
+            n = 'Normal',
+            v = 'Visual',
+            V = 'Visual',
+            ['\022'] = 'Visual',
+            s = 'Select',
+            S = 'Select',
+            ['\019'] = 'Select',
+            i = 'Insert',
+            R = 'Replace',
+            c = 'Command',
+            r = 'Command',
+            ['!'] = 'Command',
+            t = 'Terminal',
+        }
+        local mode_highlight
+        if active and mode_highlights[mode] then
+            mode_highlight = hl('Mode' .. mode_highlights[mode])
+        else
+            mode_highlight = hl()
+        end
+        mode_str = mode_highlight .. '  ' .. hl()
+
+        -- Flags
+        local flags = ''
+        if vim.bo.filetype == 'help' then
+            flags = flags .. '[Help]'
+        end
+        if vim.bo.readonly then
+            flags = flags .. '[RO]'
+        end
+        if not vim.bo.modifiable then
+            flags = flags .. '[-]'
+        elseif vim.bo.modified then
+            flags = flags .. '[+]'
+        end
+        if flags == '' then
+            flags = nil
+        end
+
+        -- Filetype
+        local ft_icon, ft_icon_hl = require'nvim-web-devicons'.get_icon(
+            vim.fn.expand('%:t'), vim.fn.expand('%:e'))
+        local ft_icon = ft_icon and ft_icon .. ' ' or ''
+        local filetype = hl(ft_icon_hl) .. ft_icon .. hl() .. vim.bo.filetype
+
+        -- Info
+        info = ''
+        if vim.bo.fileencoding ~= '' then
+            info = vim.bo.fileencoding
+        else
+            info = vim.o.encoding
+        end
+        if vim.bo.bomb then
+            info = info .. ' '
+        end
+        if vim.bo.fileformat == 'dos' then
+            info = info .. ' '
+        elseif vim.bo.fileformat == 'unix' then
+            info = info .. ' '
+        elseif vim.bo.fileformat == 'mac' then
+            info = info .. ' '
+        end
+
+        -- Column
+        local line = vim.fn.getline('.')
+        local cols_bytes = vim.fn.strlen(line)
+        local cols_width = vim.fn.strdisplaywidth(line)
+        local column = '%c%V/' .. cols_bytes ..
+            (cols_width ~= cols_bytes and '-' .. cols_width or '')
+
+        -- Diagnostics
+        local diag = ''
+        for _, kind in ipairs { 'Error', 'Warn', 'Info', 'Hint' } do
+            local severity = vim.diagnostic.severity[string.upper(kind)]
+            local n = #vim.diagnostic.get(0, { severity = severity })
+            local icon = vim.fn.sign_getdefined('DiagnosticSign' .. kind)[1].text
+            if n > 0 then
+                diag = diag .. hl('Diagnostic' .. kind) .. icon .. n
+            end
+        end
+        if diag == '' then
+            diag = nil
+        else
+            diag = diag .. hl()
+        end
+
+        -- Gitsigns
+        local gitbranch = nil
+        local gitdiff = ''
+        if vim.b.gitsigns_status_dict ~= nil then
+            if vim.b.gitsigns_status_dict.head ~= nil then
+                gitbranch = hl('GitSignsBranch') .. ' ' ..
+                    vim.b.gitsigns_status_dict.head .. hl()
+            end
+
+            if vim.b.gitsigns_status_dict.added ~= nil and
+                vim.b.gitsigns_status_dict.added > 0 then
+                gitdiff = gitdiff .. hl('GitSignsAdd') .. '+' ..
+                    vim.b.gitsigns_status_dict.added
+            end
+            if vim.b.gitsigns_status_dict.changed ~= nil and
+                vim.b.gitsigns_status_dict.changed > 0 then
+                gitdiff = gitdiff .. hl('GitSignsChange') .. '~' ..
+                    vim.b.gitsigns_status_dict.changed
+            end
+            if vim.b.gitsigns_status_dict.removed ~= nil and
+                vim.b.gitsigns_status_dict.removed > 0 then
+                gitdiff = gitdiff .. hl('GitSignsDelete') .. '-' ..
+                    vim.b.gitsigns_status_dict.removed
+            end
+        end
+        if gitdiff == '' then
+            gitdiff = nil
+        else
+            gitdiff = gitdiff .. hl()
+        end
+
+        -- Left
+        append_left(mode_str)
+        append_left('%f')
+        append_left(flags)
+        append_left(gitbranch)
+        append_left(gitdiff)
+        append_left(diag)
+
+        -- Right
+        append_right(mode_str)
+        append_right('%p%%')
+        append_right(column)
+        append_right('%l/%L')
+        append_right(info)
+        append_right(filetype)
+
+        return left .. ' %= ' .. right
+    end
+EOF
+
 set modeline
 set signcolumn=yes
 set fileencodings=utf-8,cp932,euc-jp,utf-16le
@@ -54,6 +279,7 @@ set clipboard=unnamed
 set autoread
 set termguicolors
 set list listchars=tab:»-,trail:␣,nbsp:%
+set statusline=%!v:lua.statusline()
 
 noremap <C-e> 3<C-e>
 noremap <C-y> 3<C-y>

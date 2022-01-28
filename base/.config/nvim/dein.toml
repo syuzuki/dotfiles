@@ -22,6 +22,20 @@ hook_add = '''
             cs.setup('custom')
             local colors = cs.colors
 
+            for mode, color in pairs {
+                Normal = colors.base0D,
+                Visual = colors.base0E,
+                Select = colors.base0F,
+                Insert = colors.base0B,
+                Replace = colors.base09,
+                Command = colors.base0A,
+                Terminal = colors.base08,
+            } do
+                vim.cmd('highlight StatusLineMode' .. mode .. ' guibg=' .. color)
+            end
+
+            vim.cmd('highlight ModeMsg guifg=' .. colors.base03)
+
             for _, hi in ipairs({
                 'Add',
                 'Change',
@@ -74,90 +88,6 @@ EOF
 
 [[plugins]]
 repo = 'kyazdani42/nvim-web-devicons'
-
-[[plugins]]
-repo = 'hoob3rt/lualine.nvim'
-on_event = 'ColorScheme'
-hook_source = '''
-    lua <<EOF
-        local colors = require'base16-colorscheme'.colors
-
-        local palette = {
-            normal = colors.base0D,
-            insert = colors.base0B,
-            visual = colors.base0E,
-            replace = colors.base09,
-            command = colors.base0A,
-            fg = colors.base05,
-            bg = colors.base02,
-            fg_inactive = colors.base04,
-            bg_inactive = colors.base01,
-        }
-
-        local theme = {
-            normal = {
-                a = { fg = palette.fg, bg = palette.normal },
-                b = { fg = palette.fg, bg = palette.bg },
-                c = { fg = palette.fg, bg = palette.bg },
-            },
-            insert = { a = { fg = palette.bg, bg = palette.insert } },
-            visual = { a = { fg = palette.bg, bg = palette.visual } },
-            replace = { a = { fg = palette.bg, bg = palette.replace } },
-            command = { a = { fg = palette.bg, bg = palette.command } },
-            inactive = {
-                a = { fg = palette.fg_inactive, bg = palette.bg_inactive },
-                b = { fg = palette.fg_inactive, bg = palette.bg_inactive },
-                c = { fg = palette.fg_inactive, bg = palette.bg_inactive },
-            },
-        }
-
-        local sections = {
-            lualine_a = {
-                '" "',
-            },
-            lualine_b = {
-                {
-                    'filename',
-                    path = 1, -- relative path
-                },
-            },
-            lualine_c = {
-                'branch',
-                'diff',
-                {
-                    'diagnostics',
-                    sources = { 'nvim_diagnostic' },
-                },
-            },
-            lualine_x = {
-                'encoding',
-                'fileformat',
-                'filetype',
-            },
-            lualine_y = {
-                'location',
-                'vim.api.nvim_buf_line_count(0)',
-                'progress',
-            },
-            lualine_z = {
-                '" "',
-            },
-        }
-
-        local inactive_sections = vim.deepcopy(sections)
-        inactive_sections.lualine_c = {}
-
-        require'lualine'.setup {
-            options = {
-                section_separators = { '', '' },
-                component_separators = { '', '' },
-                theme = theme,
-            },
-            sections = sections,
-            inactive_sections = inactive_sections,
-        }
-EOF
-'''
 
 [[plugins]]
 repo = 'lukas-reineke/indent-blankline.nvim'
