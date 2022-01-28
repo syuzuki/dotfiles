@@ -469,6 +469,14 @@ repo = 'ray-x/lsp_signature.nvim'
 
 [[plugins]]
 repo = 'simrat39/rust-tools.nvim'
+hook_add = '''
+    " Patch for nvim-lsp-installer
+    " See https://github.com/simrat39/rust-tools.nvim/issues/124
+    augroup config_rust_tools
+        autocmd!
+        autocmd BufEnter * ++once autocmd! VimEnter *.rs
+    augroup end
+'''
 
 [[plugins]]
 repo = 'neovim/nvim-lspconfig'
@@ -523,6 +531,9 @@ hook_source = '''
                         server = opts,
                     }
                     server:attach_buffers()
+
+                    -- Patch for nvim-lsp-installer
+                    require'rust-tools'.start_standalone_if_required()
                 end,
             },
             tailwindcss = {},
