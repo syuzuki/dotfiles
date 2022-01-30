@@ -170,7 +170,6 @@ on_event = ['BufNewFile', 'BufRead']
 
 [[plugins]]
 repo = 'nvim-treesitter/nvim-treesitter'
-rev = '0.5-compat'
 on_event = ['BufNew', 'BufRead']
 hook_source = '''
     " Loading external modules (such as `nvim-treesitter-textobjects`)
@@ -281,7 +280,6 @@ hook_post_update = '''
 
 [[plugins]]
 repo = 'nvim-treesitter/nvim-treesitter-textobjects'
-rev = '0.5-compat'
 on_event = ['BufNew', 'BufRead']
 
 [[plugins]]
