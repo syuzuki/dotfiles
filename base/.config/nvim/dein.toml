@@ -104,7 +104,42 @@ repo = 'nvim-lua/plenary.nvim'
 repo = 'lewis6991/gitsigns.nvim'
 hook_add = '''
     lua <<EOF
-        require('gitsigns').setup {}
+        require('gitsigns').setup {
+            on_attach = function(bufnr)
+                local function map(mode, lhs, rhs, opts)
+                    opts = vim.tbl_extend(
+                        'force', { noremap = true, silent = true }, opts or {})
+                    vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, opts)
+                end
+
+                map('n', ']c', [[&diff ? ']c' : '<Cmd>Gitsigns next_hunk<CR>']],
+                    { expr=true })
+                map('x', ']c', [[&diff ? ']c' : '<Cmd>Gitsigns next_hunk<CR>']],
+                    { expr=true })
+                map('n', '[c', [[&diff ? '[c' : '<Cmd>Gitsigns prev_hunk<CR>']],
+                    { expr=true })
+                map('x', '[c', [[&diff ? '[c' : '<Cmd>Gitsigns prev_hunk<CR>']],
+                    { expr=true })
+
+                map('n', '<Leader>hs', '<Cmd>Gitsigns stage_hunk<CR>')
+                map('x', '<Leader>hs', '<Cmd>Gitsigns stage_hunk<CR>')
+                map('n', '<Leader>hS', '<Cmd>Gitsigns stage_buffer<CR>')
+                map('n', '<Leader>hu', '<Cmd>Gitsigns undo_stage_hunk<CR>')
+                map('n', '<Leader>hr', '<Cmd>Gitsigns reset_hunk<CR>')
+                map('x', '<Leader>hr', '<Cmd>Gitsigns reset_hunk<CR>')
+                map('n', '<Leader>hR', '<Cmd>Gitsigns reset_buffer<CR>')
+
+                map('n', '<Leader>hp', '<Cmd>Gitsigns preview_hunk<CR>')
+                map('n', '<Leader>hb', [[<Cmd>lua require'gitsigns'.blame_line { full = true }<CR>]])
+                map('n', '<Leader>tb', '<Cmd>Gitsigns toggle_current_line_blame<CR>')
+                map('n', '<Leader>hd', '<Cmd>Gitsigns diffthis<CR>')
+                map('n', '<Leader>hD', [[<Cmd>lua require'gitsigns'.diffthis('~')<CR>]])
+                map('n', '<Leader>td', '<Cmd>Gitsigns toggle_deleted<CR>')
+
+                map('o', 'ih', '<Cmd>Gitsigns select_hunk<CR>')
+                map('x', 'ih', ':<C-u>Gitsigns select_hunk<CR>')
+            end,
+        }
 EOF
 '''
 
