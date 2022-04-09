@@ -667,10 +667,10 @@ hook_source = '''
                 [[<Cmd>lua require('telescope.builtin').lsp_document_diagnostics {}<CR>]], opts)
             buf_set_keymap('n', '<M-A>',
                 [[<Cmd>lua require('telescope.builtin').lsp_workspace_diagnostics {}<CR>]], opts)
-            buf_set_keymap('n', '[d', '<Cmd>lua vim.lsp.diagnostic.goto_prev { wrap = false }<CR>', opts)
-            buf_set_keymap('n', ']d', '<Cmd>lua vim.lsp.diagnostic.goto_next { wrap = false }<CR>', opts)
-            buf_set_keymap('x', '[d', '<Cmd>lua vim.lsp.diagnostic.goto_prev { wrap = false }<CR>', opts)
-            buf_set_keymap('x', ']d', '<Cmd>lua vim.lsp.diagnostic.goto_next { wrap = false }<CR>', opts)
+            buf_set_keymap('n', '[d', '<Cmd>lua vim.diagnostic.goto_prev { wrap = false }<CR>', opts)
+            buf_set_keymap('n', ']d', '<Cmd>lua vim.diagnostic.goto_next { wrap = false }<CR>', opts)
+            buf_set_keymap('x', '[d', '<Cmd>lua vim.diagnostic.goto_prev { wrap = false }<CR>', opts)
+            buf_set_keymap('x', ']d', '<Cmd>lua vim.diagnostic.goto_next { wrap = false }<CR>', opts)
 
             vim.b.autoformat_disable = false
             vim.b.autoformat_enable = false
