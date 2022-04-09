@@ -16,7 +16,7 @@ trap 'log-command "${ZSH_DEBUG_CMD}"' DEBUG
 
 if type yay >&/dev/null; then
     run yay
-    run sudo pacman -Fy
+    run yay -Fy
 
     if type nvim >&/dev/null; then
         run sudo DIFFPROG="sudo -u $USER vdiff-sudo" pacdiff
