@@ -3,10 +3,23 @@
     quotePath = false
 
 [alias]
+    ad = add
+    br = branch
+    bra = br -a
+    ci = commit
     cloneb = clone --filter blob:none
+    di = diff
+    dis = di --staged
+    dist = dit --staged
+    dit = difftool
     ff = merge --ff-only
-    graph = log --graph --date=short --pretty=tformat:\"%x09%ad %C(blue bold)%an%x09%Creset %C(yellow)%h%C(green bold)%d%Creset %s\"
-    grapha = graph --branches --tags --remotes
+    gr = log --graph --pretty=\"%>|(31)%ai %C(blue bold)%<(10)%an%C(auto) %h %s%d\"
+    gra = gr --branches --tags --remotes
+    me = merge
+    rs = restore --staged
+    ss = stash
+    st = status
+    sw = switch
 
 [color]
     ui = auto
