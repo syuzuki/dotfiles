@@ -4,20 +4,26 @@
 
 [alias]
     ad = add
+    adp = ad -p
+    adu = ad -u
     br = branch
     bra = br -a
     ci = commit
     cloneb = clone --filter blob:none
     di = diff
+    din = di --name-status
     dis = di --staged
+    disn = dis --name-status
     dist = dit --staged
     dit = difftool
     ff = merge --ff-only
-    gr = log --graph --pretty=\"%>|(31)%ai %C(blue bold)%<(10)%an%C(auto) %h %s%d\"
+    gr = log --graph --pretty=\"%>|(31)%ad %C(blue bold)%<(10)%an%C(auto) %h %s%d\"
     gra = gr --branches --tags --remotes
     me = merge
     rs = restore --staged
     ss = stash
+    sh = show
+    shn = show --name-status
     st = status
     sw = switch
 
@@ -46,6 +52,9 @@
 
 [init]
     defaultBranch = master
+
+[log]
+    date = iso
 
 [merge]
     conflictStyle = diff3
