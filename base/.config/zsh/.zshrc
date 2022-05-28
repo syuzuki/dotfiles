@@ -29,7 +29,7 @@ zinit wait lucid for \
     atload'_my_enhancd_completion() { emulate -R zsh; __enhancd::completion::run }; zle -N _my_enhancd_completion; bindkey "${ENHANCD_COMPLETION_KEYBIND}" _my_enhancd_completion' \
         'b4b4r07/enhancd' \
         'mollifier/zload' \
-    atload'!_zsh_git_prompt_precmd_hook' nocd \
+    atload'!() { emulate -LR zsh; setopt prompt_subst; _zsh_git_prompt_precmd_hook }' nocd \
         'woefe/git-prompt.zsh'
 zinit wait'0s' lucid atinit'zicompinit; zicdreplay; compdef _my_nvim nvim' for \
         'zdharma-continuum/fast-syntax-highlighting'
@@ -255,6 +255,7 @@ setopt share_history
 # Initialisation
 
 # Input/Output
+unsetopt clobber
 setopt correct
 unsetopt flow_control
 setopt ignore_eof
@@ -271,6 +272,7 @@ setopt prompt_subst
 # Scripts and Functions
 
 # Shell Emulation
+setopt append_create
 
 # Shell State
 
