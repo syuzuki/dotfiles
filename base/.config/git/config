@@ -66,6 +66,9 @@
 [push]
     followTags = true
 
+[tag]
+    sort = -v:refname
+
 [user]
     name = syuzuki
     email = 77492100+syuzuki@users.noreply.github.com
