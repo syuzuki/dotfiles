@@ -26,6 +26,7 @@ zinit wait lucid for \
         'zsh-vi-more/vi-motions' \
     blockf \
         'zsh-users/zsh-completions' \
+    atload'_my_enhancd_completion() { emulate -R zsh; __enhancd::completion::run }; zle -N _my_enhancd_completion; bindkey "${ENHANCD_COMPLETION_KEYBIND}" _my_enhancd_completion' \
         'b4b4r07/enhancd' \
         'mollifier/zload' \
     atload'!_zsh_git_prompt_precmd_hook' nocd \
