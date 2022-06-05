@@ -5,6 +5,10 @@ hook_add = '''
 '''
 
 [[plugins]]
+repo = 'vim-denops/denops.vim'
+on_event = 'VimEnter'
+
+[[plugins]]
 repo = 'RRethy/nvim-base16'
 hook_add = '''
     lua <<EOF
@@ -350,10 +354,6 @@ hook_source = '''
 [[plugins]]
 repo = 'cohama/lexima.vim'
 on_event = 'InsertEnter'
-hook_source = '''
-    " Do not map <Esc> automatically
-    let g:lexima_map_escape = ''
-'''
 hook_post_source = '''
     call lexima#set_default_rules()
 
@@ -373,8 +373,6 @@ hook_post_source = '''
 
     " Do not complete whenever popup menu is visible
     inoremap <silent> <CR> <C-]><C-g>u<C-r>=lexima#expand('<lt>CR>', 'i')<CR>
-    " Close popup before calling `lexima#insmode#escape()`
-    inoremap <silent><expr> <Esc> compe#close() . lexima#insmode#escape() . '<Esc>'
 '''
 
 [[plugins]]
@@ -429,76 +427,160 @@ hook_source = '''
 '''
 
 [[plugins]]
-repo = 'L3MON4D3/LuaSnip'
-hook_add = '''
-    inoremap <silent> <C-j> <Cmd>lua require'luasnip'.jump(1)<CR>
-    inoremap <silent> <C-k> <Cmd>lua require'luasnip'.jump(-1)<CR>
+repo = 'hrsh7th/vim-vsnip'
+on_event = 'InsertEnter'
+hook_source = '''
+    imap <expr> <C-j> vsnip#jumpable(1) ? '<Plug>(vsnip-jump-next)' : ''
+    imap <expr> <C-k> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : ''
 
-    snoremap <silent> <C-j> <Cmd>lua require'luasnip'.jump(1)<CR>
-    snoremap <silent> <C-k> <Cmd>lua require'luasnip'.jump(-1)<CR>
+    smap <expr> <C-j> vsnip#jumpable(1) ? '<Plug>(vsnip-jump-next)' : ''
+    smap <expr> <C-k> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : ''
 '''
 
 [[plugins]]
-repo = 'hrsh7th/nvim-compe'
+repo = 'rafamadriz/friendly-snippets'
+
+[[plugins]]
+repo = 'hrsh7th/vim-vsnip-integ'
+depends = ['vim-vsnip']
 on_event = 'InsertEnter'
 hook_source = '''
+    augroup config_vsnip
+        autocmd!
+        autocmd User PumCompleteDone call vsnip_integ#on_complete_done(g:pum#completed_item)
+        " autocmd User PumCompleteDone echom g:pum#completed_item
+    augroup end
+'''
+
+[[plugins]]
+repo = 'Shougo/pum.vim'
+hook_add = '''
     lua <<EOF
-        vim.o.completeopt = 'menuone,noselect'
-
-        require'compe'.setup {
-            preselect = 'always',
-            documentation = {
-                border = 'rounded',
-                winhighlight = 'NormalFloat:NormalFloat,FloatBorder:FloatBorder',
-            },
-            source = {
-                path = {
-                    kind = ' ',
-                },
-                buffer = {
-                    kind = ' ',
-                    menu = '[B]',
-                },
-                calc = {
-                    kind = ' ',
-                },
-                nvim_lsp = true,
-                nvim_lua = true,
-                luasnip = {
-                    kind = ' ',
-                    menu = '[SNIP]',
-                },
-            },
-        }
-
         local regex_start_with_nonspace = vim.regex([[^\S]])
-        _G.super_tab = function()
-            if vim.fn.pumvisible() ~= 0 then
-                local break_undo = vim.api.nvim_replace_termcodes('<C-g>u', true, true, true)
-                return break_undo .. vim.fn['compe#confirm']('<Tab>')
+        local function super_tab()
+            if vim.fn['pum#visible']() ~= 0 then
+                vim.fn['pum#map#confirm']()
+                return
             end
 
             local row, col = unpack(vim.api.nvim_win_get_cursor(0))
             if col > 0 and regex_start_with_nonspace:match_line(0, row - 1, col - 1) then
-                return vim.fn['compe#complete']()
+                vim.fn['ddc#complete']()
+                return
             end
 
-            return vim.api.nvim_replace_termcodes('<Tab>', true, true, true)
+            vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<Tab>', true, true, true), 'ni')
         end
 
-        local opts = {
-            noremap = true,
-            silent = true,
-            expr = true,
-        }
+        local function pum_cancel()
+            if vim.fn['pum#visible']() ~= 0 then
+                vim.fn['pum#map#cancel']()
+            end
+        end
 
-        vim.api.nvim_set_keymap('i', '<Tab>', [[v:lua.super_tab()]], opts)
-        vim.api.nvim_set_keymap('i', '<C-g>', [[compe#close()]], opts)
+        local function pum_select(offset, fallback)
+            if vim.fn['pum#visible']() ~= 0 then
+                vim.fn['pum#map#select_relative'](offset)
+            else
+                vim.fn.feedkeys(vim.api.nvim_replace_termcodes(fallback, true, true, true), 'ni')
+            end
+        end
+
+        local function map(key, callback, desc)
+            vim.api.nvim_set_keymap('i', key, '', {
+                noremap = true,
+                silent = true,
+                callback = callback,
+                desc = desc,
+            })
+        end
+
+        map('<Tab>', super_tab, 'Super tab')
+        map('<C-g>', pum_cancel, 'Cancel pum')
+        map('<Down>', function() pum_select(1, '<Down>') end, 'pum select next')
+        map('<Up>', function() pum_select(-1, '<Up>') end, 'pum select previous')
 EOF
 '''
 
 [[plugins]]
-repo = 'ray-x/lsp_signature.nvim'
+repo = 'Shougo/ddc-nvim-lsp'
+
+[[plugins]]
+repo = 'LumaKernel/ddc-file'
+
+[[plugins]]
+repo = 'Shougo/ddc-around'
+
+[[plugins]]
+repo = 'tani/ddc-fuzzy'
+
+[[plugins]]
+repo = 'Shougo/ddc.vim'
+depends = ['denops.vim']
+on_event = 'InsertEnter'
+hook_source = '''
+    lua <<EOF
+        vim.o.completeopt = 'menuone,noinsert'
+
+        vim.fn['ddc#custom#patch_global']('sources', {
+            'nvim-lsp',
+            'vsnip',
+            'file',
+            'around',
+        })
+
+        vim.fn['ddc#custom#patch_global']('sourceOptions', {
+            _ = {
+                matchers = { 'matcher_fuzzy' },
+                sorters = { 'sorter_fuzzy' },
+                converters = { 'converter_fuzzy' },
+                ignoreCase = true,
+                minAutoCompleteLength = 1,
+            },
+            ['nvim-lsp'] = {
+                mark = 'LSP',
+                forceCompletionPattern = [[\.\k*|:\k*|->\k*]],
+                kindLabels = { Snippet = 'SNIP' },
+            },
+            vsnip = {
+                mark = 'S',
+            },
+            file = {
+                mark = 'F',
+                isVolatile = true,
+                forceCompletionPattern = [[\S/\S*]],
+            },
+            around = {
+                mark = 'A',
+            },
+        })
+
+        vim.fn['ddc#custom#patch_global']('overwriteCompleteopt', false)
+        vim.fn['ddc#custom#patch_global']('completionMenu', 'pum.vim')
+        vim.fn['ddc#custom#patch_global']('backspaceCompletion', true)
+
+        vim.fn['ddc#custom#patch_filetype'](
+            { 'ps1', 'dosbatch', 'registry' },
+            'sourceOptions',
+            {
+                file = {
+                    mode = 'win32',
+                },
+            }
+        )
+
+        vim.fn['ddc#enable']()
+EOF
+'''
+
+[[plugins]]
+repo = 'matsui54/denops-signature_help'
+on_event = 'InsertEnter'
+hook_source = '''
+    lua <<EOF
+        vim.fn['signature_help#enable']()
+EOF
+'''
 
 [[plugins]]
 repo = 'simrat39/rust-tools.nvim'
@@ -630,8 +712,6 @@ hook_source = '''
         end
 
         local function on_attach(client, bufnr)
-            require'lsp_signature'.on_attach(signature_config)
-
             local function buf_set_keymap(...)
                 vim.api.nvim_buf_set_keymap(bufnr, ...)
             end
@@ -654,7 +734,6 @@ hook_source = '''
                 [[<Cmd>lua require('telescope.builtin').lsp_workspace_symbols {}<CR>]], opts)
             buf_set_keymap('n', 'gr', '<Cmd>lua vim.lsp.buf.reference()<CR>', opts)
             buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
-            buf_set_keymap('n', 'gs', '<Cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
 
             buf_set_keymap('n', 'gf', '<Cmd>lua vim.lsp.buf.formatting()<CR>', opts)
             buf_set_keymap('x', 'gf', '<Cmd>lua vim.lsp.buf.range_formatting()<CR>', opts)
@@ -799,5 +878,14 @@ hook_source = '''
                 autocmd FileType lspinfo call nvim_win_set_config(0, { 'border': 'rounded' })
             augroup end
         ]]
+EOF
+'''
+
+[[plugins]]
+repo = 'matsui54/denops-popup-preview.vim'
+on_event = 'InsertEnter'
+hook_source = '''
+    lua <<EOF
+        vim.fn['popup_preview#enable']()
 EOF
 '''
