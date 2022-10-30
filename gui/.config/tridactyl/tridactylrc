@@ -1,0 +1,111 @@
+" :source --url https://raw.githubusercontent.com/syuzuki/dotfiles/master/gui/.config/tridactyl/tridactylrc
+
+sanitize tridactyllocal tridactylsync
+
+set modeindicator false
+set smoothscroll true
+set visualenterauto false
+
+bind j scrollline 5
+bind k scrollline -5
+bind d scrollpage 0.5
+bind u scrollpage -0.5
+bind <Space> scrollpage 1
+bind b scrollpage -1
+unbind <C-f>
+bind n forward
+bind p back
+bind i focusinput
+bind x modifypage
+bind o fillcmdline tabopen
+bind O current_url tabopen
+
+bind t tabopen
+bind T tabduplicate
+bind J tabnext
+bind K tabprev
+bind . tabnext
+bind , tabprev
+bind > tabmove +1
+bind < tabmove -1
+bind w tabclose
+bind W undo
+bind m fillcmdline tab
+bind M fillcmdline taball
+
+bind --mode=insert <C-w> tabclose
+
+bind --mode=ex <C-j> ex.next_completion
+bind --mode=ex <C-k> ex.prev_completion
+bind --mode=ex <Tab> ex.insert_completion
+unbind --mode=ex <Space>
+
+autocmd DocLoad ^https://www\.google\.(co\.jp|com)/?$ focusinput
+
+blacklistadd ^https://cad\.onshape\.com/
+
+command modifypage js {                                                                                 \
+    const rules = [                                                                                     \
+        {                                                                                               \
+            pattern: /^https:\/\/wiki\.archlinux\.jp\//i,                                               \
+            modify: m => {                                                                              \
+                const a = document.querySelector('a.interlanguage-link-target[hreflang="en"]');         \
+                return a?.getAttribute('href');                                                         \
+            },                                                                                          \
+        },                                                                                              \
+        {                                                                                               \
+            pattern: /^https:\/\/wiki\.archlinux\.org\//i,                                              \
+            modify: m => {                                                                              \
+                const a = document.querySelector('a.interlanguage-link-target[hreflang="ja"]');         \
+                return a?.getAttribute('href');                                                         \
+            },                                                                                          \
+        },                                                                                              \
+        {                                                                                               \
+            pattern: /^(https:\/\/learn\.microsoft\.com\/)[a-z]{2}-[a-z]{2}\/(.*)$/i,                   \
+            modify: m => `${m[1]}en-us/${m[2]}`,                                                        \
+        },                                                                                              \
+        {                                                                                               \
+            pattern: /^(https:\/\/learn\.microsoft\.com\/)en-us\/(.*)$/i,                               \
+            modify: m => `${m[1]}ja-jp/${m[2]}`,                                                        \
+        },                                                                                              \
+        {                                                                                               \
+            pattern: /^(https:\/\/developer\.mozilla\.org\/)[a-z]{2}(?:-[a-z]{2})?\/(.*)$/i,            \
+            modify: m => `${m[1]}en-US/${m[2]}`,                                                        \
+        },                                                                                              \
+        {                                                                                               \
+            pattern: /^(https:\/\/developer\.mozilla\.org\/)en-US\/(.*)$/i,                             \
+            modify: m => `${m[1]}ja/${m[2]}`,                                                           \
+        },                                                                                              \
+        {                                                                                               \
+            pattern: /^(https:\/\/docs\.python\.org\/)[a-z]{2}\/(.*)$/i,                                \
+            modify: m => `${m[1]}${m[2]}`,                                                              \
+        },                                                                                              \
+        {                                                                                               \
+            pattern: /^(https:\/\/docs\.python\.org\/)(.*)$/i,                                          \
+            modify: m => `${m[1]}ja/${m[2]}`,                                                           \
+        },                                                                                              \
+        {                                                                                               \
+            pattern: /^(https:\/\/www\.amazon\.co\.jp\/s(?:\?.*)?)&rh=p_6%3AAN1VRQENFRJN5((?:&.*)?)$/i, \
+            modify: m => `${m[1]}${m[2]}`,                                                              \
+        },                                                                                              \
+        {                                                                                               \
+            pattern: /^https:\/\/www\.amazon\.co\.jp\/s(?:\?.*)?$/i,                                    \
+            modify: m => `${m[0]}&rh=p_6%3AAN1VRQENFRJN5`,                                              \
+        },                                                                                              \
+    ];                                                                                                  \
+                                                                                                        \
+    const url = location.href;                                                                          \
+    for (const r of rules) {                                                                            \
+        const m = r.pattern.exec(url);                                                                  \
+        if (!m) continue;                                                                               \
+                                                                                                        \
+        const u = r.modify(m);                                                                          \
+        if (u) {                                                                                        \
+            location.href = u;                                                                          \
+        }                                                                                               \
+                                                                                                        \
+        break;                                                                                          \
+    }                                                                                                   \
+}
+
+" vim: set ft=vim:
