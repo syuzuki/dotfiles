@@ -588,302 +588,271 @@ EOF
 '''
 
 [[plugins]]
-repo = 'simrat39/rust-tools.nvim'
-hook_add = '''
-    " Patch for nvim-lsp-installer
-    " See https://github.com/simrat39/rust-tools.nvim/issues/124
-    augroup config_rust_tools
-        autocmd!
-        autocmd BufEnter * ++once autocmd! VimEnter *.rs
-    augroup end
+repo = 'williamboman/mason.nvim'
+lua_add = '''
+    require'mason'.setup {}
 '''
 
 [[plugins]]
-repo = 'neovim/nvim-lspconfig'
+repo = 'williamboman/mason-lspconfig.nvim'
+lua_add = '''
+    require'mason-lspconfig'.setup {}
+'''
 
 [[plugins]]
-repo = 'williamboman/nvim-lsp-installer'
-# Initialize after `:syntax enable` to do LSP formatting correctly
+repo = 'simrat39/rust-tools.nvim'
+
+[[plugins]]
+repo = 'neovim/nvim-lspconfig'
 on_event = 'Syntax'
-hook_source = '''
-    lua <<EOF
-        local configs = {
-            bashls = {},
-            clangd = {
-                autoformat = { 'c', 'cpp' },
-                args = { '--header-insertion=never' },
-            },
-            dockerls = {},
-            jsonls = {
-                autoformat = { 'json' },
-            },
-            pyright = {
-                autoformat = { 'python' },
-            },
-            rust_analyzer = {
-                autoformat = { 'rust' },
-                opts = {
-                    settings = {
-                        ['rust-analyzer'] = {
-                            checkOnSave = {
-                                command = 'clippy',
-                            },
+lua_source = '''
+    local configs = {
+        bashls = {},
+        clangd = {
+            autoformat = { 'c', 'cpp' },
+            args = { '--header-insertion=never' },
+        },
+        dockerls = {},
+        jsonls = {
+            autoformat = { 'json' },
+        },
+        pyright = {
+            autoformat = { 'python' },
+        },
+        rust_analyzer = {
+            setup = function(opts)
+                require'rust-tools'.setup {
+                    server = opts,
+                }
+            end,
+            autoformat = { 'rust' },
+            opts = {
+                settings = {
+                    ['rust-analyzer'] = {
+                        checkOnSave = {
+                            command = 'clippy',
                         },
                     },
                 },
-                on_attach = function(client, bufnr)
-                    vim.cmd [[
-                        augroup config_lsp_rust_buf
-                            autocmd!
-                            autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost <buffer> lua require'rust-tools.inlay_hints'.set_inlay_hints()
-                        augroup end
-                    ]]
-                end,
-                custom_setup = function(server, opts)
-                    opts = vim.tbl_deep_extend('keep', opts, {
-                        cmd = server:get_default_options().cmd,
-                    })
-
-                    require'rust-tools'.setup {
-                        tools = {
-                            autoSetHints = false,
-                        },
-                        server = opts,
-                    }
-                    server:attach_buffers()
-
-                    -- Patch for nvim-lsp-installer
-                    require'rust-tools'.start_standalone_if_required()
-                end,
             },
-            tailwindcss = {},
-            texlab = {},
-            vimls = {},
-            efm = {
-                opts = {
-                    filetypes = { 'python' },
-                    init_options = {
-                        documentFormatting = true,
-                    },
-                    settings = {
-                        rootMarkers = { '.git' },
-                        languages = {
-                            python = {
-                                {
-                                    formatCommand = 'black --quiet -',
-                                    formatStdin = true,
-                                },
+        },
+        tailwindcss = {},
+        texlab = {},
+        vimls = {},
+        efm = {
+            opts = {
+                filetypes = { 'python' },
+                init_options = {
+                    documentFormatting = true,
+                },
+                settings = {
+                    rootMarkers = { '.git' },
+                    languages = {
+                        python = {
+                            {
+                                formatCommand = 'black --quiet -',
+                                formatStdin = true,
                             },
                         },
                     },
                 },
             },
-        }
+        },
+    }
 
-        local signature_config = {
-            hint_prefix = ' ',
-        }
+    local signature_config = {
+        hint_prefix = ' ',
+    }
 
-        -- This can override in project configuration
-        vim.g.autoformat_disable_ft = {}
+    -- This can override in project configuration
+    vim.g.autoformat_disable_ft = {}
+    -- This will be initialized below according to configs
+    vim.g.autoformat_enable_ft = {}
 
-        vim.g.autoformat_enable_ft = {}
-        for _, config in pairs(configs) do
-            if config.autoformat then
-                vim.g.autoformat_enable_ft = vim.list_extend(vim.g.autoformat_enable_ft, config.autoformat)
-            end
+    _G.autoformat = function()
+        local function to_bool(x)
+            return x and x ~= 0
         end
 
-        _G.autoformat = function()
-            local function to_bool(x)
-                return x and x ~= 0
-            end
+        if to_bool(vim.b.autoformat_disable) then
+            return
+        end
 
-            if to_bool(vim.b.autoformat_disable) then
+        if not to_bool(vim.b.autoformat_enable) then
+            if vim.tbl_contains(vim.g.autoformat_disable_ft, vim.bo.filetype) then
                 return
             end
 
-            if not to_bool(vim.b.autoformat_enable) then
-                if vim.tbl_contains(vim.g.autoformat_disable_ft, vim.bo.filetype) then
-                    return
-                end
-
-                if not vim.tbl_contains(vim.g.autoformat_enable_ft, vim.bo.filetype) then
-                    return
-                end
+            if not vim.tbl_contains(vim.g.autoformat_enable_ft, vim.bo.filetype) then
+                return
             end
-
-            vim.lsp.buf.formatting_sync(nil, 1000)
         end
 
-        local function on_attach(client, bufnr)
-            local function buf_set_keymap(...)
-                vim.api.nvim_buf_set_keymap(bufnr, ...)
-            end
+        vim.lsp.buf.format()
+    end
 
-            local opts = {
-                noremap = true,
-                silent = true,
-            }
-
-            buf_set_keymap('n', 'gd',
-                [[<Cmd>lua require('telescope.builtin').lsp_definitions {}<CR>]], opts)
-            buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-            buf_set_keymap('n', 'gi',
-                [[<Cmd>lua require('telescope.builtin').lsp_implementations {}<CR>]], opts)
-            buf_set_keymap('n', 'g<C-d>', '<Cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-
-            buf_set_keymap('n', '<M-y>',
-                [[<Cmd>lua require('telescope.builtin').lsp_document_symbols {}<CR>]], opts)
-            buf_set_keymap('n', '<M-Y>',
-                [[<Cmd>lua require('telescope.builtin').lsp_workspace_symbols {}<CR>]], opts)
-            buf_set_keymap('n', 'gr', '<Cmd>lua vim.lsp.buf.reference()<CR>', opts)
-            buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
-
-            buf_set_keymap('n', 'gf', '<Cmd>lua vim.lsp.buf.formatting()<CR>', opts)
-            buf_set_keymap('x', 'gf', '<Cmd>lua vim.lsp.buf.range_formatting()<CR>', opts)
-
-            buf_set_keymap('n', 'gn', '<Cmd>lua vim.lsp.buf.rename()<CR>', opts)
-            buf_set_keymap('n', '<Leader>a',
-                [[<Cmd>lua require('telescope.builtin').lsp_code_actions {}<CR>]], opts)
-
-            buf_set_keymap('n', '<M-a>',
-                [[<Cmd>lua require('telescope.builtin').lsp_document_diagnostics {}<CR>]], opts)
-            buf_set_keymap('n', '<M-A>',
-                [[<Cmd>lua require('telescope.builtin').lsp_workspace_diagnostics {}<CR>]], opts)
-            buf_set_keymap('n', '[d', '<Cmd>lua vim.diagnostic.goto_prev { wrap = false }<CR>', opts)
-            buf_set_keymap('n', ']d', '<Cmd>lua vim.diagnostic.goto_next { wrap = false }<CR>', opts)
-            buf_set_keymap('x', '[d', '<Cmd>lua vim.diagnostic.goto_prev { wrap = false }<CR>', opts)
-            buf_set_keymap('x', ']d', '<Cmd>lua vim.diagnostic.goto_next { wrap = false }<CR>', opts)
-
-            vim.b.autoformat_disable = false
-            vim.b.autoformat_enable = false
-
-            vim.cmd [[
-                augroup config_lsp_buf
-                    autocmd!
-                    autocmd BufWritePre <buffer> call v:lua.autoformat()
-                augroup end
-            ]]
-
-            vim.lsp.handlers['textDocument/hover'] =
-                vim.lsp.with(vim.lsp.handlers.hover, { border = 'rounded' })
+    local function on_attach(client, bufnr)
+        local function buf_set_keymap(...)
+            vim.api.nvim_buf_set_keymap(bufnr, ...)
         end
 
-        local capabilities = vim.lsp.protocol.make_client_capabilities()
-        capabilities.textDocument.completion.completionItem.snippetSupport = true
-        capabilities.textDocument.completion.completionItem.resolveSupport = {
-            properties = {
-                'documentation',
-                'detail',
-                'additionalTextEdits',
-            }
+        local opts = {
+            noremap = true,
+            silent = true,
         }
 
-        require'nvim-lsp-installer'.on_server_ready(function(server)
-            local opts = {}
-            local cmd = nil
-            local attach = on_attach
+        buf_set_keymap('n', 'gd',
+            [[<Cmd>lua require('telescope.builtin').lsp_definitions {}<CR>]], opts)
+        buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+        buf_set_keymap('n', 'gi',
+            [[<Cmd>lua require('telescope.builtin').lsp_implementations {}<CR>]], opts)
+        buf_set_keymap('n', 'g<C-d>', '<Cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
 
-            local setup = function(server, opts)
-                server:setup(opts)
-            end
+        buf_set_keymap('n', '<M-y>',
+            [[<Cmd>lua require('telescope.builtin').lsp_document_symbols {}<CR>]], opts)
+        buf_set_keymap('n', '<M-Y>',
+            [[<Cmd>lua require('telescope.builtin').lsp_workspace_symbols {}<CR>]], opts)
+        buf_set_keymap('n', 'gr', '<Cmd>lua vim.lsp.buf.reference()<CR>', opts)
+        buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
 
-            local config = configs[server.name]
-            if config then
-                if config.opts then
-                    opts = config.opts
-                end
+        buf_set_keymap('n', 'gf', '<Cmd>lua vim.lsp.buf.format()<CR>', opts)
+        buf_set_keymap('x', 'gf', '<Cmd>lua vim.lsp.buf.format()<CR>', opts)
 
-                if config.args then
-                    local function tbl_clone(t)
-                        local result = {}
-                        for k, v in pairs(t) do
-                            result[k] = v
-                        end
-                        return result
-                    end
+        buf_set_keymap('n', 'gn', '<Cmd>lua vim.lsp.buf.rename()<CR>', opts)
+        buf_set_keymap('n', '<Leader>a',
+            [[<Cmd>lua require('telescope.builtin').lsp_code_actions {}<CR>]], opts)
 
-                    cmd = tbl_clone(require'lspconfig'[server.name].document_config.default_config.cmd)
-                    cmd = vim.list_extend(cmd, config.args)
-                end
+        buf_set_keymap('n', '<M-a>',
+            [[<Cmd>lua require('telescope.builtin').lsp_document_diagnostics {}<CR>]], opts)
+        buf_set_keymap('n', '<M-A>',
+            [[<Cmd>lua require('telescope.builtin').lsp_workspace_diagnostics {}<CR>]], opts)
+        buf_set_keymap('n', '[d', '<Cmd>lua vim.diagnostic.goto_prev { wrap = false }<CR>', opts)
+        buf_set_keymap('n', ']d', '<Cmd>lua vim.diagnostic.goto_next { wrap = false }<CR>', opts)
+        buf_set_keymap('x', '[d', '<Cmd>lua vim.diagnostic.goto_prev { wrap = false }<CR>', opts)
+        buf_set_keymap('x', ']d', '<Cmd>lua vim.diagnostic.goto_next { wrap = false }<CR>', opts)
 
-                if config.on_attach then
-                    local config_on_attach = config.on_attach
-                    attach = function(client, bufnr)
-                        on_attach(client, bufnr)
-                        config_on_attach(client, bufnr)
-                    end
-                end
-
-                if config.custom_setup then
-                    setup = config.custom_setup
-                end
-            end
-
-            opts = vim.tbl_deep_extend('keep', opts, {
-                cmd = cmd,
-                on_attach = attach,
-                capabilities = capabilities,
-            })
-
-            setup(server, opts)
-        end)
-
-        local signs = {
-            Error = ' ',
-            Warn = ' ',
-            Hint = ' ',
-            Info = ' ',
-        }
-
-        for type, text in pairs(signs) do
-            local hl = 'DiagnosticSign' .. type
-            vim.fn.sign_define(hl, { text = text, texthl = hl, numhl = '' })
-        end
-
-        local kinds = {
-            Text          = ' ',
-            Method        = ' ',
-            Function      = 'ƒ ',
-            Constructor   = ' ',
-            Field         = ' ',
-            Variable      = ' ',
-            Class         = ' ',
-            Interface     = ' ',
-            Module        = ' ',
-            Property      = ' ',
-            Unit          = ' ',
-            Value         = ' ',
-            Enum          = ' ',
-            Keyword       = ' ',
-            Snippet       = ' ',
-            Color         = ' ',
-            File          = ' ',
-            Reference     = ' ',
-            Folder        = ' ',
-            EnumMember    = ' ',
-            Constant      = ' ',
-            Struct        = ' ',
-            Event         = ' ',
-            Operator      = ' ',
-            TypeParameter = ' ',
-        }
-
-        for name, str in pairs(kinds) do
-            if vim.lsp.protocol.CompletionItemKind[name] ~= nil then
-                vim.lsp.protocol.CompletionItemKind[vim.lsp.protocol.CompletionItemKind[name]] = str
-            end
-        end
+        vim.b.autoformat_disable = false
+        vim.b.autoformat_enable = false
 
         vim.cmd [[
-            augroup config_lsp
+            augroup config_lsp_buf
                 autocmd!
-                " Set rounded border to the window opened by `LspInfo`
-                autocmd FileType lspinfo call nvim_win_set_config(0, { 'border': 'rounded' })
+                autocmd BufWritePre <buffer> call v:lua.autoformat()
             augroup end
         ]]
-EOF
+
+        vim.lsp.handlers['textDocument/hover'] =
+            vim.lsp.with(vim.lsp.handlers.hover, { border = 'rounded' })
+    end
+
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    capabilities.textDocument.completion.completionItem.snippetSupport = true
+    capabilities.textDocument.completion.completionItem.resolveSupport = {
+        properties = {
+            'documentation',
+            'detail',
+            'additionalTextEdits',
+        }
+    }
+
+    local function tbl_clone(t)
+        local result = {}
+        for k, v in pairs(t) do
+            result[k] = v
+        end
+        return result
+    end
+
+    for name, config in pairs(configs) do
+        if config.autoformat then
+            vim.g.autoformat_enable_ft = vim.list_extend(vim.g.autoformat_enable_ft, config.autoformat)
+        end
+
+        local setup
+        if config.setup then
+            setup = config.setup
+        else
+            setup = require'lspconfig'[name].setup
+        end
+
+        local opts
+        if config.opts then
+            opts = tbl_clone(config.opts)
+        else
+            opts = {}
+        end
+        opts.on_attach = on_attach
+        opts.capabilities = capabilities
+
+        if config.args then
+            cmd = tbl_clone(require'lspconfig'[name].document_config.default_config.cmd)
+            opts.cmd = vim.list_extend(cmd, config.args)
+        end
+
+        if config.on_attach then
+            local opts_on_attach = opts.on_attach
+            opts.on_attach = function(client, bufnr)
+                opts_on_attach(client, bufnr)
+                config.on_attach(client, bufnr)
+            end
+        end
+
+        setup(opts)
+    end
+
+    local signs = {
+        Error = ' ',
+        Warn = ' ',
+        Hint = ' ',
+        Info = ' ',
+    }
+
+    for type, text in pairs(signs) do
+        local hl = 'DiagnosticSign' .. type
+        vim.fn.sign_define(hl, { text = text, texthl = hl, numhl = '' })
+    end
+
+    local kinds = {
+        Text          = ' ',
+        Method        = ' ',
+        Function      = 'ƒ ',
+        Constructor   = ' ',
+        Field         = ' ',
+        Variable      = ' ',
+        Class         = ' ',
+        Interface     = ' ',
+        Module        = ' ',
+        Property      = ' ',
+        Unit          = ' ',
+        Value         = ' ',
+        Enum          = ' ',
+        Keyword       = ' ',
+        Snippet       = ' ',
+        Color         = ' ',
+        File          = ' ',
+        Reference     = ' ',
+        Folder        = ' ',
+        EnumMember    = ' ',
+        Constant      = ' ',
+        Struct        = ' ',
+        Event         = ' ',
+        Operator      = ' ',
+        TypeParameter = ' ',
+    }
+
+    for name, str in pairs(kinds) do
+        if vim.lsp.protocol.CompletionItemKind[name] ~= nil then
+            vim.lsp.protocol.CompletionItemKind[vim.lsp.protocol.CompletionItemKind[name]] = str
+        end
+    end
+
+    vim.cmd [[
+        augroup config_lsp
+            autocmd!
+            " Set rounded border to the window opened by `LspInfo`
+            autocmd FileType lspinfo call nvim_win_set_config(0, { 'border': 'rounded' })
+        augroup end
+    ]]
 '''
 
 [[plugins]]
