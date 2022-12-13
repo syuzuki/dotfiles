@@ -31,7 +31,7 @@ zinit wait lucid for \
         'mollifier/zload' \
     atload'!() { emulate -LR zsh; setopt prompt_subst; _zsh_git_prompt_precmd_hook }' nocd \
         'woefe/git-prompt.zsh'
-zinit wait'0s' lucid atinit'zicompinit; zicdreplay; compdef _my_nvim nvim' for \
+zinit wait'0s' lucid atinit'zicompinit; _comp_options+=(globdots); zicdreplay; compdef _my_nvim nvim' for \
         'zdharma-continuum/fast-syntax-highlighting'
 zinit wait'0x' lucid atload'!_zsh_autosuggest_start' for \
         'zsh-users/zsh-autosuggestions'
