@@ -3,19 +3,18 @@ filetype plugin indent off
 
 let mapleader = ' '
 
-let s:cache_home = !empty($XDG_DATA_HOME) ? $XDG_DATA_HOME : expand('~/.local/share')
-let s:dein_dir = s:cache_home . '/dein'
-let s:dein_repo = '/Shougo/dein.vim'
+let s:dein_dir = stdpath('cache') .. '/dein'
+let s:dein_repo = 'github.com/Shougo/dein.vim'
+let s:dein_repo_dir = s:dein_dir .. '/repos/' .. s:dein_repo
 
 " Install dein.vim
 if !isdirectory(s:dein_dir)
     echo 'Installing dein.vim...'
-    let s:dein_installer = 'https://raw.githubusercontent.com' . s:dein_repo . '/master/bin/installer.sh'
-    call system('curl ' . shellescape(s:dein_installer) . ' | sh -s -- ' . shellescape(s:dein_dir))
+    let s:dein_repo_url = 'https://' .. s:dein_repo
+    execute '!git clone' s:dein_repo_url s:dein_repo_dir
 endif
 
 " Load plugins
-let s:dein_repo_dir = s:dein_dir . '/repos/github.com' . s:dein_repo
 let &runtimepath = s:dein_repo_dir . ',' . &runtimepath
 if dein#load_state(s:dein_dir)
     call dein#begin(s:dein_dir)
