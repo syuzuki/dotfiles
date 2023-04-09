@@ -545,7 +545,6 @@ hook_source = '''
             ['nvim-lsp'] = {
                 mark = 'LSP',
                 forceCompletionPattern = [[\.\k*|:\k*|->\k*]],
-                kindLabels = { Snippet = 'SNIP' },
             },
             vsnip = {
                 mark = 'S',
@@ -560,8 +559,6 @@ hook_source = '''
             },
         })
 
-        vim.fn['ddc#custom#patch_global']('overwriteCompleteopt', false)
-        vim.fn['ddc#custom#patch_global']('completionMenu', 'pum.vim')
         vim.fn['ddc#custom#patch_global']('backspaceCompletion', true)
 
         vim.fn['ddc#custom#patch_filetype'](
