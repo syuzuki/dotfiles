@@ -154,7 +154,7 @@ mc() {
     cd "$@"
 }
 ssht() {
-    ssh "$@" -t tmux new-session -A -s 0
+    ssh "$@" -t tmux -u new-session -A -s 0
 }
 
 alias run-help &>/dev/null && unalias run-help
