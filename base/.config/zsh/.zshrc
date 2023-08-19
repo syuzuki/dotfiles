@@ -86,7 +86,7 @@ CORRECT_IGNORE_FILE='.*'
         color=9
     fi
 
-    PROMPT="%F{${color}}%B${host:+"%M:"}%y${user:+" %n"} ${(l:SHLVL::❯:)}%b%f "
+    PROMPT="%F{${color}}%B${user:+"%n"}${host:+"@%M:"}%y ${(l:SHLVL::❯:)}%b%f "
     RPROMPT="%F{${color}}%B[%(1j.⏳%j .)%b%f\$(type gitprompt >&/dev/null && gitprompt)%F{${color}}%B%~]%b%f"
     PROMPT2="%F{${color}}%B%_ ❯%b%f "
     PROMPT3="%F{${color}}%B?#%b%f "
