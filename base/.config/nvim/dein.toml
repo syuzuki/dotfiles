@@ -441,18 +441,6 @@ hook_source = '''
 repo = 'rafamadriz/friendly-snippets'
 
 [[plugins]]
-repo = 'hrsh7th/vim-vsnip-integ'
-depends = ['vim-vsnip']
-on_event = 'InsertEnter'
-hook_source = '''
-    augroup config_vsnip
-        autocmd!
-        autocmd User PumCompleteDone call vsnip_integ#on_complete_done(g:pum#completed_item)
-        " autocmd User PumCompleteDone echom g:pum#completed_item
-    augroup end
-'''
-
-[[plugins]]
 repo = 'Shougo/pum.vim'
 hook_add = '''
     lua <<EOF
@@ -507,6 +495,9 @@ repo = 'Shougo/ddc-ui-pum'
 
 [[plugins]]
 repo = 'Shougo/ddc-nvim-lsp'
+
+[[plugins]]
+repo = 'uga-rosa/ddc-source-vsnip'
 
 [[plugins]]
 repo = 'LumaKernel/ddc-file'
