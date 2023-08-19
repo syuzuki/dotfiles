@@ -3,12 +3,9 @@ git
 gnome-keyring
 libarchive
 neovim
-nodejs
 pacman-contrib
 perl
-python-pynvim
 ripgrep
 tmux
 vim
-yarn
 zsh

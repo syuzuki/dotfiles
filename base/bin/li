@@ -1,7 +1,0 @@
-#!/bin/bash
-
-to="${@:$#}"
-
-for f in "${@:1:$#-1}"; do
-    ln -s "${f}" "${to}"
-done
