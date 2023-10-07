@@ -72,7 +72,7 @@
 [user]
     name = syuzuki
     email = 77492100+syuzuki@users.noreply.github.com
-    signingkey = 551741641F3BF84C
+    signingkey = 588241B2F1891172
 
 [include]
     path = config.local
