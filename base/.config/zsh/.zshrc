@@ -276,3 +276,6 @@ setopt append_create
 # Shell State
 
 # Zle
+
+[[ -e "${XDG_CONFIG_HOME:-"${HOME}/.config"}/zsh/.zshrc.local" ]] && \
+    . "${XDG_CONFIG_HOME:-"${HOME}/.config"}/zsh/.zshrc.local"
