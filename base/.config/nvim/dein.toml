@@ -498,16 +498,16 @@ EOF
 repo = 'Shougo/ddc-ui-pum'
 
 [[plugins]]
-repo = 'Shougo/ddc-nvim-lsp'
+repo = 'Shougo/ddc-source-nvim-lsp'
 
 [[plugins]]
 repo = 'uga-rosa/ddc-source-vsnip'
 
 [[plugins]]
-repo = 'LumaKernel/ddc-file'
+repo = 'LumaKernel/ddc-source-file'
 
 [[plugins]]
-repo = 'Shougo/ddc-around'
+repo = 'Shougo/ddc-source-around'
 
 [[plugins]]
 repo = 'tani/ddc-fuzzy'
