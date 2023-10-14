@@ -554,6 +554,16 @@ hook_source = '''
             },
         })
 
+        vim.fn['ddc#custom#patch_global']('sourceParams', {
+            ['nvim-lsp'] = {
+                enableAdditionalTextEdit = true,
+                enableResolveItem = true,
+                snippetEngine = vim.fn['denops#callback#register'](function(body)
+                    vim.fn['vsnip#anonymous'](body)
+                end),
+            },
+        })
+
         vim.fn['ddc#custom#patch_global']('backspaceCompletion', true)
 
         vim.fn['ddc#custom#patch_filetype'](
